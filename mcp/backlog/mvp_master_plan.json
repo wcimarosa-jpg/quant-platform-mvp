@@ -1,0 +1,450 @@
+[
+  {
+    "id": "P00-01",
+    "title": "Define assistant context contract for all workflow stages",
+    "description": "Create a canonical context packet used by assistant calls in brief, questionnaire, mapping, table QA, analysis interpretation, and reporting.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Context schema includes project, brief, methodology, selected sections, questionnaire version, mapping version, run metadata",
+      "Schema is documented and versioned",
+      "Contract tests verify required fields before assistant call execution"
+    ],
+    "dependencies": [],
+    "estimate": "M"
+  },
+  {
+    "id": "P00-02",
+    "title": "Define section taxonomy and generation matrix by methodology",
+    "description": "Normalize section options (e.g., screener, motivations, purchase funnel, outcomes) for all supported methodologies and map to required analysis compatibility rules.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Section matrix covers A&U, Segmentation, Drivers, Concept Monadic, Creative Monadic, Brand Equity Tracker, MaxDiff, TURF",
+      "Each section has required fields and validation rules",
+      "Matrix is consumable by UI selector and generation engine"
+    ],
+    "dependencies": ["P00-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P00-03",
+    "title": "Define AI-first UI interaction patterns",
+    "description": "Specify persistent copilot behavior, inline assistant actions, approval checkpoints, and confidence/explanation display patterns.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Global copilot panel behavior defined for every major screen",
+      "Critical approval checkpoints documented (publish draft, lock mapping, run analysis, export)",
+      "Fallback manual paths documented for each AI-assisted action"
+    ],
+    "dependencies": ["P00-01", "P00-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "P00-04",
+    "title": "Define evaluation framework for assistant quality and grounding",
+    "description": "Create evaluation checklist and tests for grounding, consistency, hallucination resistance, and output usefulness.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Eval scenarios exist for brief grounding, section generation, mapping suggestions, and analysis explanations",
+      "Pass/fail thresholds are documented",
+      "CI hooks for eval test execution are planned"
+    ],
+    "dependencies": ["P00-01", "P00-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P01-01",
+    "title": "Initialize codebase runtime skeleton and app entry points",
+    "description": "Set up apps/api, apps/web, packages, services, and local startup scripts with clean dependency boundaries.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "API and web stubs run locally",
+      "Shared package import paths are stable",
+      "Starter tests run in CI/local"
+    ],
+    "dependencies": ["P00-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P01-02",
+    "title": "Implement project workspace with hard isolation boundaries",
+    "description": "Create project roots and enforce path-level access control to isolate client assets.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Project folders created: Briefs, Questionnaires, Data, Mappings, Runs, Outputs, Logs",
+      "Cross-project read/write is rejected at service boundary",
+      "Isolation tests cover malicious path traversal attempts"
+    ],
+    "dependencies": ["P01-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P01-03",
+    "title": "Implement global assistant shell in UI",
+    "description": "Add persistent assistant panel with context chips and stage-aware actions.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Assistant panel visible across all app stages",
+      "Context chips display active brief/methodology/versions",
+      "Assistant invocation logs include context hash"
+    ],
+    "dependencies": ["P01-01", "P00-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P01-04",
+    "title": "Implement basic event logging and provenance foundation",
+    "description": "Log user and assistant events with project and artifact references.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Events captured for create/update/upload/run/export actions",
+      "Assistant actions include prompt-context metadata",
+      "Logs are queryable by project and run"
+    ],
+    "dependencies": ["P01-02", "P01-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P02-01",
+    "title": "Implement research brief ingestion and parsing pipeline",
+    "description": "Support docx/pdf/md brief upload and extraction into structured fields.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Brief formats docx/pdf/md accepted",
+      "Extracted entities: objectives, audience, category, geography, constraints",
+      "Users can manually edit extracted values before saving"
+    ],
+    "dependencies": ["P01-02"],
+    "estimate": "L"
+  },
+  {
+    "id": "P02-02",
+    "title": "Add brief analyzer assistant mode",
+    "description": "Assistant summarizes brief, identifies gaps, and proposes assumptions/questions for confirmation.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Assistant output references brief content directly",
+      "User can accept/reject each assumption",
+      "Accepted assumptions become part of generation context"
+    ],
+    "dependencies": ["P02-01", "P01-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P02-03",
+    "title": "Implement generation preflight gate",
+    "description": "Block questionnaire generation until minimum brief context is complete.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Preflight checks required fields before generation",
+      "UI clearly shows missing requirements",
+      "Assistant provides targeted prompts to fill missing context"
+    ],
+    "dependencies": ["P02-01", "P02-02"],
+    "estimate": "S"
+  },
+  {
+    "id": "P03-01",
+    "title": "Implement methodology selector with section selector UI",
+    "description": "Allow user to choose methodology and generate selected sections only.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "All supported methodologies are selectable",
+      "Section options reflect methodology matrix",
+      "Selections persist in draft metadata"
+    ],
+    "dependencies": ["P00-02", "P02-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P03-02",
+    "title": "Implement section-based questionnaire generation engine",
+    "description": "Generate section outputs grounded in brief context and methodology guidance.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Generation payload includes assistant context contract",
+      "Only selected sections are generated",
+      "Questionnaire structure conforms to schema and section order"
+    ],
+    "dependencies": ["P03-01", "P00-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P03-03",
+    "title": "Implement section-level AI edit/regenerate workflow",
+    "description": "Support targeted rewrite/regenerate actions per section with deterministic change tracking.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Users can regenerate one section without replacing others",
+      "Assistant explains what changed and why",
+      "Changes are versioned with diff metadata"
+    ],
+    "dependencies": ["P03-02"],
+    "estimate": "L"
+  },
+  {
+    "id": "P03-04",
+    "title": "Implement questionnaire versioning and compare view",
+    "description": "Track versions with author, timestamp, context hash, and section-level diffs.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Versions v1..vn are persisted",
+      "Compare view shows section-level additions/removals/edits",
+      "Users can revert or fork from prior version"
+    ],
+    "dependencies": ["P03-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P04-01",
+    "title": "Implement questionnaire validation engine",
+    "description": "Run methodology and analysis compatibility checks before publish/export.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Validation reports include section/question references",
+      "Blocking issues prevent publish/export",
+      "Validation aligns with analysis prerequisites"
+    ],
+    "dependencies": ["P03-04"],
+    "estimate": "M"
+  },
+  {
+    "id": "P04-02",
+    "title": "Add assistant fix workflow for validation issues",
+    "description": "Assistant proposes targeted repairs and applies user-approved fixes.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Fix suggestions map to specific validation failures",
+      "User can accept fixes individually",
+      "Re-validation runs automatically after applied fixes"
+    ],
+    "dependencies": ["P04-01", "P01-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P04-03",
+    "title": "Implement DOCX export",
+    "description": "Export current approved questionnaire version to styled DOCX.",
+    "methodology": "exports",
+    "status": "todo",
+    "acceptance_criteria": [
+      "DOCX export generated from selected version",
+      "Includes section headers, IDs, logic notes",
+      "Export artifact stored in project Outputs with provenance"
+    ],
+    "dependencies": ["P04-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P04-04",
+    "title": "Implement Decipher-ready structured export",
+    "description": "Export questionnaire to Decipher-ready structured output format.",
+    "methodology": "exports",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Structured output includes questions, options, logic, IDs",
+      "Internal schema checks pass",
+      "Export artifact stored with questionnaire/version linkage"
+    ],
+    "dependencies": ["P04-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P05-01",
+    "title": "Implement data upload and profiling",
+    "description": "Upload CSV/XLSX up to 250MB and compute structural profile.",
+    "methodology": "data",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Files up to 250MB upload successfully",
+      "Profile includes row count, columns, missingness summary",
+      "File metadata and hash are persisted"
+    ],
+    "dependencies": ["P01-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "P05-02",
+    "title": "Implement auto-mapping engine and editable mapping UI",
+    "description": "Suggest questionnaire-to-data mapping and allow edits to variables, scales, segments, labels.",
+    "methodology": "mapping",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Auto-map produced from questionnaire + data profile",
+      "Users can edit and save mapping versions",
+      "Mapping is linked to questionnaire version and data file hash"
+    ],
+    "dependencies": ["P05-01", "P03-04"],
+    "estimate": "L"
+  },
+  {
+    "id": "P05-03",
+    "title": "Add mapping copilot with confidence explanations",
+    "description": "Assistant explains low-confidence mappings and proposes fixes with rationale.",
+    "methodology": "mapping",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Confidence signals shown per mapped field",
+      "Assistant can suggest and apply mapping corrections",
+      "All accepted changes are versioned"
+    ],
+    "dependencies": ["P05-02", "P01-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P06-01",
+    "title": "Implement core table generation pipeline",
+    "description": "Generate frequency, multi-select, T2B, mean, and segment crosstab outputs from mapping config.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Core tables generate from saved mapping without manual edits",
+      "Significance toggle is configurable",
+      "Output artifacts stored under run folder"
+    ],
+    "dependencies": ["P05-02"],
+    "estimate": "L"
+  },
+  {
+    "id": "P06-02",
+    "title": "Add table QA checks",
+    "description": "Run table QA checks for base-size thresholds, missing values, and suspicious distributions.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "QA checks run automatically after table generation",
+      "Findings include severity and remediation hint",
+      "QA report is attached to run artifacts"
+    ],
+    "dependencies": ["P06-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P06-03",
+    "title": "Add table QA copilot",
+    "description": "Assistant explains QA findings and suggests next corrective steps.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Assistant explanations reference QA report fields",
+      "Suggested actions are executable from UI",
+      "User decisions are logged"
+    ],
+    "dependencies": ["P06-02", "P01-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P07-01",
+    "title": "Implement analysis run orchestrator",
+    "description": "Launch analyses asynchronously with status tracking and run metadata.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Statuses: queued/running/failed/completed",
+      "Run metadata includes input and config versions",
+      "Failure messages are actionable"
+    ],
+    "dependencies": ["P06-01", "P01-04"],
+    "estimate": "M"
+  },
+  {
+    "id": "P07-02",
+    "title": "Implement Drivers suite (ridge/logistic, Pearson, weighted-effects)",
+    "description": "Produce unified drivers package and intermediate artifacts for interpretation.",
+    "methodology": "drivers",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Ridge/logistic outputs generated",
+      "Pearson outputs generated",
+      "Weighted-effects outputs generated"
+    ],
+    "dependencies": ["P07-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P07-03",
+    "title": "Implement Segmentation suite (VarClus + KMeans + profiles)",
+    "description": "Run segmentation pipeline and generate profile summaries.",
+    "methodology": "segmentation",
+    "status": "todo",
+    "acceptance_criteria": [
+      "VarClus outputs generated",
+      "KMeans outputs generated",
+      "Profile tables generated for each segment"
+    ],
+    "dependencies": ["P07-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P07-04",
+    "title": "Implement MaxDiff + TURF suite",
+    "description": "Support MaxDiff estimation and TURF reach analysis with exportable artifacts.",
+    "methodology": "maxdiff",
+    "status": "todo",
+    "acceptance_criteria": [
+      "MaxDiff outputs generated",
+      "TURF outputs generated",
+      "Results linked to run provenance"
+    ],
+    "dependencies": ["P07-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P08-01",
+    "title": "Implement insight copilot with evidence-bound explanations",
+    "description": "Assistant generates narratives for tables/analyses and links statements to underlying outputs.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Insights include trace links to output rows/metrics",
+      "No unsupported numeric claims in narrative",
+      "Users can toggle plain-language vs analyst-depth mode"
+    ],
+    "dependencies": ["P07-02", "P07-03", "P07-04", "P00-04"],
+    "estimate": "L"
+  },
+  {
+    "id": "P08-02",
+    "title": "Implement run comparison and change diagnostics",
+    "description": "Compare two runs and explain differences in inputs, mapping, and output metrics.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Run diff view shows input/config/version changes",
+      "Key metric deltas are computed and displayed",
+      "Assistant can explain likely causes of major deltas"
+    ],
+    "dependencies": ["P07-01", "P08-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P08-03",
+    "title": "Complete E2E test harness and UAT checklist",
+    "description": "Automate core journey tests and produce UAT checklist for MVP release readiness.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "E2E tests cover brief->questionnaire->mapping->tables->analysis->exports",
+      "Known failure paths are tested",
+      "UAT checklist passes for all in-scope methodologies"
+    ],
+    "dependencies": ["P08-02"],
+    "estimate": "M"
+  }
+]

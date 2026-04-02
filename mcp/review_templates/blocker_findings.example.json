@@ -1,0 +1,9 @@
+[
+  {
+    "severity": "BLOCKER",
+    "file_path": "apps/api/...",
+    "line": 42,
+    "message": "Acceptance criterion not satisfied.",
+    "required_change": "Implement required behavior and add test coverage."
+  }
+]

@@ -1,0 +1,184 @@
+[
+  {
+    "id": "PLAT-01",
+    "title": "Initialize greenfield repo scaffold and runtime config",
+    "description": "Set up app/package/service directories, base config loader, and startup scripts.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Repo structure matches architecture spec",
+      ".env.example exists with required keys",
+      "Local API and web startup scripts are present"
+    ],
+    "dependencies": [],
+    "estimate": "M"
+  },
+  {
+    "id": "PROJ-01",
+    "title": "Implement project workspace with visible folders and isolation",
+    "description": "Create project roots with Briefs, Questionnaires, Data, Mappings, Runs, Outputs, Logs. Enforce project-level path isolation in API.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Project creation provisions standard folder tree",
+      "Cross-project reads/writes are rejected",
+      "Project folder tree is visible in UI"
+    ],
+    "dependencies": ["PLAT-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "QGEN-01",
+    "title": "Add questionnaire generation endpoint with methodology selector",
+    "description": "Generate questionnaire drafts for A&U, Segmentation, Drivers, Concept Monadic, Creative Monadic, Brand Equity Tracker, MaxDiff, TURF.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "All required methodologies are selectable",
+      "Generated draft returned in structured format",
+      "Draft persists under project Questionnaires folder"
+    ],
+    "dependencies": ["PROJ-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "QGEN-02",
+    "title": "Implement in-app questionnaire editor and versioning",
+    "description": "Allow manual edit and AI-assisted section rewrite/regeneration with version history.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Users can edit questions and logic blocks",
+      "Section-level AI regenerate works",
+      "Versions v1..vn are tracked with metadata"
+    ],
+    "dependencies": ["QGEN-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "EXP-01",
+    "title": "Export questionnaire to DOCX and Decipher-ready structured output",
+    "description": "Generate downloadable DOCX and Decipher-ready structured JSON output for current questionnaire version.",
+    "methodology": "exports",
+    "status": "todo",
+    "acceptance_criteria": [
+      "DOCX export succeeds",
+      "Decipher-ready structured export succeeds",
+      "Export artifacts are versioned in project Outputs"
+    ],
+    "dependencies": ["QGEN-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "DATA-01",
+    "title": "Implement data upload and profiling",
+    "description": "Support CSV/XLSX uploads up to 250MB with basic profile summary.",
+    "methodology": "data",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Uploads up to 250MB succeed",
+      "Data profile includes row count and columns",
+      "Uploaded file metadata is persisted"
+    ],
+    "dependencies": ["PROJ-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "MAP-01",
+    "title": "Build editable questionnaire-to-data mapping workflow",
+    "description": "Auto-suggest mapping and allow users to edit variable links, scales, segment vars, and save mapping versions.",
+    "methodology": "mapping",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Auto-map suggestion is generated",
+      "Users can edit and save mapping",
+      "Mapping versions are retrievable per project"
+    ],
+    "dependencies": ["DATA-01", "QGEN-02"],
+    "estimate": "L"
+  },
+  {
+    "id": "TAB-01",
+    "title": "Generate core data tables from mapping config",
+    "description": "Run frequency, multi-select, T2B, mean and segment crosstab outputs from mapped data.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Core tables generate without manual code edits",
+      "Significance toggle works for crosstabs",
+      "Outputs are stored under run artifacts"
+    ],
+    "dependencies": ["MAP-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "RUN-01",
+    "title": "Add analysis job runner with run provenance",
+    "description": "Run jobs asynchronously and track inputs (data hash, mapping version, questionnaire version), status, and logs.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Run statuses include queued/running/failed/completed",
+      "Each run stores provenance metadata",
+      "Logs include actionable failure messages"
+    ],
+    "dependencies": ["TAB-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "DRIV-01",
+    "title": "Implement Drivers suite: ridge/logistic + Pearson + weighted-effects",
+    "description": "Provide unified drivers run output package including all required drivers analyses.",
+    "methodology": "drivers",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Ridge/logistic outputs generated",
+      "Pearson outputs generated",
+      "Weighted-effects outputs generated"
+    ],
+    "dependencies": ["RUN-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "SEG-01",
+    "title": "Implement segmentation run: VarClus + KMeans profiling",
+    "description": "Run segmentation pipeline and produce profiling outputs.",
+    "methodology": "segmentation",
+    "status": "todo",
+    "acceptance_criteria": [
+      "VarClus runs from mapped variables",
+      "KMeans outputs and profiles are generated",
+      "Outputs are downloadable"
+    ],
+    "dependencies": ["RUN-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "MAX-01",
+    "title": "Implement MaxDiff + TURF run path",
+    "description": "Support MaxDiff estimation and TURF output generation with saved run artifacts.",
+    "methodology": "maxdiff",
+    "status": "todo",
+    "acceptance_criteria": [
+      "MaxDiff run completes with expected output tables",
+      "TURF run completes with reach outputs",
+      "Run is tied to provenance metadata"
+    ],
+    "dependencies": ["RUN-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "LOG-01",
+    "title": "Implement basic event and audit logs",
+    "description": "Capture project actions, uploads, mapping saves, run starts/completions, and export events.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Event log entries created for key actions",
+      "Logs can be filtered by project and run",
+      "Output files trace back to run metadata"
+    ],
+    "dependencies": ["RUN-01"],
+    "estimate": "M"
+  }
+]
