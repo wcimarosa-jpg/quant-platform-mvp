@@ -137,6 +137,28 @@ def get_registered_types() -> list[str]:
     return sorted(_ANALYSIS_REGISTRY.keys())
 
 
+def register_composite(
+    analysis_type: str,
+    steps: list[Callable[..., dict[str, Any]]],
+) -> None:
+    """Register a multi-step analysis that chains several functions.
+
+    Each step receives ``(run, previous_results=dict, **kwargs)`` and returns
+    a partial result dict. Results are merged in order, so later steps can
+    read earlier outputs via ``previous_results``.
+
+    Use case: VarClus → KMeans segmentation pipeline.
+    """
+    def _composite(run: "AnalysisRun", **kwargs: Any) -> dict[str, Any]:
+        merged: dict[str, Any] = {}
+        for step_fn in steps:
+            partial = step_fn(run, previous_results=merged, **kwargs)
+            merged.update(partial)
+        return merged
+
+    _ANALYSIS_REGISTRY[analysis_type] = _composite
+
+
 def create_run(
     project_id: str,
     config: RunConfig,
