@@ -21,6 +21,7 @@ from packages.shared.eval_framework import (
     EvalDimension,
     EvalScenario,
     ScoreLevel,
+    check_fixture_existence,
     get_ci_hooks,
     get_critical_scenarios,
     get_eval_summary,
@@ -101,10 +102,22 @@ class TestScenarioCoverage:
 
     @pytest.mark.parametrize("scenario", EVAL_SCENARIOS, ids=lambda s: s.scenario_id)
     def test_fixture_path_is_documented(self, scenario: EvalScenario):
-        """Fixture paths are stubs until the eval runner is built.
-        This test ensures they follow a consistent naming convention."""
+        """Fixture paths follow a consistent naming convention."""
         assert scenario.input_fixture.startswith("fixtures/")
-        assert "/" in scenario.input_fixture  # has at least one subdirectory
+        assert "/" in scenario.input_fixture
+
+    def test_all_fixtures_exist_on_disk(self):
+        """Fix 4: all declared fixture paths must resolve to real files."""
+        result = check_fixture_existence()
+        assert result["missing"] == 0, (
+            f"{result['missing']} fixture(s) missing: {result['missing_paths']}"
+        )
+
+    def test_fixture_existence_summary(self):
+        result = check_fixture_existence()
+        assert result["total"] == len(EVAL_SCENARIOS)
+        assert result["found"] == result["total"]
+        assert result["missing_paths"] == []
 
 
 # ---------------------------------------------------------------------------

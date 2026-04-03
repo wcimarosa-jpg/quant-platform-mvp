@@ -7,6 +7,7 @@ and CI integration hooks for every assistant-facing workflow stage.
 from __future__ import annotations
 
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -436,4 +437,38 @@ def get_eval_summary() -> dict[str, Any]:
         "dimensions": len(EvalDimension),
         "ci_hooks": len(CI_HOOKS),
         "stages_covered": sorted({s.stage.value for s in EVAL_SCENARIOS}),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Fixture validation utilities — for CI
+# ---------------------------------------------------------------------------
+
+def resolve_fixture_path(fixture_relative: str, repo_root: str | None = None) -> Path:
+    """Resolve a fixture path relative to the repo root.
+
+    If ``repo_root`` is None, defaults to the directory four levels above
+    this file (packages/shared/ → repo root).
+    """
+    if repo_root is None:
+        repo_root = str(Path(__file__).resolve().parents[2])
+    return Path(repo_root) / fixture_relative
+
+
+def check_fixture_existence(repo_root: str | None = None) -> dict[str, Any]:
+    """Check whether all declared eval scenario fixtures exist on disk.
+
+    Returns ``{"total": N, "found": N, "missing": N, "missing_paths": [...]}``.
+    """
+    total = len(EVAL_SCENARIOS)
+    missing_paths: list[str] = []
+    for s in EVAL_SCENARIOS:
+        path = resolve_fixture_path(s.input_fixture, repo_root)
+        if not path.exists():
+            missing_paths.append(s.input_fixture)
+    return {
+        "total": total,
+        "found": total - len(missing_paths),
+        "missing": len(missing_paths),
+        "missing_paths": missing_paths,
     }

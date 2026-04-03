@@ -216,7 +216,9 @@ class PanelState(BaseModel):
     """Complete state for the assistant panel on a specific screen."""
 
     screen: Screen
-    stage: WorkflowStage
+    stage: WorkflowStage                # runtime context stage
+    expected_stage: WorkflowStage       # screen's designed workflow stage
+    stage_mismatch: bool                # True when ctx.stage != screen stage
     context_chips: list[ContextChip]
     available_actions: list[str]
     default_action: str
@@ -237,7 +239,9 @@ def get_panel_state(ctx: AssistantContext, screen: Screen) -> PanelState:
 
     return PanelState(
         screen=screen,
-        stage=spec.workflow_stage,
+        stage=ctx.stage,
+        expected_stage=spec.workflow_stage,
+        stage_mismatch=ctx.stage != spec.workflow_stage,
         context_chips=chips,
         available_actions=[a.value for a in spec.available_actions],
         default_action=spec.default_action.value,

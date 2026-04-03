@@ -123,16 +123,27 @@ _STAGE_REQUIREMENTS: dict[WorkflowStage, list[str]] = {
 
 
 class ContextValidationError(Exception):
-    """Raised when the context is insufficient for the requested stage."""
+    """Raised when the context is insufficient or inconsistent for the requested stage."""
 
-    def __init__(self, stage: WorkflowStage, missing: list[str]) -> None:
+    def __init__(
+        self,
+        stage: WorkflowStage,
+        missing: list[str] | None = None,
+        inconsistencies: list[str] | None = None,
+    ) -> None:
         self.stage = stage
-        self.missing = missing
-        super().__init__(f"Stage {stage.value!r} requires: {', '.join(missing)}")
+        self.missing = missing or []
+        self.inconsistencies = inconsistencies or []
+        parts: list[str] = []
+        if self.missing:
+            parts.append(f"missing: {', '.join(self.missing)}")
+        if self.inconsistencies:
+            parts.append(f"inconsistent: {'; '.join(self.inconsistencies)}")
+        super().__init__(f"Stage {stage.value!r} validation failed — {'; '.join(parts)}")
 
 
 def validate_for_stage(ctx: AssistantContext) -> None:
-    """Raise ``ContextValidationError`` if required fields are missing for the context's stage."""
+    """Raise ``ContextValidationError`` if required fields are missing or versions are inconsistent."""
     missing: list[str] = []
     for field_name in _STAGE_REQUIREMENTS.get(ctx.stage, []):
         value = getattr(ctx, field_name, None)
@@ -140,5 +151,22 @@ def validate_for_stage(ctx: AssistantContext) -> None:
             missing.append(field_name)
         elif isinstance(value, list) and len(value) == 0:
             missing.append(field_name)
-    if missing:
-        raise ContextValidationError(ctx.stage, missing)
+
+    # Cross-field version consistency for analysis/reporting stages
+    inconsistencies: list[str] = []
+    if ctx.stage in (WorkflowStage.ANALYSIS, WorkflowStage.REPORTING):
+        if ctx.questionnaire_ref and ctx.run_metadata:
+            if ctx.run_metadata.questionnaire_version != ctx.questionnaire_ref.version:
+                inconsistencies.append(
+                    f"run_metadata.questionnaire_version ({ctx.run_metadata.questionnaire_version}) "
+                    f"!= questionnaire_ref.version ({ctx.questionnaire_ref.version})"
+                )
+        if ctx.mapping_ref and ctx.run_metadata:
+            if ctx.run_metadata.mapping_version != ctx.mapping_ref.version:
+                inconsistencies.append(
+                    f"run_metadata.mapping_version ({ctx.run_metadata.mapping_version}) "
+                    f"!= mapping_ref.version ({ctx.mapping_ref.version})"
+                )
+
+    if missing or inconsistencies:
+        raise ContextValidationError(ctx.stage, missing=missing, inconsistencies=inconsistencies)

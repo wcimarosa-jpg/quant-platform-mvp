@@ -97,10 +97,31 @@ class TestPanelCoverage:
         assert state.context_hash
 
     @pytest.mark.parametrize("screen", list(Screen))
+    def test_panel_state_stage_reflects_context(self, screen: Screen):
+        """Fix 1: stage must reflect runtime ctx.stage, not screen's designed stage."""
+        ctx = _minimal_ctx()  # stage=BRIEF
+        state = get_panel_state(ctx, screen)
+        assert state.stage == ctx.stage  # always matches context
+        assert state.expected_stage is not None  # screen's designed stage preserved
+
+    def test_stage_mismatch_detected(self):
+        """When context stage differs from screen's expected stage."""
+        ctx = _full_ctx()  # stage=ANALYSIS
+        state = get_panel_state(ctx, Screen.BRIEF_UPLOAD)  # expected_stage=BRIEF
+        assert state.stage == WorkflowStage.ANALYSIS
+        assert state.expected_stage == WorkflowStage.BRIEF
+        assert state.stage_mismatch is True
+
+    def test_stage_match_no_mismatch(self):
+        ctx = _minimal_ctx()  # stage=BRIEF
+        state = get_panel_state(ctx, Screen.BRIEF_UPLOAD)  # expected_stage=BRIEF
+        assert state.stage_mismatch is False
+
+    @pytest.mark.parametrize("screen", list(Screen))
     def test_panel_state_includes_context_chips(self, screen: Screen):
         ctx = _minimal_ctx()
         state = get_panel_state(ctx, screen)
-        assert len(state.context_chips) >= 3  # project, methodology, stage at minimum
+        assert len(state.context_chips) >= 3
 
     def test_panel_state_checkpoint_flagged_on_editor(self):
         ctx = _minimal_ctx()

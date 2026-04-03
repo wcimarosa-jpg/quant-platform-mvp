@@ -250,3 +250,67 @@ class TestEdgeCases:
                 methodology=m,
             )
             assert ctx.methodology == m
+
+
+# ---------------------------------------------------------------------------
+# Fix 2: Version consistency checks
+# ---------------------------------------------------------------------------
+
+class TestVersionConsistency:
+    def test_matching_versions_pass(self):
+        ctx = _full_context(WorkflowStage.ANALYSIS)
+        validate_for_stage(ctx)  # should not raise
+
+    def test_mismatched_questionnaire_version_fails(self):
+        ctx = AssistantContext(
+            project_id="proj-001",
+            stage=WorkflowStage.ANALYSIS,
+            methodology=Methodology.SEGMENTATION,
+            brief=_brief_ctx(),
+            selected_sections=["screener"],
+            questionnaire_ref=QuestionnaireVersionRef(
+                questionnaire_id="qre-001", version=3,
+                section_ids=["screener"],
+            ),
+            mapping_ref=_mapping_ref(),
+            run_metadata=RunMetadata(
+                run_id="run-001", run_type="kmeans", started_at=NOW,
+                questionnaire_version=99,  # mismatch!
+                mapping_version=1,
+            ),
+        )
+        with pytest.raises(ContextValidationError) as exc_info:
+            validate_for_stage(ctx)
+        assert len(exc_info.value.inconsistencies) >= 1
+        assert "questionnaire_version" in exc_info.value.inconsistencies[0]
+
+    def test_mismatched_mapping_version_fails(self):
+        ctx = AssistantContext(
+            project_id="proj-001",
+            stage=WorkflowStage.REPORTING,
+            methodology=Methodology.SEGMENTATION,
+            brief=_brief_ctx(),
+            selected_sections=["screener"],
+            questionnaire_ref=_qre_ref(),
+            mapping_ref=MappingVersionRef(
+                mapping_id="map-001", version=2, data_file_hash="sha256:abc",
+            ),
+            run_metadata=RunMetadata(
+                run_id="run-001", run_type="report", started_at=NOW,
+                questionnaire_version=1,
+                mapping_version=99,  # mismatch!
+            ),
+        )
+        with pytest.raises(ContextValidationError) as exc_info:
+            validate_for_stage(ctx)
+        assert len(exc_info.value.inconsistencies) >= 1
+        assert "mapping_version" in exc_info.value.inconsistencies[0]
+
+    def test_consistency_not_checked_for_brief_stage(self):
+        """Version consistency only applies to ANALYSIS/REPORTING."""
+        ctx = AssistantContext(
+            project_id="proj-001",
+            stage=WorkflowStage.BRIEF,
+            methodology=Methodology.SEGMENTATION,
+        )
+        validate_for_stage(ctx)  # no error even without refs

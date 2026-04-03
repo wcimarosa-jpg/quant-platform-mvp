@@ -91,10 +91,11 @@ class ApprovalCheckpoint(BaseModel):
 # ---------------------------------------------------------------------------
 
 class FallbackPath(BaseModel):
-    """Manual alternative for each AI-assisted action."""
+    """Manual alternative for a specific AI-assisted action on a screen."""
 
     screen: Screen
-    ai_action: str
+    ai_action_type: CopilotAction       # typed action this fallback covers
+    ai_action: str                       # human-readable description
     manual_alternative: str
     manual_steps: list[str]
 
@@ -294,151 +295,164 @@ APPROVAL_CHECKPOINTS: list[ApprovalCheckpoint] = [
 # ---------------------------------------------------------------------------
 
 FALLBACK_PATHS: list[FallbackPath] = [
-    FallbackPath(
-        screen=Screen.PROJECT_SETUP,
-        ai_action="AI suggests methodology based on project name and category",
-        manual_alternative="Choose methodology manually during project setup",
-        manual_steps=[
-            "Enter project name and client details.",
-            "Select methodology from the dropdown.",
-            "Save project.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.BRIEF_UPLOAD,
-        ai_action="Auto-extract brief fields from uploaded document",
-        manual_alternative="Manually fill brief fields",
-        manual_steps=[
-            "Click 'Manual Entry' tab on brief screen.",
-            "Fill in: objectives, audience, category, geography, constraints.",
-            "Save brief.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.BRIEF_REVIEW,
-        ai_action="AI summarizes brief and identifies gaps",
-        manual_alternative="Review brief fields directly",
-        manual_steps=[
-            "Read extracted fields in the brief review panel.",
-            "Edit any incorrect values inline.",
-            "Mark brief as reviewed.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.METHODOLOGY_SELECTOR,
-        ai_action="AI recommends methodology based on brief",
-        manual_alternative="Select methodology manually",
-        manual_steps=[
-            "Open methodology dropdown.",
-            "Choose from available options.",
-            "Confirm selection.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.SECTION_SELECTOR,
-        ai_action="AI pre-selects recommended sections",
-        manual_alternative="Select sections manually",
-        manual_steps=[
-            "Review section checklist for chosen methodology.",
-            "Check/uncheck desired sections.",
-            "Required sections cannot be deselected.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.QUESTIONNAIRE_EDITOR,
-        ai_action="AI generates section content",
-        manual_alternative="Write questions manually",
-        manual_steps=[
-            "Click 'Add Question' in the section editor.",
-            "Enter question text, type, response options, and variable ID.",
-            "Repeat for each question.",
-            "Run validation when complete.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.QUESTIONNAIRE_VALIDATION,
-        ai_action="AI proposes fixes for validation failures",
-        manual_alternative="Fix validation issues manually",
-        manual_steps=[
-            "Review validation report.",
-            "Click on each failure to navigate to the question.",
-            "Edit the question to resolve the issue.",
-            "Re-run validation.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.DATA_UPLOAD,
-        ai_action="AI profiles uploaded data and flags issues",
-        manual_alternative="Review data columns and types manually",
-        manual_steps=[
-            "Open uploaded file preview.",
-            "Review column names, types, and row counts.",
-            "Check for missing values or unexpected formats.",
-            "Proceed to mapping when satisfied.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.MAPPING_EDITOR,
-        ai_action="AI auto-maps data columns to questionnaire variables",
-        manual_alternative="Map columns manually",
-        manual_steps=[
-            "For each questionnaire variable, select the matching data column from dropdown.",
-            "Set scale type, value labels, and coding.",
-            "Save mapping.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.TABLE_GENERATION,
-        ai_action="AI generates tables from locked mapping",
-        manual_alternative="Configure and trigger table generation manually",
-        manual_steps=[
-            "Select table types to generate (frequency, crosstab, mean, T2B).",
-            "Choose banner variables and significance settings.",
-            "Click 'Generate Tables'.",
-            "Review output files in run folder.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.TABLE_QA,
-        ai_action="AI explains QA findings and suggests fixes",
-        manual_alternative="Review QA report manually",
-        manual_steps=[
-            "Open QA report.",
-            "Review each finding (base size, missing values, distributions).",
-            "Decide whether to adjust mapping, filter data, or accept.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.ANALYSIS_CONFIG,
-        ai_action="AI recommends analysis parameters",
-        manual_alternative="Configure analysis manually",
-        manual_steps=[
-            "Select analysis type (e.g., K-Means, Drivers, MaxDiff).",
-            "Set parameters (cluster count, variables, DV selection).",
-            "Review config summary.",
-            "Launch run.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.ANALYSIS_RESULTS,
-        ai_action="AI generates evidence-bound narrative from results",
-        manual_alternative="Read raw output tables",
-        manual_steps=[
-            "Open analysis output artifacts (Excel, CSV).",
-            "Review tables, coefficients, and cluster profiles directly.",
-            "Write findings narrative manually.",
-        ],
-    ),
-    FallbackPath(
-        screen=Screen.EXPORT,
-        ai_action="AI recommends export format and contents",
-        manual_alternative="Choose export options manually",
-        manual_steps=[
-            "Select export format (DOCX, Decipher, Excel).",
-            "Select which artifacts to include.",
-            "Click Export.",
-        ],
-    ),
+    # --- PROJECT_SETUP: suggest ---
+    FallbackPath(screen=Screen.PROJECT_SETUP, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI suggests methodology based on project name and category",
+                 manual_alternative="Choose methodology manually",
+                 manual_steps=["Enter project name.", "Select methodology from dropdown.", "Save project."]),
+    # --- BRIEF_UPLOAD: suggest, explain ---
+    FallbackPath(screen=Screen.BRIEF_UPLOAD, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI suggests missing brief fields after upload",
+                 manual_alternative="Fill brief fields manually",
+                 manual_steps=["Click 'Manual Entry' tab.", "Fill in objectives, audience, category, geography, constraints.", "Save."]),
+    FallbackPath(screen=Screen.BRIEF_UPLOAD, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains extracted brief structure",
+                 manual_alternative="Read extracted fields directly",
+                 manual_steps=["Review the parsed brief fields in the form.", "Edit any incorrect values."]),
+    # --- BRIEF_REVIEW: summarize, suggest, explain ---
+    FallbackPath(screen=Screen.BRIEF_REVIEW, ai_action_type=CopilotAction.SUMMARIZE,
+                 ai_action="AI summarizes brief and identifies gaps",
+                 manual_alternative="Read brief fields directly",
+                 manual_steps=["Read extracted fields in brief review panel.", "Check for missing values."]),
+    FallbackPath(screen=Screen.BRIEF_REVIEW, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI suggests assumptions for missing fields",
+                 manual_alternative="Enter missing values manually",
+                 manual_steps=["Identify missing fields.", "Type values directly.", "Save."]),
+    FallbackPath(screen=Screen.BRIEF_REVIEW, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains brief interpretation",
+                 manual_alternative="Review raw brief text",
+                 manual_steps=["Open raw brief text panel.", "Compare with extracted fields."]),
+    # --- METHODOLOGY_SELECTOR: suggest, explain ---
+    FallbackPath(screen=Screen.METHODOLOGY_SELECTOR, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI recommends methodology",
+                 manual_alternative="Select methodology manually",
+                 manual_steps=["Open methodology dropdown.", "Choose option.", "Confirm."]),
+    FallbackPath(screen=Screen.METHODOLOGY_SELECTOR, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains methodology trade-offs",
+                 manual_alternative="Read methodology descriptions",
+                 manual_steps=["Hover over each methodology for tooltip.", "Review documentation."]),
+    # --- SECTION_SELECTOR: suggest, explain ---
+    FallbackPath(screen=Screen.SECTION_SELECTOR, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI pre-selects recommended sections",
+                 manual_alternative="Select sections manually",
+                 manual_steps=["Review section checklist.", "Check/uncheck sections.", "Required sections stay checked."]),
+    FallbackPath(screen=Screen.SECTION_SELECTOR, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains why each section matters",
+                 manual_alternative="Read section descriptions",
+                 manual_steps=["Click section label for description.", "Review typical question counts."]),
+    # --- QUESTIONNAIRE_EDITOR: generate, explain, fix, compare, validate ---
+    FallbackPath(screen=Screen.QUESTIONNAIRE_EDITOR, ai_action_type=CopilotAction.GENERATE,
+                 ai_action="AI generates section content",
+                 manual_alternative="Write questions manually",
+                 manual_steps=["Click 'Add Question'.", "Enter question text, type, options, variable ID.", "Repeat."]),
+    FallbackPath(screen=Screen.QUESTIONNAIRE_EDITOR, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains design choices",
+                 manual_alternative="Read question annotations",
+                 manual_steps=["Review question metadata and logic notes."]),
+    FallbackPath(screen=Screen.QUESTIONNAIRE_EDITOR, ai_action_type=CopilotAction.FIX,
+                 ai_action="AI proposes fixes for issues",
+                 manual_alternative="Edit questions directly",
+                 manual_steps=["Navigate to flagged question.", "Edit text/options/logic.", "Re-validate."]),
+    FallbackPath(screen=Screen.QUESTIONNAIRE_EDITOR, ai_action_type=CopilotAction.COMPARE,
+                 ai_action="AI compares questionnaire versions",
+                 manual_alternative="Use version diff view",
+                 manual_steps=["Select two versions.", "Review side-by-side diff."]),
+    FallbackPath(screen=Screen.QUESTIONNAIRE_EDITOR, ai_action_type=CopilotAction.VALIDATE,
+                 ai_action="AI validates questionnaire",
+                 manual_alternative="Run validation manually",
+                 manual_steps=["Click 'Validate'.", "Review report."]),
+    # --- QUESTIONNAIRE_VALIDATION: validate, fix, explain ---
+    FallbackPath(screen=Screen.QUESTIONNAIRE_VALIDATION, ai_action_type=CopilotAction.VALIDATE,
+                 ai_action="AI runs validation checks",
+                 manual_alternative="Run validation manually",
+                 manual_steps=["Click 'Run Validation'.", "Review error list."]),
+    FallbackPath(screen=Screen.QUESTIONNAIRE_VALIDATION, ai_action_type=CopilotAction.FIX,
+                 ai_action="AI proposes targeted fixes",
+                 manual_alternative="Fix issues manually",
+                 manual_steps=["Click each failure.", "Edit the question.", "Re-run validation."]),
+    FallbackPath(screen=Screen.QUESTIONNAIRE_VALIDATION, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains validation failures",
+                 manual_alternative="Read error descriptions",
+                 manual_steps=["Click error for details.", "Review suggestion text."]),
+    # --- DATA_UPLOAD: explain, suggest ---
+    FallbackPath(screen=Screen.DATA_UPLOAD, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI profiles data and explains structure",
+                 manual_alternative="Review data preview manually",
+                 manual_steps=["Open file preview.", "Review column names and types.", "Check row counts."]),
+    FallbackPath(screen=Screen.DATA_UPLOAD, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI flags potential data issues",
+                 manual_alternative="Check data quality manually",
+                 manual_steps=["Review missingness summary.", "Check for unexpected formats."]),
+    # --- MAPPING_EDITOR: generate, explain, fix, suggest ---
+    FallbackPath(screen=Screen.MAPPING_EDITOR, ai_action_type=CopilotAction.GENERATE,
+                 ai_action="AI auto-maps columns to variables",
+                 manual_alternative="Map columns manually",
+                 manual_steps=["For each variable, select matching column from dropdown.", "Save mapping."]),
+    FallbackPath(screen=Screen.MAPPING_EDITOR, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains low-confidence mappings",
+                 manual_alternative="Review mapping confidence scores",
+                 manual_steps=["Check confidence column.", "Review match reason."]),
+    FallbackPath(screen=Screen.MAPPING_EDITOR, ai_action_type=CopilotAction.FIX,
+                 ai_action="AI suggests mapping corrections",
+                 manual_alternative="Edit mappings directly",
+                 manual_steps=["Click on low-confidence mapping.", "Select correct column.", "Save."]),
+    FallbackPath(screen=Screen.MAPPING_EDITOR, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI suggests unmapped variable assignments",
+                 manual_alternative="Assign unmapped variables manually",
+                 manual_steps=["Review unmapped list.", "Assign columns.", "Save."]),
+    # --- TABLE_GENERATION: generate, explain ---
+    FallbackPath(screen=Screen.TABLE_GENERATION, ai_action_type=CopilotAction.GENERATE,
+                 ai_action="AI generates tables from locked mapping",
+                 manual_alternative="Configure and trigger generation manually",
+                 manual_steps=["Select table types.", "Choose banner variables.", "Click 'Generate Tables'."]),
+    FallbackPath(screen=Screen.TABLE_GENERATION, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains table structure",
+                 manual_alternative="Review table configuration",
+                 manual_steps=["Review table type descriptions.", "Check significance settings."]),
+    # --- TABLE_QA: validate, explain, fix ---
+    FallbackPath(screen=Screen.TABLE_QA, ai_action_type=CopilotAction.VALIDATE,
+                 ai_action="AI runs QA checks on tables",
+                 manual_alternative="Review QA report manually",
+                 manual_steps=["Open QA report.", "Review each finding."]),
+    FallbackPath(screen=Screen.TABLE_QA, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains QA findings",
+                 manual_alternative="Read finding descriptions",
+                 manual_steps=["Click each finding for details.", "Review remediation hints."]),
+    FallbackPath(screen=Screen.TABLE_QA, ai_action_type=CopilotAction.FIX,
+                 ai_action="AI suggests QA fixes",
+                 manual_alternative="Fix issues manually",
+                 manual_steps=["Review suggested actions.", "Decide: suppress, merge, or accept."]),
+    # --- ANALYSIS_CONFIG: suggest, explain ---
+    FallbackPath(screen=Screen.ANALYSIS_CONFIG, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI recommends analysis parameters",
+                 manual_alternative="Configure analysis manually",
+                 manual_steps=["Select analysis type.", "Set parameters.", "Review config.", "Launch."]),
+    FallbackPath(screen=Screen.ANALYSIS_CONFIG, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains parameter choices",
+                 manual_alternative="Read parameter descriptions",
+                 manual_steps=["Hover over each parameter for tooltip.", "Review methodology guide."]),
+    # --- ANALYSIS_RESULTS: explain, summarize, compare ---
+    FallbackPath(screen=Screen.ANALYSIS_RESULTS, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains analysis results",
+                 manual_alternative="Read raw output tables",
+                 manual_steps=["Open output artifacts.", "Review tables and coefficients."]),
+    FallbackPath(screen=Screen.ANALYSIS_RESULTS, ai_action_type=CopilotAction.SUMMARIZE,
+                 ai_action="AI generates evidence-bound narrative",
+                 manual_alternative="Write findings manually",
+                 manual_steps=["Review output tables.", "Draft narrative in document editor."]),
+    FallbackPath(screen=Screen.ANALYSIS_RESULTS, ai_action_type=CopilotAction.COMPARE,
+                 ai_action="AI compares analysis runs",
+                 manual_alternative="Use run comparison view",
+                 manual_steps=["Select two runs.", "Review metric deltas."]),
+    # --- EXPORT: suggest, explain ---
+    FallbackPath(screen=Screen.EXPORT, ai_action_type=CopilotAction.SUGGEST,
+                 ai_action="AI recommends export format",
+                 manual_alternative="Choose export options manually",
+                 manual_steps=["Select format.", "Select artifacts.", "Click Export."]),
+    FallbackPath(screen=Screen.EXPORT, ai_action_type=CopilotAction.EXPLAIN,
+                 ai_action="AI explains what is included in export",
+                 manual_alternative="Review export contents list",
+                 manual_steps=["Review artifact list.", "Check provenance metadata."]),
 ]
 
 
@@ -459,6 +473,31 @@ def get_checkpoints_for_screen(screen: Screen) -> list[ApprovalCheckpoint]:
 def get_fallback_for_screen(screen: Screen) -> list[FallbackPath]:
     """Return fallback manual paths for a screen."""
     return [fp for fp in FALLBACK_PATHS if fp.screen == screen]
+
+
+def check_fallback_action_coverage() -> dict[str, Any]:
+    """Check that every (screen, action) pair from COPILOT_PANELS has a fallback.
+
+    Returns {"covered": [...], "missing": [...], "total_pairs": N, "covered_count": N}.
+    """
+    covered: list[tuple[str, str]] = []
+    missing: list[tuple[str, str]] = []
+
+    for screen, spec in COPILOT_PANELS.items():
+        fallback_actions = {fp.ai_action_type for fp in FALLBACK_PATHS if fp.screen == screen}
+        for action in spec.available_actions:
+            pair = (screen.value, action.value)
+            if action in fallback_actions:
+                covered.append(pair)
+            else:
+                missing.append(pair)
+
+    return {
+        "covered": covered,
+        "missing": missing,
+        "total_pairs": len(covered) + len(missing),
+        "covered_count": len(covered),
+    }
 
 
 def get_all_screens_summary() -> list[dict[str, Any]]:

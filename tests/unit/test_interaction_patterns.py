@@ -13,6 +13,7 @@ import pytest
 from packages.shared.interaction_patterns import (
     APPROVAL_CHECKPOINTS,
     COPILOT_PANELS,
+    CopilotAction,
     FALLBACK_PATHS,
     PATTERNS_VERSION,
     ApprovalCheckpoint,
@@ -20,6 +21,7 @@ from packages.shared.interaction_patterns import (
     CopilotPanelSpec,
     FallbackPath,
     Screen,
+    check_fallback_action_coverage,
     get_all_screens_summary,
     get_checkpoints_for_screen,
     get_copilot_spec,
@@ -145,6 +147,7 @@ class TestFallbackPaths:
         for fb in fallbacks:
             assert isinstance(fb, FallbackPath)
             assert fb.ai_action
+            assert fb.ai_action_type in CopilotAction  # Fix 3: typed action
             assert fb.manual_alternative
             assert len(fb.manual_steps) > 0
 
@@ -155,6 +158,18 @@ class TestFallbackPaths:
         fallbacks = get_fallback_for_screen(Screen.MAPPING_EDITOR)
         assert len(fallbacks) > 0
         assert fallbacks[0].screen == Screen.MAPPING_EDITOR
+
+    def test_action_level_coverage_complete(self):
+        """Fix 3: every (screen, action) pair from COPILOT_PANELS must have a fallback."""
+        result = check_fallback_action_coverage()
+        assert len(result["missing"]) == 0, (
+            f"Missing fallback coverage for {len(result['missing'])} action(s): {result['missing']}"
+        )
+
+    def test_coverage_helper_returns_counts(self):
+        result = check_fallback_action_coverage()
+        assert result["total_pairs"] > 0
+        assert result["covered_count"] == result["total_pairs"]
 
 
 # ---------------------------------------------------------------------------
