@@ -43,3 +43,14 @@ python scripts\claude_worker.py resolve --review-id <REVIEW_ID> --new-revision-i
 python scripts\review_manager.py feedback --review-id <REVIEW_ID> --decision approved --summary "Approved" --findings-file "..\quant-platform-mvp\mcp\review_templates\approval_findings.example.json"
 python scripts\review_manager.py done --item-id <ITEM_ID> --review-id <REVIEW_ID>
 ```
+
+## Required review attachments (methodology tickets)
+
+For any methodology-related ticket, include:
+
+1. Completed checklist section from:
+   - `docs/02_analysis_specs/rigor_checklist.md`
+2. Reviewer form based on:
+   - `mcp/review_templates/methodology_acceptance_template.md`
+
+Approval should not be granted unless required gates are satisfied or marked N/A with rationale.
