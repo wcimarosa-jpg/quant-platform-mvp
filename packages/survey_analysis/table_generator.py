@@ -117,7 +117,10 @@ class TableRunResult(BaseModel):
             "mapping_version": self.mapping_version,
             "questionnaire_version": self.questionnaire_version,
             "total_tables": self.total_tables,
-            "significance_enabled": self.config.significance.enabled,
+            "significance_configured": self.config.significance.enabled,
+            # TODO: Actual significance computation (chi-square/z-test) not yet
+            # implemented. This flag reflects config intent, not computed flags.
+            "significance_computed": False,
             "created_at": self.created_at.isoformat(),
         }
 
@@ -143,6 +146,9 @@ def _banner_splits(df: pd.DataFrame, banner_cols: list[str]) -> dict[str, pd.Dat
 
 # ---------------------------------------------------------------------------
 # Real table generators — computed from DataFrame
+#
+# Note: the ``sig`` parameter is reserved for future significance testing
+# (chi-square, z-test). Currently unused — all sig_flag fields remain None.
 # ---------------------------------------------------------------------------
 
 def _gen_frequency(

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import OrderedDict
 from typing import Any
 
 import pandas as pd
@@ -25,10 +26,28 @@ from packages.survey_analysis.table_qa_copilot import (
 
 router = APIRouter(prefix="/tables", tags=["tables"])
 
-# In-memory stores
-_runs: dict[str, TableRunResult] = {}
-_qa_reports: dict[str, QAReport] = {}
-_copilot_sessions: dict[str, QACopilotSession] = {}
+# In-memory stores with LRU eviction.
+# TODO: Replace with database persistence in production.
+_MAX_STORE_SIZE = 100
+
+
+class _LRUStore(OrderedDict):
+    """OrderedDict that evicts oldest entries when size exceeds _MAX_STORE_SIZE."""
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        super().__setitem__(key, value)
+        self.move_to_end(key)
+        while len(self) > _MAX_STORE_SIZE:
+            self.popitem(last=False)
+
+
+_runs: _LRUStore = _LRUStore()
+_qa_reports: _LRUStore = _LRUStore()
+_copilot_sessions: _LRUStore = _LRUStore()
+
+# Payload limits
+_MAX_DATA_ROWS = 500_000
+_MAX_VARIABLES = 1_000
 
 
 class GenerateRequest(BaseModel):
@@ -36,8 +55,8 @@ class GenerateRequest(BaseModel):
     mapping_id: str
     mapping_version: int = 1
     questionnaire_version: int = 1
-    variables: list[dict[str, Any]]
-    data_rows: list[dict[str, Any]]
+    variables: list[dict[str, Any]] = Field(max_length=_MAX_VARIABLES)
+    data_rows: list[dict[str, Any]] = Field(max_length=_MAX_DATA_ROWS)
     config: TableConfig | None = None
 
 
@@ -91,7 +110,6 @@ def qa_check(run_id: str) -> dict[str, Any]:
 @router.post("/{run_id}/qa-copilot")
 def qa_copilot(run_id: str) -> dict[str, Any]:
     """Run QA copilot analysis on the latest QA report for a run."""
-    # Find the QA report for this run
     report = next((r for r in _qa_reports.values() if r.run_id == run_id), None)
     if not report:
         raise HTTPException(status_code=404, detail="QA report not found. Run /qa first.")
