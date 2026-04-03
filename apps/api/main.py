@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from apps.api.routes import assistant, health, projects
+from apps.api.routes import assistant, brief_analysis, briefs, health, projects
 
 app = FastAPI(
     title="Quant Platform API",
@@ -24,3 +24,5 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(projects.router, prefix="/api/v1")
 app.include_router(assistant.router, prefix="/api/v1")
+app.include_router(briefs.router, prefix="/api/v1")
+app.include_router(brief_analysis.router, prefix="/api/v1")
