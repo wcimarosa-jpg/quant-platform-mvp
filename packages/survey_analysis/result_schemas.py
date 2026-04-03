@@ -142,6 +142,7 @@ class MaxDiffTURFResultSummary(BaseModel):
     """Complete MaxDiff + TURF output (P07-04)."""
 
     analysis_type: str = "maxdiff_turf"
+    total_respondents: int                   # for reach_pct verification
     item_scores: list[MaxDiffItemScore]     # sorted by rescaled_score desc
     item_ranking: list[str]                  # item names in rank order
     turf_portfolios: list[TURFPortfolio]     # one per portfolio size tested

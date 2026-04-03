@@ -8,7 +8,6 @@ in this implementation; async worker integration is deferred.
 from __future__ import annotations
 
 import json
-import traceback
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
@@ -147,6 +146,13 @@ def register_composite(
     a partial result dict. Results are merged in order, so later steps can
     read earlier outputs via ``previous_results``.
 
+    **Key-ownership convention:** Each step must namespace its output keys
+    to avoid collisions. For example:
+    - VarClus step returns: ``{"varclus_clusters": [...], "varclus_representatives": [...]}``
+    - KMeans step returns: ``{"kmeans_clusters": [...], "selected_k": 5, ...}``
+    Later steps can read earlier keys from ``previous_results``.
+    If two steps write the same key, the later step silently overwrites.
+
     Use case: VarClus → KMeans segmentation pipeline.
     """
     def _composite(run: "AnalysisRun", **kwargs: Any) -> dict[str, Any]:
@@ -209,6 +215,11 @@ def execute_run(
 
     try:
         result_summary = analysis_fn(run, **kwargs)
+        # Validate result against typed schema if one is registered
+        from packages.survey_analysis.result_schemas import RESULT_SCHEMAS
+        schema_cls = RESULT_SCHEMAS.get(run.config.analysis_type)
+        if schema_cls and result_summary:
+            schema_cls.model_validate(result_summary)
         run.status = RunStatus.COMPLETED
         run.result_summary = result_summary
     except AnalysisError as exc:
