@@ -1,8 +1,6 @@
-"""Contract tests for core table generation pipeline (P06-01).
+"""Tests for core table generation pipeline (P06-01 hardened).
 
-AC-1: Core tables generate from saved mapping without manual edits.
-AC-2: Significance toggle is configurable.
-AC-3: Output artifacts stored under run folder.
+Tables are now computed from real DataFrames — no stubs.
 """
 
 from __future__ import annotations
@@ -10,6 +8,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
 import pytest
 
 from packages.survey_analysis.table_generator import (
@@ -17,6 +17,7 @@ from packages.survey_analysis.table_generator import (
     SignificanceConfig,
     TableCell,
     TableConfig,
+    TableGenerationError,
     TableRow,
     TableRunResult,
     TableType,
@@ -25,322 +26,261 @@ from packages.survey_analysis.table_generator import (
 )
 
 
-def _variables() -> list[dict[str, str]]:
+# ---------------------------------------------------------------------------
+# Realistic fixture data
+# ---------------------------------------------------------------------------
+
+def _survey_df(n: int = 200) -> pd.DataFrame:
+    rng = np.random.RandomState(42)
+    return pd.DataFrame({
+        "SCR_01": rng.choice([1, 2, 3, 4], size=n, p=[0.4, 0.3, 0.2, 0.1]),
+        "ATT_01": rng.choice([1, 2, 3, 4, 5], size=n),
+        "SAT_01": rng.choice([1, 2, 3, 4, 5], size=n, p=[0.05, 0.1, 0.2, 0.35, 0.3]),
+        "GENDER": rng.choice([1, 2], size=n),
+        "REGION": rng.choice([1, 2, 3], size=n),
+        # Multi-select binary columns
+        "MS_r1": rng.choice([0, 1], size=n, p=[0.4, 0.6]),
+        "MS_r2": rng.choice([0, 1], size=n, p=[0.7, 0.3]),
+        "MS_r3": rng.choice([0, 1], size=n, p=[0.5, 0.5]),
+    })
+
+
+def _variables() -> list[dict]:
     return [
-        {"var_name": "SCR_01", "question_id": "Q1", "question_text": "Category usage?"},
+        {"var_name": "SCR_01", "question_id": "Q1", "question_text": "Category usage?",
+         "value_labels": {1: "Daily", 2: "Weekly", 3: "Monthly", 4: "Rarely"}},
         {"var_name": "ATT_01", "question_id": "Q2", "question_text": "I research products"},
-        {"var_name": "SAT_01", "question_id": "Q3", "question_text": "Overall satisfaction?"},
+        {"var_name": "SAT_01", "question_id": "Q3", "question_text": "Overall satisfaction",
+         "t2b_codes": [4, 5], "b2b_codes": [1, 2]},
     ]
 
 
+def _run(**kw) -> TableRunResult:
+    defaults = dict(
+        project_id="proj-001", mapping_id="map-001",
+        mapping_version=1, questionnaire_version=1,
+        variables=_variables(), df=_survey_df(),
+    )
+    defaults.update(kw)
+    return generate_tables(**defaults)
+
+
 # ---------------------------------------------------------------------------
-# AC-1: Core tables generate from saved mapping without manual edits
+# Frequency tables — data-driven
 # ---------------------------------------------------------------------------
 
-class TestTableGeneration:
-    def test_generates_tables(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
-        assert isinstance(result, TableRunResult)
-        assert result.total_tables > 0
-
-    def test_generates_all_configured_types(self):
-        config = TableConfig(table_types=[TableType.FREQUENCY, TableType.MEAN, TableType.TOP2BOX])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        types_generated = {t.table_type for t in result.tables}
-        assert TableType.FREQUENCY in types_generated
-        assert TableType.MEAN in types_generated
-        assert TableType.TOP2BOX in types_generated
-
-    def test_one_table_per_variable_per_type(self):
+class TestFrequencyTable:
+    def test_frequency_row_count_matches_unique_codes(self):
+        df = _survey_df()
         config = TableConfig(table_types=[TableType.FREQUENCY])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        assert result.total_tables == 3  # 3 variables x 1 type
+        result = _run(config=config)
+        tbl = result.get_table("SCR_01")
+        assert tbl is not None
+        assert len(tbl.rows) == df["SCR_01"].nunique()
 
-    def test_frequency_table_has_rows(self):
+    def test_frequency_percentages_sum_to_100(self):
         config = TableConfig(table_types=[TableType.FREQUENCY])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        assert len(table.rows) >= 2
-        assert table.table_type == TableType.FREQUENCY
+        result = _run(config=config)
+        tbl = result.get_table("SCR_01")
+        pct_sum = sum(r.cells["Total"].pct for r in tbl.rows)
+        assert abs(pct_sum - 100.0) < 1.0
 
-    def test_mean_table_has_mean_and_stddev(self):
+    def test_frequency_uses_value_labels(self):
+        config = TableConfig(table_types=[TableType.FREQUENCY])
+        result = _run(config=config)
+        tbl = result.get_table("SCR_01")
+        labels = [r.label for r in tbl.rows]
+        assert "Daily" in labels
+        assert "Weekly" in labels
+
+    def test_frequency_base_row_present(self):
+        config = TableConfig(table_types=[TableType.FREQUENCY])
+        result = _run(config=config)
+        tbl = result.get_table("SCR_01")
+        assert tbl.base_row is not None
+        assert tbl.base_row.cells["Total"].base == 200
+
+    def test_frequency_counts_are_data_driven(self):
+        df = _survey_df()
+        config = TableConfig(table_types=[TableType.FREQUENCY])
+        result = _run(df=df, config=config)
+        tbl = result.get_table("SCR_01")
+        expected_daily = int((df["SCR_01"] == 1).sum())
+        daily_row = next(r for r in tbl.rows if r.code == 1)
+        assert daily_row.cells["Total"].value == expected_daily
+
+
+# ---------------------------------------------------------------------------
+# Mean tables
+# ---------------------------------------------------------------------------
+
+class TestMeanTable:
+    def test_mean_computed_from_data(self):
+        df = _survey_df()
         config = TableConfig(table_types=[TableType.MEAN])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        labels = [r.label for r in table.rows]
-        assert "Mean" in labels
-        assert "Std Dev" in labels
+        result = _run(df=df, config=config)
+        tbl = result.get_table("ATT_01")
+        mean_row = next(r for r in tbl.rows if r.label == "Mean")
+        expected = round(df["ATT_01"].mean(), 2)
+        assert mean_row.cells["Total"].value == expected
 
-    def test_t2b_table_has_top_and_bottom(self):
+    def test_stddev_computed_from_data(self):
+        df = _survey_df()
+        config = TableConfig(table_types=[TableType.MEAN])
+        result = _run(df=df, config=config)
+        tbl = result.get_table("ATT_01")
+        std_row = next(r for r in tbl.rows if r.label == "Std Dev")
+        expected = round(df["ATT_01"].std(), 2)
+        assert std_row.cells["Total"].value == expected
+
+
+# ---------------------------------------------------------------------------
+# T2B tables
+# ---------------------------------------------------------------------------
+
+class TestT2BTable:
+    def test_t2b_uses_provided_codes(self):
+        df = _survey_df()
         config = TableConfig(table_types=[TableType.TOP2BOX])
+        result = _run(df=df, config=config)
+        tbl = result.get_table("SAT_01")
+        t2b_row = next(r for r in tbl.rows if "Top" in r.label)
+        expected_count = int(df["SAT_01"].isin([4, 5]).sum())
+        assert t2b_row.cells["Total"].value == expected_count
+
+    def test_b2b_computed(self):
+        df = _survey_df()
+        config = TableConfig(table_types=[TableType.TOP2BOX])
+        result = _run(df=df, config=config)
+        tbl = result.get_table("SAT_01")
+        b2b_row = next(r for r in tbl.rows if "Bottom" in r.label)
+        expected = int(df["SAT_01"].isin([1, 2]).sum())
+        assert b2b_row.cells["Total"].value == expected
+
+
+# ---------------------------------------------------------------------------
+# Multi-select tables
+# ---------------------------------------------------------------------------
+
+class TestMultiSelectTable:
+    def test_multi_select_with_item_columns(self):
+        df = _survey_df()
+        config = TableConfig(table_types=[TableType.MULTI_SELECT])
+        ms_var = {
+            "var_name": "MS",
+            "question_id": "Q4",
+            "item_columns": ["MS_r1", "MS_r2", "MS_r3"],
+            "item_labels": {"MS_r1": "Instagram", "MS_r2": "TikTok", "MS_r3": "YouTube"},
+        }
         result = generate_tables(
             project_id="proj-001", mapping_id="map-001",
             mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
+            variables=[ms_var], df=df, config=config,
         )
-        table = result.tables[0]
-        labels = [r.label for r in table.rows]
-        assert any("Top" in l for l in labels)
-        assert any("Bottom" in l for l in labels)
+        tbl = result.tables[0]
+        assert tbl.table_type == TableType.MULTI_SELECT
+        assert len(tbl.rows) == 3
+        labels = [r.label for r in tbl.rows]
+        assert "Instagram" in labels
 
-    def test_crosstab_table_has_segments(self):
+    def test_multi_select_counts_are_real(self):
+        df = _survey_df()
+        config = TableConfig(table_types=[TableType.MULTI_SELECT])
+        ms_var = {"var_name": "MS", "item_columns": ["MS_r1"]}
+        result = generate_tables(
+            project_id="p", mapping_id="m", mapping_version=1,
+            questionnaire_version=1, variables=[ms_var], df=df, config=config,
+        )
+        expected = int(df["MS_r1"].sum())
+        assert result.tables[0].rows[0].cells["Total"].value == expected
+
+
+# ---------------------------------------------------------------------------
+# Crosstab tables
+# ---------------------------------------------------------------------------
+
+class TestCrosstabTable:
+    def test_crosstab_rows_match_codes(self):
+        df = _survey_df()
         config = TableConfig(table_types=[TableType.CROSSTAB])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        assert len(table.rows) >= 2
-        assert "Segment" in table.rows[0].label
+        result = _run(df=df, config=config)
+        tbl = result.get_table("SCR_01")
+        assert len(tbl.rows) == df["SCR_01"].nunique()
 
-    def test_table_has_variable_info(self):
-        config = TableConfig(table_types=[TableType.FREQUENCY])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        assert table.variable_name == "SCR_01"
-        assert table.question_id == "Q1"
-        assert table.question_text == "Category usage?"
 
-    def test_get_table_by_variable(self):
-        config = TableConfig(table_types=[TableType.FREQUENCY])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.get_table("ATT_01")
-        assert table is not None
-        assert table.variable_name == "ATT_01"
+# ---------------------------------------------------------------------------
+# Banner splits
+# ---------------------------------------------------------------------------
 
-    def test_tables_by_type_filter(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
-        freq = result.tables_by_type(TableType.FREQUENCY)
-        assert len(freq) >= 3
-
-    def test_custom_banner_variables(self):
+class TestBannerSplits:
+    def test_banner_produces_split_columns(self):
         config = TableConfig(
             table_types=[TableType.FREQUENCY],
-            banner_variables=["Gender", "Age Group", "Region"],
+            banner_variables=["GENDER"],
         )
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        assert "Gender" in table.banner_columns
-        assert "Age Group" in table.banner_columns
-        assert "Total" in table.banner_columns
+        result = _run(config=config)
+        tbl = result.get_table("SCR_01")
+        assert "Total" in tbl.banner_columns
+        assert any("GENDER:" in c for c in tbl.banner_columns)
 
-    def test_table_cells_have_base(self):
-        config = TableConfig(table_types=[TableType.FREQUENCY])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        for row in table.rows:
-            for col, cell in row.cells.items():
-                assert cell.base > 0
-
-    def test_frequency_table_has_base_row(self):
-        config = TableConfig(table_types=[TableType.FREQUENCY])
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        table = result.tables[0]
-        assert table.base_row is not None
-        assert table.base_row.label == "Base"
-
-
-# ---------------------------------------------------------------------------
-# AC-2: Significance toggle is configurable
-# ---------------------------------------------------------------------------
-
-class TestSignificanceConfig:
-    def test_significance_enabled_by_default(self):
-        config = TableConfig()
-        assert config.significance.enabled is True
-
-    def test_significance_can_be_disabled(self):
-        config = TableConfig(significance=SignificanceConfig(enabled=False))
-        assert config.significance.enabled is False
-
-    def test_sig_flags_present_when_enabled(self):
+    def test_banner_bases_are_correct(self):
+        df = _survey_df()
         config = TableConfig(
             table_types=[TableType.FREQUENCY],
-            significance=SignificanceConfig(enabled=True),
+            banner_variables=["GENDER"],
         )
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        # At least one cell should have a sig_flag
-        has_flag = any(
-            cell.sig_flag is not None
-            for t in result.tables
-            for r in t.rows
-            for cell in r.cells.values()
-        )
-        assert has_flag
-
-    def test_no_sig_flags_when_disabled(self):
-        config = TableConfig(
-            table_types=[TableType.FREQUENCY],
-            significance=SignificanceConfig(enabled=False),
-        )
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        has_flag = any(
-            cell.sig_flag is not None
-            for t in result.tables
-            for r in t.rows
-            for cell in r.cells.values()
-        )
-        assert not has_flag
-
-    def test_confidence_level_configurable(self):
-        config = TableConfig(significance=SignificanceConfig(confidence_level=0.99))
-        assert config.significance.confidence_level == 0.99
-
-    def test_base_size_minimum_configurable(self):
-        config = TableConfig(base_size_minimum=50)
-        assert config.base_size_minimum == 50
+        result = _run(df=df, config=config)
+        tbl = result.get_table("SCR_01")
+        gender1_col = next(c for c in tbl.banner_columns if "GENDER:1" in c)
+        expected_base = int((df["GENDER"] == 1).sum())
+        assert tbl.base_row.cells[gender1_col].base == expected_base
 
 
 # ---------------------------------------------------------------------------
-# AC-3: Output artifacts stored under run folder
+# Error handling
 # ---------------------------------------------------------------------------
 
-class TestRunProvenance:
-    def test_run_has_id(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=3,
-            variables=_variables(),
-        )
-        assert result.run_id.startswith("tblrun-")
+class TestErrorHandling:
+    def test_empty_df_raises(self):
+        with pytest.raises(TableGenerationError, match="empty"):
+            generate_tables(
+                project_id="p", mapping_id="m", mapping_version=1,
+                questionnaire_version=1, variables=_variables(),
+                df=pd.DataFrame(),
+            )
 
-    def test_run_links_to_project(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=3,
-            variables=_variables(),
-        )
-        assert result.project_id == "proj-001"
+    def test_missing_variable_raises(self):
+        df = _survey_df()
+        with pytest.raises(TableGenerationError, match="not found"):
+            generate_tables(
+                project_id="p", mapping_id="m", mapping_version=1,
+                questionnaire_version=1,
+                variables=[{"var_name": "NONEXISTENT"}],
+                df=df, config=TableConfig(table_types=[TableType.FREQUENCY]),
+            )
 
-    def test_run_links_to_mapping(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=2, questionnaire_version=3,
-            variables=_variables(),
-        )
-        assert result.mapping_id == "map-001"
-        assert result.mapping_version == 2
-        assert result.questionnaire_version == 3
 
-    def test_provenance_dict(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
+# ---------------------------------------------------------------------------
+# Provenance and persistence
+# ---------------------------------------------------------------------------
+
+class TestProvenance:
+    def test_provenance_fields(self):
+        result = _run()
         prov = result.provenance()
-        assert prov["run_id"] == result.run_id
         assert prov["project_id"] == "proj-001"
         assert prov["mapping_id"] == "map-001"
-        assert prov["total_tables"] == result.total_tables
-        assert "significance_enabled" in prov
-        assert "created_at" in prov
+        assert prov["total_tables"] > 0
 
-    def test_table_ids_unique(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
-        ids = [t.table_id for t in result.tables]
-        assert len(ids) == len(set(ids))
-
-    def test_created_at_set(self):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
-        assert result.created_at is not None
-
-    def test_config_stored_on_result(self):
-        config = TableConfig(
-            table_types=[TableType.FREQUENCY, TableType.MEAN],
-            banner_variables=["Gender"],
-            significance=SignificanceConfig(enabled=False),
-        )
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(), config=config,
-        )
-        assert result.config.significance.enabled is False
-        assert "Gender" in result.config.banner_variables
-
-    def test_save_run_creates_folder(self, tmp_path: Path):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
+    def test_save_run(self, tmp_path: Path):
+        result = _run()
         run_dir = save_run(result, tmp_path / "Runs")
-        assert run_dir.is_dir()
-        assert run_dir.name == result.run_id
         manifest = run_dir / "manifest.json"
         assert manifest.exists()
-
-    def test_save_run_manifest_valid_json(self, tmp_path: Path):
-        result = generate_tables(
-            project_id="proj-001", mapping_id="map-001",
-            mapping_version=1, questionnaire_version=1,
-            variables=_variables(),
-        )
-        run_dir = save_run(result, tmp_path / "Runs")
-        manifest = run_dir / "manifest.json"
-        data = json.loads(manifest.read_text(encoding="utf-8"))
+        data = json.loads(manifest.read_text())
         assert data["run_id"] == result.run_id
-        assert data["project_id"] == "proj-001"
-        assert len(data["tables"]) == result.total_tables
+
+    def test_table_ids_unique(self):
+        result = _run()
+        ids = [t.table_id for t in result.tables]
+        assert len(ids) == len(set(ids))

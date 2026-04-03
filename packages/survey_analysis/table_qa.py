@@ -96,9 +96,15 @@ class QAReport(BaseModel):
 # ---------------------------------------------------------------------------
 
 def check_base_size(table: GeneratedTable, minimum: int) -> list[QAFinding]:
-    """Flag cells where base size is below the minimum threshold."""
+    """Flag cells where base size is below the minimum threshold.
+
+    Also checks the base_row if present.
+    """
     findings: list[QAFinding] = []
-    for row in table.rows:
+    all_rows = list(table.rows)
+    if table.base_row:
+        all_rows.append(table.base_row)
+    for row in all_rows:
         for col_name, cell in row.cells.items():
             if cell.base < minimum and cell.base > 0:
                 findings.append(QAFinding(
@@ -115,9 +121,12 @@ def check_base_size(table: GeneratedTable, minimum: int) -> list[QAFinding]:
 
 
 def check_zero_base(table: GeneratedTable) -> list[QAFinding]:
-    """Flag cells with zero base (empty segment)."""
+    """Flag cells with zero base (empty segment). Also checks base_row."""
     findings: list[QAFinding] = []
-    for row in table.rows:
+    all_rows = list(table.rows)
+    if table.base_row:
+        all_rows.append(table.base_row)
+    for row in all_rows:
         for col_name, cell in row.cells.items():
             if cell.base == 0:
                 findings.append(QAFinding(
