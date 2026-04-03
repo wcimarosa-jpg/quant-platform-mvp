@@ -28,7 +28,7 @@ class CoefficientRow(BaseModel):
     coefficient: float
     std_error: float | None = None
     p_value: float | None = None
-    significant: bool = False
+    significant: bool | None = None
 
 
 class RegressionResult(BaseModel):

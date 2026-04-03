@@ -446,5 +446,315 @@
     ],
     "dependencies": ["P08-02"],
     "estimate": "M"
+  },
+  {
+    "id": "P09-01",
+    "title": "Migrate coordinator and app state from SQLite to PostgreSQL",
+    "description": "Move sprint coordination, project metadata, and run state to PostgreSQL for reliable concurrent access across multiple users and services.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "All runtime state currently stored in SQLite is migrated to PostgreSQL with parity checks",
+      "Connection pooling and transaction boundaries are implemented for API and worker services",
+      "Load test confirms concurrent read/write behavior for at least 7 active users"
+    ],
+    "dependencies": ["P08-03"],
+    "estimate": "L"
+  },
+  {
+    "id": "P09-02",
+    "title": "Implement authentication, RBAC, and project-level authorization",
+    "description": "Add secure login and role-based access controls with strict project-level permissions for internal team collaboration.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Roles include at minimum admin, researcher, and reviewer",
+      "Every project artifact endpoint enforces project membership and role checks",
+      "Audit logs capture actor, action, project, and artifact references for security-sensitive operations",
+      "Admin-only users can access cost reporting without requiring analysis execution permissions"
+    ],
+    "dependencies": ["P09-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P09-03",
+    "title": "Add queue-backed asynchronous execution for heavy jobs",
+    "description": "Run table generation and advanced analyses through a job queue and worker pool to prevent API blocking and improve reliability under concurrency.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Long-running analyses execute in workers with retry and timeout policies",
+      "Job states are persisted and visible in UI as queued/running/failed/completed",
+      "Dead-letter flow exists for repeated failures with actionable diagnostics"
+    ],
+    "dependencies": ["P09-01", "P07-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P09-04",
+    "title": "Implement optimistic locking and conflict resolution for shared edits",
+    "description": "Prevent silent overwrites when multiple users edit questionnaire, mapping, and analysis config artifacts simultaneously.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Version tokens are required on update operations for editable artifacts",
+      "Conflicts return explicit responses with merge/retry guidance in UI",
+      "Automated tests cover simultaneous edit collisions for questionnaire and mapping entities"
+    ],
+    "dependencies": ["P09-01", "P03-04", "P05-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "P09-05",
+    "title": "Harden project data isolation and storage boundaries",
+    "description": "Enforce strict per-project storage boundaries for uploaded data, outputs, and logs to protect client confidentiality across concurrent teams.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Service-layer checks reject cross-project path and object access attempts",
+      "All stored artifacts are tagged with project ownership metadata",
+      "Security tests include traversal and cross-project access attack scenarios"
+    ],
+    "dependencies": ["P09-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "P09-06",
+    "title": "Add idempotency keys and duplicate-run protection",
+    "description": "Prevent duplicate analysis, export, and job submissions caused by retries, refreshes, or race conditions.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Create/run/export endpoints accept idempotency keys and return stable results for repeated requests",
+      "Duplicate job creation is blocked at database and service levels",
+      "Tests validate idempotent behavior under concurrent request bursts"
+    ],
+    "dependencies": ["P09-01", "P09-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P09-07",
+    "title": "Implement migrations, backup/restore, and disaster recovery checks",
+    "description": "Standardize schema migrations and operational resilience workflows for safe releases and recoverability.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Alembic (or equivalent) migration workflow is required in CI before deploy",
+      "Automated backup and restore procedures are documented and tested",
+      "Recovery drill demonstrates successful restore of project and run metadata"
+    ],
+    "dependencies": ["P09-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P09-08",
+    "title": "Add observability, SLO dashboards, and concurrency regression suite",
+    "description": "Instrument APIs/workers with structured telemetry and establish regression tests for multi-user reliability and maintainability.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Structured logs include request_id, project_id, user_id, run_id, and correlation IDs",
+      "Dashboards track latency, job success rate, queue depth, and error rate against defined SLOs",
+      "Automated concurrency suite simulates 5-7 users across separate projects and passes in CI"
+    ],
+    "dependencies": ["P09-03", "P09-04", "P09-06", "P09-07"],
+    "estimate": "L"
+  },
+  {
+    "id": "P10-01",
+    "title": "Establish architecture decision record discipline",
+    "description": "Create and enforce an ADR process so key technical decisions are documented, reviewed, and versioned over time.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "ADR template and contribution rules are published in docs",
+      "CI check ensures new major architecture changes include ADR references",
+      "At least initial ADRs exist for storage, analysis runtime, auth, and assistant orchestration"
+    ],
+    "dependencies": ["P09-08"],
+    "estimate": "S"
+  },
+  {
+    "id": "P10-02",
+    "title": "Define plugin contract for analysis methodologies",
+    "description": "Standardize interfaces for registering and executing methodology modules so new analyses can be added safely without core rewrites.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Common analysis plugin interface is documented and type-checked",
+      "Existing methodologies implement or adapt to the interface contract",
+      "New methodology smoke test can be added with minimal boilerplate"
+    ],
+    "dependencies": ["P07-04", "P09-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P10-03",
+    "title": "Create golden datasets and expected outputs per methodology",
+    "description": "Add fixed test fixtures and expected analysis outputs to detect regressions across all supported quantitative methods.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Golden fixtures exist for A&U, Segmentation, Drivers, Concept, Creative, Brand Tracker, MaxDiff, and TURF",
+      "Regression tests compare current output against expected tolerances",
+      "Fixture update workflow is documented and controlled"
+    ],
+    "dependencies": ["P10-02"],
+    "estimate": "L"
+  },
+  {
+    "id": "P10-04",
+    "title": "Add CI quality gates and repository standards",
+    "description": "Enforce tests, linting, type checks, migration checks, and coverage thresholds on every pull request.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "PRs require passing unit/integration tests, lint, and type checks",
+      "Schema/migration checks run automatically in CI",
+      "Branch protections require all checks before merge"
+    ],
+    "dependencies": ["P10-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P10-05",
+    "title": "Version APIs and enforce schema compatibility testing",
+    "description": "Introduce explicit API/schema versioning and compatibility tests to prevent accidental breaking changes across services and clients.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Versioning policy is documented for API and shared contracts",
+      "Compatibility tests validate backward support for supported versions",
+      "Breaking changes require explicit migration notes and version bump"
+    ],
+    "dependencies": ["P10-04"],
+    "estimate": "M"
+  },
+  {
+    "id": "P10-06",
+    "title": "Publish runbooks and onboarding playbooks",
+    "description": "Create practical documentation for setup, local development, debugging, deployment, rollback, and incident handling.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "New engineer can set up and run core workflows using docs only",
+      "Operational runbooks cover common failure scenarios and recovery steps",
+      "Docs include ownership and escalation paths"
+    ],
+    "dependencies": ["P10-01", "P10-04"],
+    "estimate": "M"
+  },
+  {
+    "id": "P10-07",
+    "title": "Implement dependency and upgrade management policy",
+    "description": "Add scheduled dependency maintenance, vulnerability checks, and controlled upgrade workflows to reduce long-term tech debt.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Dependency update cadence is defined and automated where practical",
+      "Security scanning runs in CI with actionable reporting",
+      "Upgrade checklist includes compatibility testing and rollback notes"
+    ],
+    "dependencies": ["P10-04"],
+    "estimate": "S"
+  },
+  {
+    "id": "P10-08",
+    "title": "Standardize release process and rollback strategy",
+    "description": "Define repeatable release, versioning, and rollback procedures for safe production changes and incident response.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Release checklist is documented and used for each deploy",
+      "Semantic versioning and changelog process are enforced",
+      "Rollback procedure is validated in a drill and documented with timings"
+    ],
+    "dependencies": ["P10-05", "P10-06", "P10-07"],
+    "estimate": "M"
+  },
+  {
+    "id": "P11-01",
+    "title": "Build operations dashboard for API health, job health, and cost",
+    "description": "Create a unified dashboard covering API reliability, background job performance, LLM/token spend, and infrastructure cost trends by project.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Dashboard includes API uptime, error rate, latency percentiles, and dependency health status",
+      "Dashboard includes queue depth, job success/failure/retry rates, and stuck job indicators",
+      "Dashboard includes token usage and cost by workflow stage, project, and timeframe",
+      "Dashboard includes total portfolio cost and rolling average cost metrics (per project, per run, per deliverable)"
+    ],
+    "dependencies": ["P09-08"],
+    "estimate": "M"
+  },
+  {
+    "id": "P11-02",
+    "title": "Define SLOs and alerting for reliability and spend anomalies",
+    "description": "Set explicit service-level objectives and alert thresholds for latency, error rate, queue delays, failed jobs, and unexpected cost spikes.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "SLOs are documented for API availability, latency, and analysis run completion time",
+      "Alerts route to owners for threshold breaches and sustained degradations",
+      "Cost anomaly alerts are configured for sudden increases in token or compute spend"
+    ],
+    "dependencies": ["P11-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P11-03",
+    "title": "Add data quality and output integrity monitoring",
+    "description": "Track mapping quality, validation failures, QA findings, and output drift to detect silent regressions in research quality.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Monitoring reports mapping confidence distribution and low-confidence concentration by project",
+      "Validation and QA findings are trended by severity and methodology",
+      "Output drift checks compare current runs against golden baselines with alerting on major deviation"
+    ],
+    "dependencies": ["P10-03", "P11-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P11-04",
+    "title": "Implement capacity and quota controls",
+    "description": "Protect reliability under concurrent usage with per-project quotas, concurrency caps, and graceful degradation controls.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Per-project and per-user limits exist for concurrent runs, upload volume, and expensive analysis requests",
+      "System enforces backpressure and clear user messaging when limits are reached",
+      "Capacity reports show saturation risk and planning signals for scaling"
+    ],
+    "dependencies": ["P09-03", "P11-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "P11-05",
+    "title": "Implement admin cost reporting by project and portfolio",
+    "description": "Deliver cost reporting views and exports for admin stakeholders who need financial oversight without analysis execution access.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Admin reporting includes project-level API/token/compute/storage cost breakdowns with date filters",
+      "Admin reporting includes total cost across all projects and month-to-date/quarter-to-date summaries",
+      "Report views and exports are accessible to admin role and restricted from non-authorized users"
+    ],
+    "dependencies": ["P09-02", "P11-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P11-06",
+    "title": "Add benchmarked average cost metrics for proposals and RFP responses",
+    "description": "Create reusable benchmark metrics so commercial teams can estimate effort and expected API cost for new scopes.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "System computes average cost per project, per methodology, and per major workflow stage",
+      "Benchmark table supports configurable lookback windows and excludes flagged outlier projects",
+      "Exportable benchmark summary is available for proposal/RFP packaging with source period and sample size metadata"
+    ],
+    "dependencies": ["P11-05", "P10-03"],
+    "estimate": "M"
   }
 ]
