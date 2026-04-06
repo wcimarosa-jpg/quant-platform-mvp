@@ -1,15 +1,15 @@
 :root {
-  --bg: #f3efe7;
-  --panel: #fffdf7;
-  --ink: #1b1f23;
-  --muted: #5f6b76;
-  --line: #d9d2c5;
-  --brand: #0f4c5c;
-  --accent: #f4a261;
-  --good: #2a9d8f;
-  --warn: #e76f51;
-  --radius: 14px;
-  --shadow: 0 10px 24px rgba(15, 76, 92, 0.08);
+  --bg: #f6f6f4;
+  --panel: #ffffff;
+  --ink: #1a1a1a;
+  --muted: #5b5b5b;
+  --line: #dedede;
+  --brand: #111111;
+  --accent: #f85a2a;
+  --good: #208a4f;
+  --warn: #c33a1d;
+  --radius: 12px;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
 * {
@@ -18,11 +18,8 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", "IBM Plex Sans", "Helvetica Neue", sans-serif;
-  background:
-    radial-gradient(circle at 20% 10%, rgba(244, 162, 97, 0.18), transparent 34%),
-    radial-gradient(circle at 90% 0%, rgba(15, 76, 92, 0.2), transparent 33%),
-    var(--bg);
+  font-family: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
   color: var(--ink);
 }
 
@@ -48,8 +45,10 @@ body {
 }
 
 .brand {
-  font-weight: 700;
-  color: var(--brand);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.2px;
+  color: var(--accent);
   margin-bottom: 12px;
 }
 
@@ -64,7 +63,8 @@ body {
 
 .left-nav a.active,
 .left-nav a:hover {
-  background: #e6f0f2;
+  background: #fff1ec;
+  color: #231f20;
 }
 
 .main {
@@ -87,9 +87,9 @@ body {
 }
 
 .chip {
-  background: #edf4f5;
-  color: #12414d;
-  border: 1px solid #cce0e4;
+  background: #f3f3f3;
+  color: #2b2b2b;
+  border: 1px solid #dddddd;
   border-radius: 999px;
   padding: 4px 10px;
   font-size: 12px;
@@ -127,7 +127,7 @@ body {
 
 button,
 .btn {
-  background: var(--brand);
+  background: var(--accent);
   color: #fff;
   border: none;
   padding: 8px 12px;
@@ -138,8 +138,8 @@ button,
 }
 
 .btn.secondary {
-  background: #ddebef;
-  color: #103845;
+  background: #ffe7de;
+  color: #7a2d16;
 }
 
 .badge {
@@ -149,6 +149,7 @@ button,
 }
 
 .ok { background: #e5f5f3; color: #1e6e66; }
+.ok { background: #e9f7ef; color: #1d6a3f; }
 .warn { background: #fdebe7; color: #9f3f2c; }
 
 table {
@@ -175,7 +176,7 @@ th, td {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 10px;
-  background: #fffcf5;
+  background: #fffaf8;
   min-height: 180px;
 }
 
@@ -186,8 +187,8 @@ th, td {
 }
 
 .ai-actions button {
-  background: #edf4f5;
-  color: #0e3b47;
+  background: #fff1ec;
+  color: #7a2d16;
   font-size: 12px;
 }
 

@@ -331,6 +331,9 @@ def _gen_maxdiff_exercise(ctx: AssistantContext, order: int) -> Section:
 
 def _gen_placeholder(section_type: str, label: str, ctx: AssistantContext, order: int) -> Section:
     """Generate a placeholder section for types without a dedicated generator."""
+    # Use section_type hash to guarantee unique IDs across similar-prefix sections
+    import hashlib
+    prefix = hashlib.md5(section_type.encode()).hexdigest()[:4].upper()
     return Section(
         section_id=section_type,
         section_type=section_type,
@@ -338,10 +341,10 @@ def _gen_placeholder(section_type: str, label: str, ctx: AssistantContext, order
         order=order,
         questions=[
             Question(
-                question_id=f"{section_type.upper()[:3]}_01",
+                question_id=f"{prefix}_01",
                 question_text=f"[Placeholder for {label}]",
                 question_type=QuestionType.OPEN_ENDED,
-                var_name=f"{section_type.upper()[:3]}_01",
+                var_name=f"{prefix}_01",
             ),
         ],
         metadata={"placeholder": True},
