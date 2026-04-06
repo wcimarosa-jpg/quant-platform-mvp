@@ -855,5 +855,61 @@
     ],
     "dependencies": ["P11-05", "P10-03"],
     "estimate": "M"
+  },
+  {
+    "id": "P12-01",
+    "title": "Execute quality hardening pass from Codex review history",
+    "description": "Consolidate and resolve accumulated MINOR/NIT findings from MCP review history to reduce technical friction before broader rollout.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "All open MINOR/NIT findings from MCP review history are triaged into fix/no-fix decisions",
+      "Approved fixes are implemented and linked back to originating review IDs",
+      "Regression tests pass after hardening and unresolved items are explicitly documented"
+    ],
+    "dependencies": ["P08-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P12-02",
+    "title": "Implement frontend application for end-to-end MVP workflows",
+    "description": "Replace stub web page with production-ready React frontend covering project setup, brief review, survey editing, mapping, analysis, and reporting journeys.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Frontend supports the full guided MVP path from project creation through strategic summary export",
+      "Persistent AI assistant panel and inline AI actions are implemented across core screens",
+      "UI state and workflows are wired to backend APIs with robust loading/error/retry handling"
+    ],
+    "dependencies": ["P08-07", "P12-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P12-03",
+    "title": "Replace in-memory stores with durable persistence layer",
+    "description": "Migrate runtime stores (e.g., RunStore, MappingStore, DraftStore and related state containers) from in-memory implementations to SQLite/PostgreSQL-backed persistence.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Run, mapping, draft, and related workflow states survive API restarts",
+      "Persistence layer supports concurrent access patterns for at least 5 active workers",
+      "Migration and compatibility tests verify no behavioral regressions across store-backed flows"
+    ],
+    "dependencies": ["P09-01"],
+    "estimate": "L"
+  },
+  {
+    "id": "P12-04",
+    "title": "Integrate production LLM services for brief and narrative workflows",
+    "description": "Replace deterministic assistant outputs with Claude-powered generation for brief analysis and strategic narrative creation, with guardrails and fallback behavior.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Brief analyzer uses live LLM integration with source-grounded outputs and citation references",
+      "Strategic narrative generator uses live LLM integration with evidence-link enforcement",
+      "Fallback behavior is defined for LLM errors/timeouts and all invocations are cost-tracked"
+    ],
+    "dependencies": ["P02-02", "P08-06", "P11-01"],
+    "estimate": "L"
   }
 ]
