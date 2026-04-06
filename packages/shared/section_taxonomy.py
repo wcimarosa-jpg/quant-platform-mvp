@@ -557,7 +557,7 @@ def get_matrix(methodology: Methodology) -> MethodologyMatrix:
     return METHODOLOGY_MATRIX[methodology]
 
 
-def get_all_methodologies() -> list[dict[str, str]]:
+def get_all_methodologies() -> list[dict[str, Any]]:
     """Return a summary list suitable for a methodology selector UI."""
     return [
         {

@@ -137,6 +137,7 @@ class TestConsumability:
         for item in ui_data:
             assert "section_type" in item
             assert "label" in item
+            assert "description" in item
             assert "required" in item
             assert "typical_questions" in item
 

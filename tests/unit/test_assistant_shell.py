@@ -332,4 +332,4 @@ class TestAssistantAPI:
             "/api/v1/assistant/panel-state?screen=fake_screen",
             json=ctx.model_dump(mode="json"),
         )
-        assert resp.status_code == 400
+        assert resp.status_code == 422  # FastAPI validates Screen enum

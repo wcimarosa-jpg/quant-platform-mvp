@@ -248,13 +248,14 @@ def run_table_qa(result: TableRunResult) -> QAReport:
 
     minimum_base = result.config.base_size_minimum
 
+    # Separate check_base_size (needs extra param) from standard checks
+    _STANDARD_CHECKS = [c for c in ALL_CHECKS if c is not check_base_size]
+
     for table in result.tables:
-        # base_size check needs the minimum parameter
         report.findings.extend(check_base_size(table, minimum_base))
         report.checks_run += 1
 
-        # All other checks take just the table
-        for check_fn in ALL_CHECKS[1:]:  # skip base_size (already run)
+        for check_fn in _STANDARD_CHECKS:
             report.findings.extend(check_fn(table))
             report.checks_run += 1
 

@@ -149,7 +149,7 @@ def validate_for_stage(ctx: AssistantContext) -> None:
         value = getattr(ctx, field_name, None)
         if value is None:
             missing.append(field_name)
-        elif isinstance(value, list) and len(value) == 0:
+        elif isinstance(value, (list, dict, set)) and len(value) == 0:
             missing.append(field_name)
 
     # Cross-field version consistency for analysis/reporting stages

@@ -107,8 +107,8 @@ def build_context_chips(ctx: AssistantContext) -> list[ContextChip]:
 def compute_context_hash(ctx: AssistantContext) -> str:
     """Compute a deterministic SHA-256 hash of the assistant context.
 
-    Used to track which context was active during each invocation,
-    enabling reproducibility and audit.
+    Returns a 16 hex-character (64-bit) prefix. Sufficient for audit
+    and logging uniqueness but not cryptographic collision resistance.
     """
     payload = ctx.model_dump(mode="json")
     canonical = json.dumps(payload, sort_keys=True, default=str)
@@ -186,11 +186,12 @@ class InvocationLog:
                 return
         raise ValueError(f"Invocation {invocation_id!r} not found.")
 
-    def fail(self, invocation_id: str, error: str) -> None:
+    def fail(self, invocation_id: str, error: str, duration_ms: int | None = None) -> None:
         """Mark an invocation as failed."""
         for r in reversed(self._records):
             if r.invocation_id == invocation_id:
                 r.output_summary = f"ERROR: {error}"
+                r.duration_ms = duration_ms
                 r.status = "failed"
                 return
         raise ValueError(f"Invocation {invocation_id!r} not found.")

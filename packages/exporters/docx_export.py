@@ -70,7 +70,7 @@ def _add_title_page(doc: Document, qre: Questionnaire) -> None:
     """Add a title page with questionnaire metadata."""
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(f"Research Questionnaire")
+    run = p.add_run("Research Questionnaire")
     run.bold = True
     run.font.size = Pt(24)
 

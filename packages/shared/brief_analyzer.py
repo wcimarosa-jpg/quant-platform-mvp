@@ -83,10 +83,7 @@ _DEFAULT_ASSUMPTIONS: dict[str, dict[str, str]] = {
         "proposal": "United States, nationally representative",
         "rationale": "No geography specified; defaulting to US national scope.",
     },
-    "constraints": {
-        "proposal": "LOI target: 15-20 minutes; no specific budget constraints noted",
-        "rationale": "No constraints specified; using standard survey parameters.",
-    },
+    # Note: "constraints" omitted — not in BriefFields.missing_fields() required list
 }
 
 
@@ -143,7 +140,8 @@ def _build_source_reference(fields: BriefFields, missing_field: str) -> str:
     """Build a source reference string from available brief content."""
     present = []
     if fields.objectives:
-        present.append(f"objectives: '{fields.objectives[:60]}...'")
+        trunc = fields.objectives[:60] + ('...' if len(fields.objectives) > 60 else '')
+        present.append(f"objectives: '{trunc}'")
     if fields.audience:
         present.append(f"audience: '{fields.audience[:60]}'")
     if fields.category:

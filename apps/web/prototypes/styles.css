@@ -19,6 +19,9 @@
 body {
   margin: 0;
   font-family: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  letter-spacing: 0.1px;
   background: var(--bg);
   color: var(--ink);
 }
@@ -46,8 +49,9 @@ body {
 
 .brand {
   font-weight: 800;
-  font-size: 22px;
-  letter-spacing: 0.2px;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.6px;
   color: var(--accent);
   margin-bottom: 12px;
 }
@@ -56,9 +60,11 @@ body {
   display: block;
   text-decoration: none;
   color: var(--ink);
-  padding: 8px 10px;
+  padding: 9px 10px;
   border-radius: 10px;
   margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .left-nav a.active,
@@ -80,6 +86,22 @@ body {
   margin-bottom: 14px;
 }
 
+h1, h2, h3, h4 {
+  font-family: "Aptos Display", "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: #111;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+h1 { font-size: 38px; font-weight: 800; line-height: 1.06; }
+h2 { font-size: 34px; font-weight: 800; line-height: 1.08; }
+h3 { font-size: 24px; font-weight: 700; line-height: 1.15; }
+h4 { font-size: 19px; font-weight: 700; line-height: 1.2; }
+
+p, li, td, th, label, .subtle, .chip {
+  font-size: 15px;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -92,7 +114,8 @@ body {
   border: 1px solid #dddddd;
   border-radius: 999px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .grid {
@@ -115,14 +138,17 @@ body {
 .span-3 { grid-column: span 3; }
 
 .kpi {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.4px;
   color: var(--brand);
 }
 
 .subtle {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 1.35;
 }
 
 button,
@@ -135,6 +161,9 @@ button,
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1px;
 }
 
 .btn.secondary {
@@ -145,7 +174,8 @@ button,
 .badge {
   border-radius: 999px;
   padding: 3px 8px;
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .ok { background: #e5f5f3; color: #1e6e66; }
@@ -155,13 +185,17 @@ button,
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 th, td {
   text-align: left;
   border-bottom: 1px solid #eee7d9;
-  padding: 8px 6px;
+  padding: 9px 6px;
+}
+
+th {
+  font-weight: 700;
 }
 
 .assistant {
@@ -178,6 +212,7 @@ th, td {
   padding: 10px;
   background: #fffaf8;
   min-height: 180px;
+  line-height: 1.4;
 }
 
 .ai-actions {
@@ -189,7 +224,8 @@ th, td {
 .ai-actions button {
   background: #fff1ec;
   color: #7a2d16;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .checkpoint {

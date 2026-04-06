@@ -152,7 +152,7 @@ def run_preflight(
             label="Methodology",
             status=CheckStatus.FAIL,
             message="No methodology selected. Choose a methodology before generating.",
-            assistant_prompt="What type of study is this? (e.g., Segmentation, A&U, Concept Test, Drivers, MaxDiff, Brand Tracker, TURF, Pricing)",
+            assistant_prompt="What type of study is this? (e.g., Segmentation, A&U, Concept Test, Drivers, MaxDiff, Brand Tracker, TURF)",
         ))
 
     # Brief content quality check

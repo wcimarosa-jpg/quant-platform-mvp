@@ -314,3 +314,15 @@ class TestVersionConsistency:
             methodology=Methodology.SEGMENTATION,
         )
         validate_for_stage(ctx)  # no error even without refs
+
+
+class TestSerializationRoundTrip:
+    def test_model_dump_and_validate(self):
+        """#1: Ensure context survives JSON serialization round-trip."""
+        ctx = _full_context(WorkflowStage.ANALYSIS)
+        dumped = ctx.model_dump(mode="json")
+        restored = AssistantContext.model_validate(dumped)
+        assert restored.project_id == ctx.project_id
+        assert restored.methodology == ctx.methodology
+        assert restored.stage == ctx.stage
+        assert restored.questionnaire_ref.version == ctx.questionnaire_ref.version

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import os
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
@@ -130,7 +131,8 @@ def detect_format(filename: str) -> DataFormat:
 
 
 def compute_file_hash(content: bytes) -> str:
-    return f"sha256:{hashlib.sha256(content).hexdigest()[:16]}"
+    """SHA-256 hash with 32 hex-char (128-bit) prefix for provenance tracking."""
+    return f"sha256:{hashlib.sha256(content).hexdigest()[:32]}"
 
 
 def read_dataframe(content: bytes, fmt: DataFormat) -> pd.DataFrame:
@@ -181,7 +183,6 @@ def profile_data(content: bytes, filename: str) -> tuple[FileMetadata, DataProfi
     if len(content) > MAX_UPLOAD_BYTES:
         raise DataUploadError(f"File too large. Maximum {MAX_UPLOAD_BYTES // (1024*1024)} MB.")
 
-    import os
     safe_filename = os.path.basename(filename)
     fmt = detect_format(safe_filename)
     file_hash = compute_file_hash(content)
