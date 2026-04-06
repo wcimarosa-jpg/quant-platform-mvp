@@ -911,5 +911,47 @@
     ],
     "dependencies": ["P02-02", "P08-06", "P11-01"],
     "estimate": "L"
+  },
+  {
+    "id": "P12-05",
+    "title": "Adopt HTML prototype pack as frontend baseline specification",
+    "description": "Use the generated HTML click-through screens in apps/web/prototypes as the canonical UX starting point for MVP implementation.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Prototype pack (00-07) is linked in product/engineering docs as the implementation baseline",
+      "Each prototype screen is mapped to target frontend route(s), data contracts, and owning sprint item",
+      "Known deltas between prototype and planned production behavior are tracked in a gap log"
+    ],
+    "dependencies": ["P12-02"],
+    "estimate": "S"
+  },
+  {
+    "id": "P12-06",
+    "title": "Convert prototype screens into React routes and shared UI components",
+    "description": "Implement React views and reusable components using the HTML prototype visual/interaction patterns for nav shell, assistant panel, stage screens, and checkpoints.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "React routes exist for the core prototype flow: home, project setup, brief review, survey builder, mapping, analysis, reporting",
+      "Shared components are created for assistant panel, context chips, section navigator, checkpoint blocks, and feedback drawer",
+      "Visual QA confirms implementation is materially consistent with prototype styles and layout behavior on desktop/mobile"
+    ],
+    "dependencies": ["P12-05", "P08-07"],
+    "estimate": "L"
+  },
+  {
+    "id": "P12-07",
+    "title": "Run prototype-to-product review loop and sign-off checkpoints",
+    "description": "Establish a structured review process where stakeholders validate implemented screens against prototype intent before advancing sprints.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Each implemented screen has a sign-off checklist tied to the corresponding prototype file",
+      "Feedback capture workflow logs decisions, required changes, and owner assignments",
+      "No screen exits MVP build phase without documented UX sign-off or approved exception"
+    ],
+    "dependencies": ["P12-06"],
+    "estimate": "M"
   }
 ]

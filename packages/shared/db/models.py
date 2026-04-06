@@ -151,3 +151,59 @@ class EventLogRow(Base):
     __table_args__ = (
         Index("ix_event_project_type", "project_id", "event_type"),
     )
+
+
+# ---------------------------------------------------------------------------
+# Auth: Users, Roles, Project Membership
+# ---------------------------------------------------------------------------
+
+class UserRow(Base):
+    __tablename__ = "users"
+
+    id = Column(String(64), primary_key=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    display_name = Column(String(255), nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    role = Column(String(20), nullable=False, default="researcher")  # admin, researcher, reviewer
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+    updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
+
+    memberships = relationship("ProjectMembershipRow", back_populates="user", cascade="all, delete-orphan")
+
+
+class ProjectMembershipRow(Base):
+    __tablename__ = "project_memberships"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(64), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    project_id = Column(String(64), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
+    role = Column(String(20), nullable=False, default="researcher")  # project-level role override
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    user = relationship("UserRow", back_populates="memberships")
+    project = relationship("ProjectRow")
+
+    __table_args__ = (
+        Index("ix_membership_user_project", "user_id", "project_id", unique=True),
+    )
+
+
+class AuditLogRow(Base):
+    """Security-sensitive audit trail — separate from EventLogRow."""
+    __tablename__ = "audit_log"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    actor_id = Column(String(64), index=True)       # user ID
+    actor_email = Column(String(255))
+    action = Column(String(100), nullable=False)     # login, create_project, delete_project, etc.
+    project_id = Column(String(64), index=True)
+    artifact_type = Column(String(50))               # questionnaire, mapping, run, etc.
+    artifact_id = Column(String(64))
+    detail = Column(Text)
+    ip_address = Column(String(45))
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+    __table_args__ = (
+        Index("ix_audit_actor_action", "actor_id", "action"),
+    )
