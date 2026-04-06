@@ -122,6 +122,7 @@ class AnalysisRunRow(Base):
     project_id = Column(String(64), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False)
     analysis_type = Column(String(50), nullable=False)
     status = Column(String(20), nullable=False, default="queued")
+    idempotency_key = Column(String(255), unique=True, nullable=True, index=True)
     config_json = Column(JSON)
     versions_json = Column(JSON)
     result_summary_json = Column(JSON)

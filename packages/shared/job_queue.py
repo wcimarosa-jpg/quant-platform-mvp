@@ -22,6 +22,7 @@ from typing import Any, Callable
 
 from pydantic import BaseModel, Field
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text, JSON, Index
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .db.models import Base
@@ -40,6 +41,7 @@ class JobRow(Base):
     job_type = Column(String(100), nullable=False)
     project_id = Column(String(64), index=True)
     status = Column(String(20), nullable=False, default="queued")
+    idempotency_key = Column(String(255), unique=True, nullable=True, index=True)
     payload_json = Column(JSON)
     result_json = Column(JSON)
     error_message = Column(Text)
@@ -105,6 +107,18 @@ def _job_info(row: JobRow) -> JobInfo:
 # Queue operations
 # ---------------------------------------------------------------------------
 
+class DuplicateJobError(Exception):
+    """Raised when a job with the same idempotency key already exists."""
+
+    def __init__(self, job_id: str, status: str) -> None:
+        self.job_id = job_id
+        self.status = status
+        super().__init__(
+            f"Job already exists with idempotency_key (job_id={job_id!r}, "
+            f"status={status!r})."
+        )
+
+
 def enqueue_job(
     db: Session,
     job_type: str,
@@ -112,20 +126,52 @@ def enqueue_job(
     project_id: str | None = None,
     max_attempts: int = 3,
     timeout_seconds: int = 300,
+    idempotency_key: str | None = None,
 ) -> JobRow:
-    """Create a new job in QUEUED status."""
+    """Create a new job in QUEUED status.
+
+    If idempotency_key is provided and a job with that key already exists,
+    raises DuplicateJobError. Handles TOCTOU races via the unique constraint.
+    """
+    if idempotency_key:
+        existing = (
+            db.query(JobRow)
+            .filter(JobRow.idempotency_key == idempotency_key)
+            .first()
+        )
+        if existing:
+            raise DuplicateJobError(existing.id, existing.status)
+
     job = JobRow(
         id=f"job-{uuid.uuid4().hex[:12]}",
         job_type=job_type,
         project_id=project_id,
         status=JobStatus.QUEUED.value,
+        idempotency_key=idempotency_key,
         payload_json=payload,
         max_attempts=max_attempts,
         timeout_seconds=timeout_seconds,
     )
     db.add(job)
-    db.flush()
+    try:
+        db.flush()
+    except IntegrityError:
+        db.rollback()
+        if idempotency_key:
+            existing = (
+                db.query(JobRow)
+                .filter(JobRow.idempotency_key == idempotency_key)
+                .first()
+            )
+            if existing:
+                raise DuplicateJobError(existing.id, existing.status)
+        raise  # re-raise if it was a different constraint
     return job
+
+
+def get_job_by_idempotency_key(db: Session, idempotency_key: str) -> JobRow | None:
+    """Look up a job by its idempotency key."""
+    return db.query(JobRow).filter(JobRow.idempotency_key == idempotency_key).first()
 
 
 def claim_next_job(db: Session, job_type: str | None = None) -> JobRow | None:
@@ -197,10 +243,10 @@ def fail_job(
     if job.attempt >= job.max_attempts:
         job.status = JobStatus.DEAD_LETTER.value
         job.dead_letter = True
-        logger.warning(f"Job {job_id} moved to dead letter after {job.attempt} attempts: {error_message}")
+        logger.warning("Job %s moved to dead letter after %d attempts: %s", job_id, job.attempt, error_message)
     else:
         job.status = JobStatus.QUEUED.value  # re-queue for retry
-        logger.info(f"Job {job_id} failed (attempt {job.attempt}/{job.max_attempts}), re-queued: {error_message}")
+        logger.info("Job %s failed (attempt %d/%d), re-queued: %s", job_id, job.attempt, job.max_attempts, error_message)
     db.flush()
     return job
 
@@ -306,7 +352,7 @@ def run_worker_loop(
             else:
                 time.sleep(poll_interval)
         except Exception as exc:
-            logger.error(f"Worker error: {exc}")
+            logger.error("Worker error: %s", exc)
             db.rollback()
         finally:
             db.close()
