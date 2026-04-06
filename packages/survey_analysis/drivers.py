@@ -16,7 +16,9 @@ from sklearn.linear_model import Ridge
 from sklearn.preprocessing import StandardScaler
 from scipy import stats
 
-from .run_orchestrator import AnalysisError, AnalysisRun, register_analysis
+from .run_orchestrator import AnalysisError, AnalysisRun
+from .plugin_contract import register_plugin
+from .result_schemas import DriversResultSummary
 
 
 # ---------------------------------------------------------------------------
@@ -152,7 +154,15 @@ def run_weighted_effects(
 # Registered analysis function
 # ---------------------------------------------------------------------------
 
-@register_analysis("drivers")
+@register_plugin(
+    analysis_type="drivers",
+    version="1.0.0",
+    description="Ridge regression, Pearson correlations, weighted-effects analysis",
+    required_kwargs=["df", "iv_cols", "dv_cols"],
+    optional_kwargs=["segment_col", "alpha"],
+    result_schema=DriversResultSummary,
+    tags=["drivers", "regression", "correlation"],
+)
 def analysis_drivers(run: AnalysisRun, **kwargs: Any) -> dict[str, Any]:
     """Full drivers suite: ridge + Pearson + weighted-effects.
 

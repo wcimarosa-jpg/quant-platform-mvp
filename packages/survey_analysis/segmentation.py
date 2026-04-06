@@ -18,7 +18,9 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.preprocessing import StandardScaler
 
-from .run_orchestrator import AnalysisError, AnalysisRun, register_composite
+from .run_orchestrator import AnalysisError, AnalysisRun
+from .plugin_contract import register_composite_plugin
+from .result_schemas import SegmentationResultSummary
 
 
 # ---------------------------------------------------------------------------
@@ -297,4 +299,13 @@ def _step_kmeans(run: AnalysisRun, previous_results: dict | None = None, **kwarg
 
 
 # Register composite: VarClus → KMeans
-register_composite("segmentation", [_step_varclus, _step_kmeans])
+register_composite_plugin(
+    analysis_type="segmentation",
+    steps=[_step_varclus, _step_kmeans],
+    version="1.0.0",
+    description="VarClus variable clustering + KMeans respondent segmentation + profile tables",
+    required_kwargs=["df", "attitude_cols"],
+    optional_kwargs=["segment_col", "max_k", "min_k"],
+    result_schema=SegmentationResultSummary,
+    tags=["segmentation", "clustering", "composite"],
+)

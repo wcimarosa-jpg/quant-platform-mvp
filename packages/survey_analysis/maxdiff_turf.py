@@ -19,7 +19,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .run_orchestrator import AnalysisError, AnalysisRun, register_analysis
+from .run_orchestrator import AnalysisError, AnalysisRun
+from .plugin_contract import register_plugin
+from .result_schemas import MaxDiffTURFResultSummary
 
 
 # ---------------------------------------------------------------------------
@@ -178,7 +180,15 @@ def run_turf(
 # Registered analysis function
 # ---------------------------------------------------------------------------
 
-@register_analysis("maxdiff_turf")
+@register_plugin(
+    analysis_type="maxdiff_turf",
+    version="1.0.0",
+    description="Count-based MaxDiff scoring and greedy TURF reach optimization",
+    required_kwargs=["df", "maxdiff_columns", "acceptance_columns"],
+    optional_kwargs=["item_labels", "portfolio_sizes"],
+    result_schema=MaxDiffTURFResultSummary,
+    tags=["maxdiff", "turf", "optimization"],
+)
 def analysis_maxdiff_turf(run: AnalysisRun, **kwargs: Any) -> dict[str, Any]:
     """Full MaxDiff + TURF suite.
 
