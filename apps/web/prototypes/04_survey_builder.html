@@ -5,6 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prototype 04 - Survey Builder</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .dropzone {
+      border: 2px dashed #8eb6c0;
+      border-radius: 12px;
+      background: #f6fbfc;
+      padding: 14px;
+    }
+    .section-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .section-list li {
+      border: 1px solid #ddd4c7;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+    .section-list li.active {
+      border-color: #0f4c5c;
+      background: #eef5f6;
+    }
+    textarea.section-editor {
+      width: 100%;
+      min-height: 130px;
+      border: 1px solid #d7cfbf;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      resize: vertical;
+      background: #fffdfa;
+    }
+    .assist-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .source-box {
+      border: 1px solid #e3dbc9;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+    }
+  </style>
 </head>
 <body>
   <div class="layout">
@@ -15,42 +64,75 @@
       <a href="05_mapping_data_upload.html">05 Data Mapping</a>
     </aside>
     <main class="main">
-      <div class="topbar"><div><h2 style="margin:0">Survey Builder</h2><div class="subtle">Step 3 of 6</div></div><a class="btn" href="05_mapping_data_upload.html">Save Draft</a></div>
+      <div class="topbar"><div><h2 style="margin:0">Survey Builder + Section Editor</h2><div class="subtle">Step 3 of 6</div></div><a class="btn" href="05_mapping_data_upload.html">Save Draft</a></div>
       <div class="chips" style="margin-bottom:10px">
         <span class="chip">Draft v4</span><span class="chip">Selected sections: Screener, Motivations, Funnel, Demographics</span>
       </div>
       <div class="grid">
+        <section class="card span-12">
+          <h3 style="margin-top:0">Optional Upload: Survey Outline (.docx)</h3>
+          <div class="dropzone">
+            <p style="margin-top:0"><strong>Drop outline here</strong> or choose file.</p>
+            <p class="subtle">Use this when clients provide a draft outline. You can still build from scratch if no outline is uploaded.</p>
+            <p><button class="btn secondary">Choose file</button> <span class="subtle">Current file: Incyte_Survey_Outline_v2.docx (optional)</span></p>
+          </div>
+        </section>
+
         <section class="card span-4">
-          <h3 style="margin-top:0">Sections</h3>
-          <ul>
-            <li><strong>Screener</strong> (required)</li>
-            <li><strong>Motivations</strong> (AI suggested)</li>
-            <li><strong>Purchase Funnel</strong></li>
-            <li><strong>Demographics</strong> (required)</li>
+          <h3 style="margin-top:0">Section Navigator</h3>
+          <ul class="section-list">
+            <li><strong>Screener</strong><br><span class="subtle">required | complete</span></li>
+            <li class="active"><strong>Motivations</strong><br><span class="subtle">editing now | AI-assisted</span></li>
+            <li><strong>Purchase Funnel</strong><br><span class="subtle">needs review</span></li>
+            <li><strong>Demographics</strong><br><span class="subtle">required | complete</span></li>
           </ul>
-          <button class="btn secondary">Add section</button>
+          <button class="btn secondary">Add section</button> <button class="btn secondary">Reorder sections</button>
         </section>
         <section class="card span-8">
-          <h3 style="margin-top:0">Question Editor</h3>
-          <p><strong>ATT_03:</strong> "I actively look for innovative products in this category."</p>
-          <p class="subtle">Scale: 1-5 Likert | Source: Brief objective #2</p>
-          <div class="ai-actions">
-            <button>Rewrite for clarity</button>
-            <button>Regenerate alternatives</button>
-            <button>Check bias</button>
+          <h3 style="margin-top:0">Editable Section Content: Motivations</h3>
+          <label for="motEditor" class="subtle">Manual edit or apply AI suggestions section-by-section.</label>
+          <textarea id="motEditor" class="section-editor">MOT_01: What motivates you to try a new brand in this category?
+MOT_02: Which benefits matter most when deciding what to buy?
+MOT_03: How important is innovation versus value for money?</textarea>
+          <div class="assist-row">
+            <button class="btn secondary">AI: rewrite for clarity</button>
+            <button class="btn secondary">AI: align to objective</button>
+            <button class="btn secondary">AI: suggest alternative wording</button>
+            <button class="btn secondary">Manual edit mode</button>
           </div>
-          <hr>
-          <h4>Validation panel</h4>
-          <p><span class="badge ok">14/16 rules passed</span> <span class="badge warn">2 need fix</span></p>
-          <p class="checkpoint"><strong>Publish checkpoint:</strong> Run validation and reviewer approval required before publish.</p>
+          <p class="subtle">Last saved 2 min ago | Change tracking: ON | Undo available</p>
+        </section>
+
+        <section class="card span-8">
+          <h3 style="margin-top:0">Source Evidence + Diff Review</h3>
+          <div class="source-box">
+            <strong>Source from brief + outline</strong>
+            <p style="margin-bottom:6px">Brief objective: "Identify emotional and functional drivers behind trial and repeat."</p>
+            <span class="subtle">References: Brief section “Research Objectives”, Outline section “Motivations”</span>
+          </div>
+          <p class="subtle">AI edits show before/after diff and can be approved per question.</p>
+        </section>
+
+        <section class="card span-4">
+          <h3 style="margin-top:0">Validation + Readiness</h3>
+          <p><span class="badge ok">14/16 rules passed</span></p>
+          <p><span class="badge warn">2 issues in Purchase Funnel</span></p>
+          <p><span class="badge ok">Outline mapping complete</span></p>
+          <button class="btn secondary">Run section validation</button>
+        </section>
+
+        <section class="card span-12 checkpoint">
+          <strong>Publish checkpoint</strong>
+          <p class="subtle">All required sections must pass validation. User can finalize manually or apply AI-assisted fixes before publishing.</p>
+          <p><button class="btn secondary">Manual Finalize</button> <button class="btn">AI-Assisted Finalize</button></p>
         </section>
       </div>
     </main>
     <aside class="assistant">
       <div><strong>AI Assistant</strong></div>
-      <div class="chips"><span class="chip">Brief v1</span><span class="chip">QRE v4</span><span class="chip">Stage: Questionnaire</span></div>
-      <div class="chat"><strong>Assistant:</strong> I can fix the two validation issues now and show you exactly what changed.</div>
-      <div class="ai-actions"><button>Apply fixes</button><button>Explain diffs</button><button>Manual Fix Path</button></div>
+      <div class="chips"><span class="chip">Brief v1</span><span class="chip">QRE v4</span><span class="chip">Section: Motivations</span></div>
+      <div class="chat"><strong>Assistant:</strong> I can rewrite this section, show before/after diffs, and keep only changes you approve.</div>
+      <div class="ai-actions"><button>Rewrite current section</button><button>Show before/after diff</button><button>Fix validation issues</button><button>Manual-only mode</button></div>
     </aside>
   </div>
   <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
