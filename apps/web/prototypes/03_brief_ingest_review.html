@@ -5,6 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prototype 03 - Brief Ingest Review</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .dropzone {
+      border: 2px dashed #8eb6c0;
+      border-radius: 12px;
+      background: #f6fbfc;
+      padding: 14px;
+    }
+    .section-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .section-list li {
+      border: 1px solid #ddd4c7;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+    .section-list li.active {
+      border-color: #0f4c5c;
+      background: #eef5f6;
+    }
+    textarea.section-editor {
+      width: 100%;
+      min-height: 130px;
+      border: 1px solid #d7cfbf;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+      resize: vertical;
+      background: #fffdfa;
+    }
+    .assist-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .source-box {
+      border: 1px solid #e3dbc9;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+    }
+  </style>
 </head>
 <body>
   <div class="layout">
@@ -15,35 +64,74 @@
       <a href="04_survey_builder.html">04 Survey Builder</a>
     </aside>
     <main class="main">
-      <div class="topbar"><div><h2 style="margin:0">Research Brief Intake</h2><div class="subtle">Step 2 of 6</div></div><a class="btn" href="04_survey_builder.html">Generate Draft</a></div>
+      <div class="topbar"><div><h2 style="margin:0">Research Brief Intake + Section Editor</h2><div class="subtle">Step 2 of 6</div></div><a class="btn" href="04_survey_builder.html">Generate Draft</a></div>
       <div class="grid">
-        <section class="card span-8">
-          <h3 style="margin-top:0">Extracted Brief Fields</h3>
-          <table>
-            <tr><th>Field</th><th>Value</th><th>Confidence</th><th>Action</th></tr>
-            <tr><td>Objective</td><td>Identify behavior-based segments</td><td><span class="badge ok">0.94</span></td><td>Edit</td></tr>
-            <tr><td>Audience</td><td>US adults 18-54</td><td><span class="badge ok">0.88</span></td><td>Edit</td></tr>
-            <tr><td>Constraints</td><td>Max LOI 18 mins</td><td><span class="badge warn">0.71</span></td><td>Confirm</td></tr>
-          </table>
+        <section class="card span-12">
+          <h3 style="margin-top:0">Upload Research Brief (.docx)</h3>
+          <div class="dropzone">
+            <p style="margin-top:0"><strong>Drop file here</strong> or select a file.</p>
+            <p class="subtle">Accepted: .docx (primary), .pdf, .md | Max size: 25 MB | Keep original section headings when possible.</p>
+            <p><button class="btn secondary">Choose file</button> <span class="subtle">Current file: Incyte_Brand_Tracker_Brief_v3.docx</span></p>
+          </div>
         </section>
+
         <section class="card span-4">
-          <h3 style="margin-top:0">Preflight</h3>
-          <p><span class="badge ok">Objectives complete</span></p>
-          <p><span class="badge ok">Audience complete</span></p>
-          <p><span class="badge warn">Need geography confirmation</span></p>
-          <button>Fix missing fields</button>
+          <h3 style="margin-top:0">Section Navigator</h3>
+          <ul class="section-list">
+            <li class="active"><strong>Background</strong><br><span class="subtle">confidence 0.93</span></li>
+            <li><strong>Research Methodology</strong><br><span class="subtle">confidence 0.84</span></li>
+            <li><strong>Target Audience</strong><br><span class="subtle">confidence 0.89</span></li>
+            <li><strong>Research Objectives</strong><br><span class="subtle">confidence 0.95</span></li>
+            <li><strong>Success Criteria</strong><br><span class="subtle">confidence 0.72</span></li>
+          </ul>
+          <p class="subtle">One section at a time reduces editing errors and makes assistant suggestions easier to review.</p>
         </section>
+
+        <section class="card span-8">
+          <h3 style="margin-top:0">Editable Section Content: Background</h3>
+          <label for="bgEditor" class="subtle">Review, edit manually, or use AI edits.</label>
+          <textarea id="bgEditor" class="section-editor">The category is experiencing increased fragmentation with premium entrants growing faster than legacy players. The client needs clear segmentation to prioritize investment and messaging.</textarea>
+          <div class="assist-row">
+            <button class="btn secondary">AI: tighten language</button>
+            <button class="btn secondary">AI: remove ambiguity</button>
+            <button class="btn secondary">AI: shorten for executive readout</button>
+            <button class="btn secondary">Manual edit mode</button>
+          </div>
+          <p class="subtle">Last saved 1 min ago | Change tracking: ON | Undo available</p>
+        </section>
+
+        <section class="card span-8">
+          <h3 style="margin-top:0">Source Evidence + Explainability</h3>
+          <div class="source-box">
+            <strong>Source excerpt from uploaded brief:</strong>
+            <p style="margin-bottom:6px">"Premium brands are growing among younger households, while mainstream options retain higher penetration among routine buyers."</p>
+            <span class="subtle">Source: page 2, paragraph 3</span>
+          </div>
+          <p class="subtle">AI suggestions must reference source text before apply.</p>
+        </section>
+
+        <section class="card span-4">
+          <h3 style="margin-top:0">Preflight Readiness</h3>
+          <p><span class="badge ok">Background reviewed</span></p>
+          <p><span class="badge ok">Methodology reviewed</span></p>
+          <p><span class="badge ok">Target audience reviewed</span></p>
+          <p><span class="badge ok">Objectives reviewed</span></p>
+          <p><span class="badge warn">Success criteria needs clarification</span></p>
+          <button class="btn secondary">Run section validation</button>
+        </section>
+
         <section class="card span-12 checkpoint">
-          <strong>Assumptions requiring approval</strong>
-          <p class="subtle">"Use 5-point Likert for attitudinal battery" [Accept] [Reject]</p>
+          <strong>Approval checkpoint before generation</strong>
+          <p class="subtle">All 5 sections must be reviewed. User chooses either Manual Finalize or AI-assisted Finalize, then confirms assumptions.</p>
+          <p><button class="btn secondary">Manual Finalize</button> <button class="btn">AI-Assisted Finalize</button></p>
         </section>
       </div>
     </main>
     <aside class="assistant">
       <div><strong>AI Assistant</strong></div>
-      <div class="chips"><span class="chip">Brief v1</span><span class="chip">Method: Segmentation</span></div>
-      <div class="chat"><strong>Assistant:</strong> I found one weak extraction and one missing field. Want me to draft suggested values?</div>
-      <div class="ai-actions"><button>Propose Assumptions</button><button>Show Source Quote</button><button>Manual Edit Path</button></div>
+      <div class="chips"><span class="chip">Brief v1</span><span class="chip">Method: Segmentation</span><span class="chip">Section: Background</span></div>
+      <div class="chat"><strong>Assistant:</strong> I can rewrite each section one-by-one and show a before/after diff tied to source text. If you prefer, keep manual edits and I will only flag risks.</div>
+      <div class="ai-actions"><button>Rewrite current section</button><button>Show before/after diff</button><button>List unresolved risks</button><button>Manual-only mode</button></div>
     </aside>
   </div>
   <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>

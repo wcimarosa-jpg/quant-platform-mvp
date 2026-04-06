@@ -119,7 +119,7 @@
     "status": "todo",
     "acceptance_criteria": [
       "Brief formats docx/pdf/md accepted",
-      "Extracted entities: objectives, audience, category, geography, constraints",
+      "Extracted entities include required sections: Background, Research Methodology, Target Audience, Research Objectives, Success Criteria",
       "Users can manually edit extracted values before saving"
     ],
     "dependencies": ["P01-02"],
@@ -134,7 +134,8 @@
     "acceptance_criteria": [
       "Assistant output references brief content directly",
       "User can accept/reject each assumption",
-      "Accepted assumptions become part of generation context"
+      "Accepted assumptions become part of generation context",
+      "Assistant can propose section-level edits with before/after diffs and source citations"
     ],
     "dependencies": ["P02-01", "P01-03"],
     "estimate": "M"
@@ -152,6 +153,20 @@
     ],
     "dependencies": ["P02-01", "P02-02"],
     "estimate": "S"
+  },
+  {
+    "id": "P02-04",
+    "title": "Implement section-by-section brief review editor with AI/manual modes",
+    "description": "Provide a section navigator and editor so users can review and edit each brief section manually or with AI-assisted edits before questionnaire generation.",
+    "methodology": "questionnaire",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Editor shows Background, Research Methodology, Target Audience, Research Objectives, and Success Criteria as separate reviewable sections",
+      "Each section supports manual edits, AI rewrite suggestions, and explicit apply/reject actions",
+      "Section-level provenance shows source excerpt/citation and change history prior to generation"
+    ],
+    "dependencies": ["P02-01", "P02-02", "P02-03"],
+    "estimate": "M"
   },
   {
     "id": "P03-01",
