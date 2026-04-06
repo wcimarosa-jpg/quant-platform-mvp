@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prototype 02 - Project Setup</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid #d6d0c5;
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #fffdfa;
+      font-family: inherit;
+    }
+    .dropzone {
+      border: 2px dashed #8eb6c0;
+      border-radius: 12px;
+      background: #f6fbfc;
+      padding: 12px;
+    }
+    .table-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+  </style>
 </head>
 <body>
   <div class="layout">
@@ -15,50 +47,137 @@
       <a href="03_brief_ingest_review.html">03 Brief Review</a>
       <a href="04_survey_builder.html">04 Survey Builder</a>
     </aside>
+
     <main class="main">
-      <div class="topbar"><div><h2 style="margin:0">Project Setup Wizard</h2><div class="subtle">Step 1 of 6</div></div><a class="btn" href="03_brief_ingest_review.html">Continue</a></div>
+      <div class="topbar">
+        <div>
+          <h2 style="margin:0">Project Setup Wizard</h2>
+          <div class="subtle">Step 1 of 6</div>
+        </div>
+        <a class="btn" href="03_brief_ingest_review.html">Continue</a>
+      </div>
+
       <div class="grid">
         <section class="card span-6">
-          <h3 style="margin-top:0">Project Metadata</h3>
-          <p>Client: <strong>Incyte</strong></p>
-          <p>Project name: <strong>Brand Equity Tracker Q2</strong></p>
-          <p>Owner: <strong>Will C.</strong></p>
-          <p>Target launch: <strong>May 14</strong></p>
+          <h3 style="margin-top:0">Project Metadata (Editable)</h3>
+          <div class="field-grid">
+            <div><label>Client</label><input value="Incyte"></div>
+            <div><label>Project Name</label><input value="Brand Equity Tracker Q2"></div>
+            <div><label>Owner</label><input value="Will C."></div>
+            <div><label>Target Launch</label><input value="May 14"></div>
+          </div>
+          <div class="table-actions">
+            <button class="btn secondary">Save metadata</button>
+            <button class="btn secondary">AI: update from chat</button>
+          </div>
         </section>
+
         <section class="card span-6">
-          <h3 style="margin-top:0">Methodology</h3>
-          <p><span class="badge ok">Selected: Segmentation</span></p>
-          <p class="subtle">Alternatives suggested by AI: Drivers, A&U</p>
-          <button class="btn secondary">Why this recommendation?</button>
+          <h3 style="margin-top:0">Statement of Work (SOW)</h3>
+          <div class="dropzone">
+            <p style="margin-top:0"><strong>Upload SOW</strong> (.docx/.pdf)</p>
+            <p class="subtle">Current file: Incyte_SOW_v1.docx | Uploaded: Apr 6, 2026 10:42 AM</p>
+            <p>
+              <button class="btn secondary">Choose SOW file</button>
+              <button class="btn secondary">Replace with new version</button>
+            </p>
+          </div>
         </section>
+
         <section class="card span-8">
-          <h3 style="margin-top:0">Permissions</h3>
+          <h3 style="margin-top:0">Contributors + Permissions (Editable)</h3>
           <table>
-            <tr><th>User</th><th>Role</th><th>Access</th></tr>
-            <tr><td>Will</td><td>Researcher</td><td>Edit + run</td></tr>
-            <tr><td>Amy</td><td>Reviewer</td><td>Review only</td></tr>
-            <tr><td>Finance Ops</td><td>Admin</td><td>Cost reporting only</td></tr>
+            <tr><th>User</th><th>Role</th><th>Access</th><th>Future Comment Rights</th></tr>
+            <tr>
+              <td>Will</td>
+              <td>
+                <select><option selected>Researcher</option><option>Reviewer</option><option>Admin</option></select>
+              </td>
+              <td>
+                <select><option selected>Edit + run</option><option>Review only</option></select>
+              </td>
+              <td>Questionnaire + Analysis</td>
+            </tr>
+            <tr>
+              <td>Amy</td>
+              <td>
+                <select><option>Researcher</option><option selected>Reviewer</option><option>Admin</option></select>
+              </td>
+              <td>
+                <select><option>Edit + run</option><option selected>Review only</option></select>
+              </td>
+              <td>Questionnaire only</td>
+            </tr>
+            <tr>
+              <td>Finance Ops</td>
+              <td>
+                <select><option>Researcher</option><option>Reviewer</option><option selected>Admin</option></select>
+              </td>
+              <td>
+                <select><option selected>Cost reporting only</option><option>Review only</option></select>
+              </td>
+              <td>None</td>
+            </tr>
           </table>
+          <div class="table-actions">
+            <button class="btn secondary">Add contributor</button>
+            <button class="btn secondary">Save permissions</button>
+            <button class="btn secondary">AI: suggest team setup</button>
+          </div>
         </section>
+
         <section class="card span-4">
-          <h3 style="margin-top:0">Isolation Summary</h3>
+          <h3 style="margin-top:0">Methodology (Editable)</h3>
+          <label>Selected Methodology</label>
+          <select>
+            <option>Attitude & Usage</option>
+            <option selected>Segmentation</option>
+            <option>Drivers Analysis</option>
+            <option>Concept Monadic</option>
+            <option>Creative Monadic</option>
+            <option>Brand Equity Tracker</option>
+            <option>MaxDiff</option>
+            <option>TURF</option>
+          </select>
+          <p class="subtle">AI alternatives: Drivers, A&U</p>
+          <div class="table-actions">
+            <button class="btn secondary">Why this recommendation?</button>
+            <button class="btn secondary">AI: update methodology</button>
+          </div>
+        </section>
+
+        <section class="card span-12">
+          <h3 style="margin-top:0">Isolation + Audit Summary</h3>
           <ul>
             <li>Project folder created</li>
             <li>Cross-project read blocked</li>
             <li>Audit logging active</li>
+            <li>SOW version history tracked</li>
+            <li>Contributor changes logged</li>
           </ul>
         </section>
       </div>
     </main>
+
     <aside class="assistant">
       <div><strong>AI Assistant</strong></div>
       <div class="chips"><span class="chip">Stage: Setup</span><span class="chip">Role: Researcher</span></div>
-      <div class="chat"><strong>Assistant:</strong> I can pre-fill fields from previous projects and suggest likely methodology fit.</div>
-      <div class="ai-actions"><button>Auto-fill</button><button>Suggest Team Roles</button><button>Manual Setup Path</button></div>
+      <div class="chat"><strong>Assistant:</strong> Tell me what to change and I can update metadata, methodology, or contributor permissions with your approval.</div>
+      <div class="ai-actions">
+        <button>Edit fields from chat</button>
+        <button>Suggest team roles</button>
+        <button>Summarize SOW</button>
+        <button>Manual setup path</button>
+      </div>
     </aside>
   </div>
+
   <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
-  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <div class="feedback-drawer" id="feedbackDrawer">
+    <strong>Prototype feedback</strong>
+    <textarea id="feedbackNote"></textarea>
+    <p><button onclick="saveFeedback()">Save</button></p>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>

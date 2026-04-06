@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from apps.api.routes import assistant, brief_analysis, briefs, drafts, health, preflight, projects, tables
+from packages.shared.optimistic_lock import ConflictError
 
 app = FastAPI(
     title="Quant Platform API",
@@ -13,6 +15,12 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url=None,
 )
+
+
+@app.exception_handler(ConflictError)
+async def conflict_error_handler(request: Request, exc: ConflictError) -> JSONResponse:
+    """Return HTTP 409 with merge/retry guidance on optimistic locking conflicts."""
+    return JSONResponse(status_code=409, content=exc.to_response())
 
 app.add_middleware(
     CORSMiddleware,

@@ -62,6 +62,7 @@ class BriefRow(Base):
     raw_text = Column(Text)
     source_filename = Column(String(255))
     source_format = Column(String(20))
+    version_token = Column(Integer, nullable=False, default=1)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
@@ -81,6 +82,7 @@ class QuestionnaireRow(Base):
     draft_id = Column(String(64))
     brief_id = Column(String(64))
     context_hash = Column(String(32))
+    version_token = Column(Integer, nullable=False, default=1)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
 
     project = relationship("ProjectRow", back_populates="questionnaires")
@@ -102,6 +104,7 @@ class MappingRow(Base):
     mappings_json = Column(JSON, nullable=False)     # serialized ColumnMapping list
     unmapped_columns_json = Column(JSON)
     locked = Column(Boolean, default=False)
+    version_token = Column(Integer, nullable=False, default=1)
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 

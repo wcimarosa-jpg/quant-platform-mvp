@@ -78,7 +78,8 @@
     "acceptance_criteria": [
       "Project folders created: Briefs, Questionnaires, Data, Mappings, Runs, Outputs, Logs",
       "Cross-project read/write is rejected at service boundary",
-      "Isolation tests cover malicious path traversal attempts"
+      "Isolation tests cover malicious path traversal attempts",
+      "Project setup supports SOW upload storage and versioned file replacement with audit trail"
     ],
     "dependencies": ["P01-01"],
     "estimate": "L"
@@ -556,10 +557,39 @@
       "Roles include at minimum admin, researcher, and reviewer",
       "Every project artifact endpoint enforces project membership and role checks",
       "Audit logs capture actor, action, project, and artifact references for security-sensitive operations",
-      "Admin-only users can access cost reporting without requiring analysis execution permissions"
+      "Admin-only users can access cost reporting without requiring analysis execution permissions",
+      "Contributor permissions model supports future comment access on questionnaire drafts and analysis outputs"
     ],
     "dependencies": ["P09-01"],
     "estimate": "L"
+  },
+  {
+    "id": "P01-05",
+    "title": "Implement editable project setup form with SOW upload and AI-assisted field editing",
+    "description": "Build the project setup wizard so metadata, permissions, and methodology are editable and can be updated through direct form edits or AI assistant actions.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Project setup includes editable fields for metadata, methodology selection, and permission assignments",
+      "Project setup supports SOW upload (.docx/.pdf) with filename, upload timestamp, and replace/version behavior",
+      "AI assistant can propose and apply field edits based on user chat with explicit user approval"
+    ],
+    "dependencies": ["P01-01", "P01-02", "P01-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P01-06",
+    "title": "Add collaborator roster and comment-permission scaffolding",
+    "description": "Create collaborator management and permission scaffolding for future comment workflows on questionnaire drafts and analysis outputs.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Project setup includes editable contributor roster with role assignments",
+      "Permission flags include future-ready comment rights for draft questionnaire and analysis artifacts",
+      "Contributor and permission changes are tracked in project audit logs"
+    ],
+    "dependencies": ["P01-05", "P09-02"],
+    "estimate": "M"
   },
   {
     "id": "P09-03",
