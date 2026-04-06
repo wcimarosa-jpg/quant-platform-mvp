@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 07 - Reporting, Exports, Admin Costs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="06_analysis_run_results.html">06 Analysis</a>
+      <a class="active" href="07_reporting_exports_admin_costs.html">07 Reporting + Costs</a>
+      <a href="01_home_dashboard.html">Back Home</a>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><h2 style="margin:0">Strategic Summary + Export + Admin Costs</h2><div class="subtle">Step 6 of 6</div></div><button class="btn">Export Strategic Summary</button></div>
+      <div class="grid">
+        <section class="card span-8">
+          <h3 style="margin-top:0">Strategic Summary Draft</h3>
+          <p><strong>Headline:</strong> Premium Explorers represent the clearest innovation growth opportunity.</p>
+          <p><strong>Implication:</strong> Prioritize concept messaging around novelty + quality proof.</p>
+          <p><strong>Recommendation:</strong> Launch targeted A/B concept test among Premium Explorers and Value Seekers.</p>
+          <p class="subtle">Evidence-linked to run 18 output artifacts.</p>
+          <div class="ai-actions"><button>Tighten executive tone</button><button>Add evidence footnotes</button><button>Manual edit</button></div>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Export Manager</h3>
+          <ul>
+            <li>DOCX summary</li>
+            <li>Decipher-structured questionnaire</li>
+            <li>CSV/Excel analysis outputs</li>
+          </ul>
+          <p class="checkpoint"><strong>Export checkpoint:</strong> confirm provenance + sharing intent.</p>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Project Cost</h3>
+          <div class="kpi">$427</div>
+          <p class="subtle">Tokens: $301 | Compute: $94 | Storage: $32</p>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Total Portfolio Cost</h3>
+          <div class="kpi">$2,148</div>
+          <p class="subtle">Month to date across all projects</p>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Average Cost Benchmarks</h3>
+          <p>Avg per project: <strong>$358</strong></p>
+          <p>Avg segmentation run: <strong>$41</strong></p>
+          <p>Avg summary export: <strong>$12</strong></p>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">Run #18</span><span class="chip">Summary v2</span><span class="chip">Role: Admin/Researcher</span></div>
+      <div class="chat"><strong>Assistant:</strong> I can produce a concise proposal-ready cost benchmark table for your next RFP response.</div>
+      <div class="ai-actions"><button>Generate benchmark export</button><button>Explain costs</button><button>Manual report path</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

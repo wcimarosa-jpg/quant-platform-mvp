@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 01 - Home Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="00_nav_shell.html">00 Nav Shell</a>
+      <a class="active" href="01_home_dashboard.html">01 Home</a>
+      <a href="02_project_setup_wizard.html">02 Project Setup</a>
+      <a href="03_brief_ingest_review.html">03 Brief Review</a>
+      <a href="04_survey_builder.html">04 Survey Builder</a>
+      <a href="05_mapping_data_upload.html">05 Data Mapping</a>
+      <a href="06_analysis_run_results.html">06 Analysis</a>
+      <a href="07_reporting_exports_admin_costs.html">07 Reporting + Costs</a>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div><h2 style="margin:0">Home Dashboard</h2><div class="subtle">Resume work, monitor health, and track costs.</div></div>
+        <a class="btn" href="02_project_setup_wizard.html">Create Project</a>
+      </div>
+      <div class="grid">
+        <section class="card span-3"><div class="subtle">Active projects</div><div class="kpi">6</div></section>
+        <section class="card span-3"><div class="subtle">Runs today</div><div class="kpi">18</div></section>
+        <section class="card span-3"><div class="subtle">Project cost (MTD)</div><div class="kpi">$427</div></section>
+        <section class="card span-3"><div class="subtle">Total cost (MTD)</div><div class="kpi">$2,148</div></section>
+        <section class="card span-8">
+          <h3 style="margin-top:0">Projects</h3>
+          <table>
+            <tr><th>Project</th><th>Stage</th><th>Owner</th><th>Status</th><th>Action</th></tr>
+            <tr><td>NFL Behaviors</td><td>Analysis</td><td>Will</td><td><span class="badge ok">running</span></td><td><a class="btn secondary" href="06_analysis_run_results.html">Resume</a></td></tr>
+            <tr><td>NYC Tourism</td><td>Survey Builder</td><td>Amy</td><td><span class="badge ok">in_review</span></td><td><a class="btn secondary" href="04_survey_builder.html">Resume</a></td></tr>
+            <tr><td>Incyte ATU</td><td>Data Mapping</td><td>Raj</td><td><span class="badge warn">blocked</span></td><td><a class="btn secondary" href="05_mapping_data_upload.html">Fix</a></td></tr>
+          </table>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Pending reviews</h3>
+          <ul>
+            <li>QRE v5 validation fixes</li>
+            <li>Mapping lock approval</li>
+            <li>Strategic summary approval</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">Stage: Home</span><span class="chip">Role: Researcher</span></div>
+      <div class="chat"><strong>Assistant:</strong> Want me to prioritize projects by risk and deadline?</div>
+      <div class="ai-actions"><button>Prioritize Queue</button><button>Cost Hotspots</button><button>Manual Fallback</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 05 - Mapping and Data Upload</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="04_survey_builder.html">04 Survey Builder</a>
+      <a class="active" href="05_mapping_data_upload.html">05 Data Mapping</a>
+      <a href="06_analysis_run_results.html">06 Analysis</a>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><h2 style="margin:0">Data Upload + Mapping</h2><div class="subtle">Step 4 of 6</div></div><a class="btn" href="06_analysis_run_results.html">Run Analysis</a></div>
+      <div class="grid">
+        <section class="card span-4">
+          <h3 style="margin-top:0">Data Profile</h3>
+          <p>File: <strong>NFL_StudyData.csv</strong></p>
+          <p>Rows: <strong>3,482</strong></p>
+          <p>Columns: <strong>214</strong></p>
+          <p>Missingness: <span class="badge warn">7.4%</span></p>
+        </section>
+        <section class="card span-8">
+          <h3 style="margin-top:0">Auto-map Suggestions</h3>
+          <table>
+            <tr><th>Question Var</th><th>Data Column</th><th>Confidence</th><th>AI Action</th></tr>
+            <tr><td>ATT_01</td><td>Q35A</td><td><span class="badge ok">0.97</span></td><td>Accept</td></tr>
+            <tr><td>ATT_02</td><td>Q35B</td><td><span class="badge ok">0.94</span></td><td>Accept</td></tr>
+            <tr><td>ATT_03</td><td>Q37</td><td><span class="badge warn">0.66</span></td><td>Explain + fix</td></tr>
+          </table>
+          <div class="checkpoint"><strong>Lock Mapping checkpoint:</strong> lock required before table generation and analysis.</div>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">QRE v4</span><span class="chip">Mapping v2</span><span class="chip">Stage: Mapping</span></div>
+      <div class="chat"><strong>Assistant:</strong> I found 6 low-confidence matches and can propose corrected mappings with reasons.</div>
+      <div class="ai-actions"><button>Fix low-confidence</button><button>Show mapping rationale</button><button>Manual Map Path</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

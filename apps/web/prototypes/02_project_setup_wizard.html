@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 02 - Project Setup</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="01_home_dashboard.html">01 Home</a>
+      <a class="active" href="02_project_setup_wizard.html">02 Project Setup</a>
+      <a href="03_brief_ingest_review.html">03 Brief Review</a>
+      <a href="04_survey_builder.html">04 Survey Builder</a>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><h2 style="margin:0">Project Setup Wizard</h2><div class="subtle">Step 1 of 6</div></div><a class="btn" href="03_brief_ingest_review.html">Continue</a></div>
+      <div class="grid">
+        <section class="card span-6">
+          <h3 style="margin-top:0">Project Metadata</h3>
+          <p>Client: <strong>Incyte</strong></p>
+          <p>Project name: <strong>Brand Equity Tracker Q2</strong></p>
+          <p>Owner: <strong>Will C.</strong></p>
+          <p>Target launch: <strong>May 14</strong></p>
+        </section>
+        <section class="card span-6">
+          <h3 style="margin-top:0">Methodology</h3>
+          <p><span class="badge ok">Selected: Segmentation</span></p>
+          <p class="subtle">Alternatives suggested by AI: Drivers, A&U</p>
+          <button class="btn secondary">Why this recommendation?</button>
+        </section>
+        <section class="card span-8">
+          <h3 style="margin-top:0">Permissions</h3>
+          <table>
+            <tr><th>User</th><th>Role</th><th>Access</th></tr>
+            <tr><td>Will</td><td>Researcher</td><td>Edit + run</td></tr>
+            <tr><td>Amy</td><td>Reviewer</td><td>Review only</td></tr>
+            <tr><td>Finance Ops</td><td>Admin</td><td>Cost reporting only</td></tr>
+          </table>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Isolation Summary</h3>
+          <ul>
+            <li>Project folder created</li>
+            <li>Cross-project read blocked</li>
+            <li>Audit logging active</li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">Stage: Setup</span><span class="chip">Role: Researcher</span></div>
+      <div class="chat"><strong>Assistant:</strong> I can pre-fill fields from previous projects and suggest likely methodology fit.</div>
+      <div class="ai-actions"><button>Auto-fill</button><button>Suggest Team Roles</button><button>Manual Setup Path</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

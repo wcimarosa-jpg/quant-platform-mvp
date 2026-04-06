@@ -448,6 +448,76 @@
     "estimate": "M"
   },
   {
+    "id": "P08-04",
+    "title": "Implement custom data cuts specification and execution layer",
+    "description": "Allow users to define and save custom cuts (filters, segments, banners) and execute them on mapped survey data and analysis outputs.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Users can create, edit, and save named data cuts tied to project + mapping version",
+      "Cuts execute against generated tables and KMeans profile outputs without manual code changes",
+      "Cut definitions are versioned and auditable in run metadata"
+    ],
+    "dependencies": ["P05-02", "P07-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P08-05",
+    "title": "Add AI copilot for custom cut generation and refinement",
+    "description": "Enable users to request custom cuts in plain language and have the assistant propose executable cut definitions with rationale.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Assistant can generate cut definitions from natural language prompts",
+      "Each suggested cut includes confidence and explainability metadata before apply",
+      "Users can approve/edit/reject suggested cuts and all actions are logged"
+    ],
+    "dependencies": ["P08-04", "P08-01"],
+    "estimate": "M"
+  },
+  {
+    "id": "P08-06",
+    "title": "Implement strategic summary generator and export",
+    "description": "Generate executive-ready strategic findings summaries from analysis outputs and custom cuts, with exportable artifacts.",
+    "methodology": "analysis",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Summary includes key findings, implications, and recommended actions grounded in output evidence",
+      "Exports support at least Markdown and DOCX for stakeholder-ready deliverables",
+      "Every narrative claim links to run/cut/table provenance metadata"
+    ],
+    "dependencies": ["P08-05", "P04-03"],
+    "estimate": "M"
+  },
+  {
+    "id": "P08-07",
+    "title": "Create guided MVP journey mode (project -> brief -> survey -> data -> analysis -> summary)",
+    "description": "Add a guided workflow mode that stitches the full end-to-end process into a single user journey optimized for MVP demos and onboarding.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Users can complete the full journey from project setup through summary export in one guided flow",
+      "UI shows stage progression, blockers, and next actions with assistant help at each step",
+      "Flow supports resume-from-last-step behavior and state recovery"
+    ],
+    "dependencies": ["P03-04", "P05-03", "P08-06"],
+    "estimate": "M"
+  },
+  {
+    "id": "P08-08",
+    "title": "Add 5-worker concurrent MVP reliability test pack",
+    "description": "Validate that five simultaneous users on separate projects can complete the MVP flow without data leakage, lock conflicts, or run failures.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Concurrency suite simulates 5 active users across isolated projects",
+      "No cross-project artifact access occurs under concurrent load",
+      "API latency/error thresholds and run completion rates meet MVP reliability targets"
+    ],
+    "dependencies": ["P08-07", "P09-04"],
+    "estimate": "M"
+  },
+  {
     "id": "P09-01",
     "title": "Migrate coordinator and app state from SQLite to PostgreSQL",
     "description": "Move sprint coordination, project metadata, and run state to PostgreSQL for reliable concurrent access across multiple users and services.",
@@ -727,6 +797,20 @@
       "Capacity reports show saturation risk and planning signals for scaling"
     ],
     "dependencies": ["P09-03", "P11-02"],
+    "estimate": "M"
+  },
+  {
+    "id": "P09-09",
+    "title": "Add Railway/Vercel deployment profile for MVP path",
+    "description": "Prepare deployment-ready configs and runbooks for API/worker/data services on Railway and frontend on Vercel aligned to the guided MVP journey.",
+    "methodology": "core",
+    "status": "todo",
+    "acceptance_criteria": [
+      "Deployment configs exist for Railway services and Vercel frontend with environment separation",
+      "CI/CD pipeline can deploy the guided MVP flow with health checks and rollback path",
+      "Operational runbook includes scaling guidance for 5-7 concurrent internal users"
+    ],
+    "dependencies": ["P09-01", "P09-03", "P10-08"],
     "estimate": "M"
   },
   {

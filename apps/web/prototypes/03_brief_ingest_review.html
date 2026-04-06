@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 03 - Brief Ingest Review</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="02_project_setup_wizard.html">02 Project Setup</a>
+      <a class="active" href="03_brief_ingest_review.html">03 Brief Review</a>
+      <a href="04_survey_builder.html">04 Survey Builder</a>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><h2 style="margin:0">Research Brief Intake</h2><div class="subtle">Step 2 of 6</div></div><a class="btn" href="04_survey_builder.html">Generate Draft</a></div>
+      <div class="grid">
+        <section class="card span-8">
+          <h3 style="margin-top:0">Extracted Brief Fields</h3>
+          <table>
+            <tr><th>Field</th><th>Value</th><th>Confidence</th><th>Action</th></tr>
+            <tr><td>Objective</td><td>Identify behavior-based segments</td><td><span class="badge ok">0.94</span></td><td>Edit</td></tr>
+            <tr><td>Audience</td><td>US adults 18-54</td><td><span class="badge ok">0.88</span></td><td>Edit</td></tr>
+            <tr><td>Constraints</td><td>Max LOI 18 mins</td><td><span class="badge warn">0.71</span></td><td>Confirm</td></tr>
+          </table>
+        </section>
+        <section class="card span-4">
+          <h3 style="margin-top:0">Preflight</h3>
+          <p><span class="badge ok">Objectives complete</span></p>
+          <p><span class="badge ok">Audience complete</span></p>
+          <p><span class="badge warn">Need geography confirmation</span></p>
+          <button>Fix missing fields</button>
+        </section>
+        <section class="card span-12 checkpoint">
+          <strong>Assumptions requiring approval</strong>
+          <p class="subtle">"Use 5-point Likert for attitudinal battery" [Accept] [Reject]</p>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">Brief v1</span><span class="chip">Method: Segmentation</span></div>
+      <div class="chat"><strong>Assistant:</strong> I found one weak extraction and one missing field. Want me to draft suggested values?</div>
+      <div class="ai-actions"><button>Propose Assumptions</button><button>Show Source Quote</button><button>Manual Edit Path</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

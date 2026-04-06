@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 06 - Analysis Run Results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="05_mapping_data_upload.html">05 Data Mapping</a>
+      <a class="active" href="06_analysis_run_results.html">06 Analysis</a>
+      <a href="07_reporting_exports_admin_costs.html">07 Reporting + Costs</a>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><h2 style="margin:0">Analysis Runs + Results</h2><div class="subtle">Step 5 of 6</div></div><a class="btn" href="07_reporting_exports_admin_costs.html">Create Summary</a></div>
+      <div class="chips" style="margin-bottom:10px">
+        <span class="chip">Run #18</span><span class="chip">Status: completed</span><span class="chip">Method: Segmentation (KMeans)</span>
+      </div>
+      <div class="grid">
+        <section class="card span-4">
+          <h3 style="margin-top:0">Run Queue</h3>
+          <ul>
+            <li>Run 18: <span class="badge ok">completed</span></li>
+            <li>Run 19: <span class="badge ok">queued</span></li>
+            <li>Run 20: <span class="badge warn">failed</span></li>
+          </ul>
+          <button class="btn secondary">Re-run failed</button>
+        </section>
+        <section class="card span-8">
+          <h3 style="margin-top:0">KMeans Segment Snapshot</h3>
+          <table>
+            <tr><th>Segment</th><th>Size</th><th>Top driver</th><th>Purchase intent</th></tr>
+            <tr><td>Value Seekers</td><td>34%</td><td>Price trust</td><td>62%</td></tr>
+            <tr><td>Premium Explorers</td><td>27%</td><td>Innovation</td><td>74%</td></tr>
+            <tr><td>Routine Loyalists</td><td>39%</td><td>Habit</td><td>69%</td></tr>
+          </table>
+          <h4>Custom Data Cuts</h4>
+          <p class="subtle">Cut: “Heavy users + 18-34” | AI generated from prompt, awaiting approval.</p>
+        </section>
+        <section class="card span-12">
+          <h3 style="margin-top:0">AI Insight with Evidence Links</h3>
+          <p>“Premium Explorers over-index on innovation and show +12pt purchase intent vs overall.”</p>
+          <p class="subtle">Evidence: Run 18 -> Segment profile table row 2 -> Metric PI_Overall.</p>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">Mapping v2</span><span class="chip">Run #18</span><span class="chip">Stage: Analysis</span></div>
+      <div class="chat"><strong>Assistant:</strong> I can generate three strategic cuts and draft a client-ready summary with traceable evidence.</div>
+      <div class="ai-actions"><button>Create Custom Cuts</button><button>Explain QA findings</button><button>Manual Analysis Path</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

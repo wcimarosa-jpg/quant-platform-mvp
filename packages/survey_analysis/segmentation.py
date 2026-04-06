@@ -25,8 +25,11 @@ from .run_orchestrator import AnalysisError, AnalysisRun, register_composite
 # VarClus — hierarchical variable clustering
 # ---------------------------------------------------------------------------
 
-def _pca_split(df_subset: pd.DataFrame) -> tuple[float, np.ndarray]:
-    """Compute eigenvalue of second component and first component loadings."""
+def _pca_split(df_subset: pd.DataFrame) -> tuple[float, np.ndarray, np.ndarray]:
+    """Compute eigenvalues (descending) and first component loadings.
+
+    Returns (second_eigenvalue, first_component_loadings, all_eigenvalues).
+    """
     X = df_subset.values
     X = X - X.mean(axis=0)
     cov = np.cov(X, rowvar=False)
@@ -37,7 +40,7 @@ def _pca_split(df_subset: pd.DataFrame) -> tuple[float, np.ndarray]:
     eigenvectors = eigenvectors[:, idx]
     second_eigen = float(eigenvalues[1]) if len(eigenvalues) > 1 else 0.0
     loadings = eigenvectors[:, 0]
-    return second_eigen, loadings
+    return second_eigen, loadings, eigenvalues
 
 
 def run_varclus(
@@ -74,9 +77,9 @@ def run_varclus(
                 new_clusters.append(cluster_vars)
                 continue
 
-            second_eigen, loadings = _pca_split(subset[cluster_vars])
+            second_eigen, loadings, _ = _pca_split(subset[cluster_vars])
             if second_eigen > max_eigen:
-                # Split by sign of first component loadings
+                # Simplified VarClus: split by sign of PC1 loadings (canonical SAS uses PC2).
                 pos = [v for v, l in zip(cluster_vars, loadings) if l >= 0]
                 neg = [v for v, l in zip(cluster_vars, loadings) if l < 0]
                 if pos and neg:
@@ -101,15 +104,13 @@ def run_varclus(
             cluster_data = subset[cluster_vars]
             cluster_mean = cluster_data.mean(axis=1)
             correlations = {v: float(cluster_data[v].corr(cluster_mean)) for v in cluster_vars}
-            rep = max(correlations, key=correlations.get)
+            rep = max(correlations, key=lambda v: correlations[v])
 
-            second_eigen, _ = _pca_split(cluster_data)
+            # Reuse _pca_split to get eigenvalues (avoids redundant computation)
+            second_eigen, _, all_eigenvalues = _pca_split(cluster_data)
             eigen = second_eigen
-            # Variance explained by first component
-            X = cluster_data.values - cluster_data.values.mean(axis=0)
-            cov = np.cov(X, rowvar=False)
-            eigenvalues = np.sort(np.linalg.eigvalsh(cov))[::-1]
-            var_exp = float(eigenvalues[0] / eigenvalues.sum()) if eigenvalues.sum() > 0 else 0.0
+            total_var = float(all_eigenvalues.sum())
+            var_exp = float(all_eigenvalues[0] / total_var) if total_var > 0 else 0.0
 
         results.append({
             "cluster_id": i + 1,
@@ -159,7 +160,7 @@ def run_kmeans(
     sil_scores: dict[int, float] = {}
 
     for k in k_values:
-        if k >= len(X):
+        if k < 2 or k >= len(X):
             continue
         model = KMeans(n_clusters=k, random_state=random_state, n_init=10)
         labels = model.fit_predict(X)

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 04 - Survey Builder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a href="03_brief_ingest_review.html">03 Brief Review</a>
+      <a class="active" href="04_survey_builder.html">04 Survey Builder</a>
+      <a href="05_mapping_data_upload.html">05 Data Mapping</a>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><h2 style="margin:0">Survey Builder</h2><div class="subtle">Step 3 of 6</div></div><a class="btn" href="05_mapping_data_upload.html">Save Draft</a></div>
+      <div class="chips" style="margin-bottom:10px">
+        <span class="chip">Draft v4</span><span class="chip">Selected sections: Screener, Motivations, Funnel, Demographics</span>
+      </div>
+      <div class="grid">
+        <section class="card span-4">
+          <h3 style="margin-top:0">Sections</h3>
+          <ul>
+            <li><strong>Screener</strong> (required)</li>
+            <li><strong>Motivations</strong> (AI suggested)</li>
+            <li><strong>Purchase Funnel</strong></li>
+            <li><strong>Demographics</strong> (required)</li>
+          </ul>
+          <button class="btn secondary">Add section</button>
+        </section>
+        <section class="card span-8">
+          <h3 style="margin-top:0">Question Editor</h3>
+          <p><strong>ATT_03:</strong> "I actively look for innovative products in this category."</p>
+          <p class="subtle">Scale: 1-5 Likert | Source: Brief objective #2</p>
+          <div class="ai-actions">
+            <button>Rewrite for clarity</button>
+            <button>Regenerate alternatives</button>
+            <button>Check bias</button>
+          </div>
+          <hr>
+          <h4>Validation panel</h4>
+          <p><span class="badge ok">14/16 rules passed</span> <span class="badge warn">2 need fix</span></p>
+          <p class="checkpoint"><strong>Publish checkpoint:</strong> Run validation and reviewer approval required before publish.</p>
+        </section>
+      </div>
+    </main>
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips"><span class="chip">Brief v1</span><span class="chip">QRE v4</span><span class="chip">Stage: Questionnaire</span></div>
+      <div class="chat"><strong>Assistant:</strong> I can fix the two validation issues now and show you exactly what changed.</div>
+      <div class="ai-actions"><button>Apply fixes</button><button>Explain diffs</button><button>Manual Fix Path</button></div>
+    </aside>
+  </div>
+  <div class="feedback"><button onclick="toggleFeedback()">Feedback</button></div>
+  <div class="feedback-drawer" id="feedbackDrawer"><strong>Prototype feedback</strong><textarea id="feedbackNote"></textarea><p><button onclick="saveFeedback()">Save</button></p></div>
+  <script src="app.js"></script>
+</body>
+</html>

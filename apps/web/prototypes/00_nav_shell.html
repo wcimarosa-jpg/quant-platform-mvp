@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype 00 - Navigation Shell</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="left-nav">
+      <div class="brand">Egg Strategy AI Research</div>
+      <a class="active" href="00_nav_shell.html">00 Nav Shell</a>
+      <a href="01_home_dashboard.html">01 Home</a>
+      <a href="02_project_setup_wizard.html">02 Project Setup</a>
+      <a href="03_brief_ingest_review.html">03 Brief Review</a>
+      <a href="04_survey_builder.html">04 Survey Builder</a>
+      <a href="05_mapping_data_upload.html">05 Data Mapping</a>
+      <a href="06_analysis_run_results.html">06 Analysis</a>
+      <a href="07_reporting_exports_admin_costs.html">07 Reporting + Costs</a>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 style="margin:0">Shared Shell Pattern</h2>
+          <div class="subtle">Project switcher, status model, and persistent AI panel.</div>
+        </div>
+        <div>
+          <span class="chip">Role: Researcher</span>
+          <span class="chip">Notifications: 3</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="card span-6">
+          <h3 style="margin-top:0">Home Screen Structure</h3>
+          <ul>
+            <li>Left navigation with journey stages</li>
+            <li>Main work area with status and actions</li>
+            <li>Right assistant panel with context-aware actions</li>
+          </ul>
+        </section>
+        <section class="card span-6">
+          <h3 style="margin-top:0">Status Model</h3>
+          <p><span class="badge ok">draft</span> <span class="badge ok">in_review</span> <span class="badge warn">locked</span> <span class="badge ok">running</span> <span class="badge warn">failed</span> <span class="badge ok">completed</span></p>
+          <p class="subtle">Statuses are always visible to reduce confusion and prevent mis-clicks.</p>
+        </section>
+        <section class="card span-12 checkpoint">
+          <strong>Approval checkpoints</strong>
+          <div class="subtle">Publish Draft, Lock Mapping, Run Analysis, Export Findings</div>
+        </section>
+      </div>
+    </main>
+
+    <aside class="assistant">
+      <div><strong>AI Assistant</strong></div>
+      <div class="chips">
+        <span class="chip">Project: NYC Tourism</span>
+        <span class="chip">Method: Segmentation</span>
+        <span class="chip">Brief v2</span>
+      </div>
+      <div class="chat">
+        <div><strong>Assistant:</strong> I can guide you through each stage and explain why each recommendation is suggested.</div>
+      </div>
+      <div class="ai-actions">
+        <button>Suggest Next Step</button>
+        <button>Explain Current Stage</button>
+        <button>Manual Fallback</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="feedback">
+    <button onclick="toggleFeedback()">Feedback</button>
+  </div>
+  <div class="feedback-drawer" id="feedbackDrawer">
+    <strong>Prototype feedback</strong>
+    <textarea id="feedbackNote" placeholder="What do you want to change?"></textarea>
+    <p><button onclick="saveFeedback()">Save</button></p>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

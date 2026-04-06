@@ -87,7 +87,7 @@ class TestKMeans:
     def test_cluster_sizes_sum(self):
         result = run_kmeans(_df(), iv_columns()[:10])
         total = sum(c["size"] for c in result["kmeans_clusters"])
-        assert total > 100
+        assert total == 200  # synthetic fixture has no NaN in ATT columns
 
     def test_cluster_has_centroid(self):
         for c in run_kmeans(_df(), iv_columns()[:5])["kmeans_clusters"]:
@@ -100,6 +100,11 @@ class TestKMeans:
 
     def test_custom_k_values(self):
         assert run_kmeans(_df(), iv_columns()[:10], k_values=[2, 3])["selected_k"] in [2, 3]
+
+    def test_k_value_one_raises(self):
+        """k=1 is invalid for silhouette — should be filtered and raise AnalysisError."""
+        with pytest.raises(AnalysisError):
+            run_kmeans(_df(), iv_columns()[:10], k_values=[1])
 
     def test_missing_columns_raises(self):
         with pytest.raises(AnalysisError):
