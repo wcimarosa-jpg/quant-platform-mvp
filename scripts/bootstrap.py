@@ -80,7 +80,7 @@ def install_npm() -> bool:
         print("  npm not found — skipping frontend install")
         print("  Install Node.js 18+ to enable the frontend")
         return True
-    result = subprocess.run(["npm", "install"], cwd=str(frontend_dir), shell=True)
+    result = subprocess.run([npm_cmd, "install"], cwd=str(frontend_dir))
     return result.returncode == 0
 
 
@@ -130,7 +130,8 @@ def main() -> int:
         step("5. Skipping frontend (--skip-npm)")
 
     step("6. Verifying setup")
-    verify()
+    if not verify():
+        print("  WARNING: Verification failed — check output above")
 
     step("DONE")
     print("  Start the API:      python -m uvicorn apps.api.main:app --port 8010 --reload")

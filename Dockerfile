@@ -7,10 +7,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc g++ && \
     rm -rf /var/lib/apt/lists/*
 
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir -e ".[dev]" || pip install --no-cache-dir .
-
+# Copy full source first, then install (non-editable, no dev extras)
 COPY . .
+RUN pip install --no-cache-dir .
 
 # Run migrations on startup, then start API
 EXPOSE 8010

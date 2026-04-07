@@ -12,4 +12,6 @@ data/*.db
 backups/
 *.db-wal
 *.db-shm
+*.egg-info
+.mypy_cache
 .env

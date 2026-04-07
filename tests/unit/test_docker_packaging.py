@@ -97,6 +97,14 @@ class TestDockerCompose:
         content = (PROJECT_ROOT / "docker-compose.yml").read_text()
         assert "healthcheck:" in content
 
+    def test_compose_has_restart_policy(self):
+        content = (PROJECT_ROOT / "docker-compose.yml").read_text()
+        assert "restart:" in content
+
+    def test_dockerfile_uses_non_editable_install(self):
+        content = (PROJECT_ROOT / "Dockerfile").read_text()
+        assert "-e" not in content or "pip install --no-cache-dir ." in content
+
     def test_compose_has_volume(self):
         content = (PROJECT_ROOT / "docker-compose.yml").read_text()
         assert "volumes:" in content
