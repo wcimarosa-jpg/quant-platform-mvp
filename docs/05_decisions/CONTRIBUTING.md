@@ -53,3 +53,4 @@ The `scripts/check_adr.py` script verifies:
 | [003](ADR-003-storage-architecture.md) | Storage Architecture | Accepted | 2026-04-06 |
 | [004](ADR-004-analysis-runtime.md) | Analysis Runtime | Accepted | 2026-04-06 |
 | [005](ADR-005-auth-rbac.md) | Authentication and RBAC | Accepted | 2026-04-06 |
+| [006](ADR-006-api-versioning.md) | API Versioning and Schema Compatibility | Accepted | 2026-04-07 |
