@@ -55,6 +55,24 @@ jobs:
         run: pyright packages/shared/db/models.py packages/shared/auth.py packages/shared/idempotency.py packages/shared/observability.py packages/survey_analysis/plugin_contract.py packages/survey_analysis/result_schemas.py
         continue-on-error: true  # advisory until full typing is adopted
 
+  security-scan:
+    name: Security & Dependency Scan
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev]"
+          pip install pip-audit
+      - name: pip-audit (known vulnerabilities)
+        run: pip-audit --strict --desc
+      - name: Dependency freshness check
+        run: python scripts/check_deps.py
+
   schema-check:
     name: Schema & Migration Check
     runs-on: ubuntu-latest
