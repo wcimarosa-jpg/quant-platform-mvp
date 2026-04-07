@@ -1,3 +1,4 @@
+import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { ProjectSetupPage } from './pages/ProjectSetupPage';
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/projects/:projectId/mapping" element={<MappingPage />} />
         <Route path="/projects/:projectId/analysis" element={<AnalysisPage />} />
         <Route path="/projects/:projectId/report" element={<ReportingPage />} />
+        <Route path="*" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );

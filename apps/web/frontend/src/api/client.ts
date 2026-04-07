@@ -24,16 +24,17 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   const { method = 'GET', body, headers = {} } = options;
   const url = `${API_BASE}${path}`;
 
-  const fetchOptions: RequestInit = {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers,
-    },
-  };
-  if (body) {
+  const fetchHeaders: Record<string, string> = { ...headers };
+  const fetchOptions: RequestInit = { method };
+
+  if (body instanceof FormData) {
+    // Let browser set Content-Type with multipart boundary
+    fetchOptions.body = body;
+  } else if (body) {
+    fetchHeaders['Content-Type'] = 'application/json';
     fetchOptions.body = JSON.stringify(body);
   }
+  fetchOptions.headers = fetchHeaders;
 
   const response = await fetch(url, fetchOptions);
   if (!response.ok) {

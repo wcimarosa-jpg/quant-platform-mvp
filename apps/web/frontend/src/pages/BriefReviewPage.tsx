@@ -19,7 +19,15 @@ export function BriefReviewPage() {
   );
 
   return (
-    <AppShell currentStage={2} projectId={projectId}>
+    <AppShell
+      currentStage={2}
+      projectId={projectId}
+      chips={[
+        { label: 'Stage', value: 'Brief Review' },
+        { label: 'Project', value: projectId || '' },
+      ]}
+      actions={['Tighten language', 'Remove ambiguity', 'Shorten for executive']}
+    >
       <PageHeader title="Research Brief" subtitle="Step 2 of 6 — Upload and review your research brief" />
       <div className="card" style={{ marginBottom: 16 }}>
         <h3>Upload Brief</h3>

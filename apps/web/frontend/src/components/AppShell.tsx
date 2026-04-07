@@ -3,10 +3,17 @@ import { LeftNav } from './LeftNav';
 import { AssistantPanel } from './AssistantPanel';
 import './AppShell.css';
 
+interface ContextChip {
+  label: string;
+  value: string;
+}
+
 interface AppShellProps {
   children: ReactNode;
   currentStage?: number;
   projectId?: string;
+  chips?: ContextChip[];
+  actions?: string[];
 }
 
 const STAGES = [
@@ -19,12 +26,12 @@ const STAGES = [
   { label: 'Reporting', path: 'report' },
 ];
 
-export function AppShell({ children, currentStage = 0, projectId }: AppShellProps) {
+export function AppShell({ children, currentStage = 0, projectId, chips, actions }: AppShellProps) {
   return (
     <div className="layout">
       <LeftNav stages={STAGES} activeStage={currentStage} projectId={projectId} />
       <main className="main">{children}</main>
-      <AssistantPanel />
+      <AssistantPanel chips={chips} actions={actions} />
     </div>
   );
 }
