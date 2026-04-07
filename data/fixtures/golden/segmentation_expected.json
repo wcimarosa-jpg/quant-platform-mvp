@@ -1,0 +1,155 @@
+{
+  "analysis_type": "segmentation",
+  "varclus_clusters": [
+    {
+      "cluster_id": 1,
+      "variables": [
+        "ATT_01",
+        "ATT_03",
+        "ATT_05",
+        "ATT_07",
+        "ATT_13",
+        "ATT_18"
+      ],
+      "representative": "ATT_03",
+      "eigenvalue": 2.3004,
+      "variance_explained": 0.2069
+    },
+    {
+      "cluster_id": 2,
+      "variables": [
+        "ATT_19"
+      ],
+      "representative": "ATT_19",
+      "eigenvalue": 0.0,
+      "variance_explained": 1.0
+    },
+    {
+      "cluster_id": 3,
+      "variables": [
+        "ATT_02",
+        "ATT_06",
+        "ATT_10",
+        "ATT_11"
+      ],
+      "representative": "ATT_06",
+      "eigenvalue": 2.137,
+      "variance_explained": 0.281
+    },
+    {
+      "cluster_id": 4,
+      "variables": [
+        "ATT_04",
+        "ATT_12",
+        "ATT_16"
+      ],
+      "representative": "ATT_04",
+      "eigenvalue": 1.9083,
+      "variance_explained": 0.3913
+    },
+    {
+      "cluster_id": 5,
+      "variables": [
+        "ATT_08",
+        "ATT_09",
+        "ATT_14",
+        "ATT_15",
+        "ATT_17",
+        "ATT_20"
+      ],
+      "representative": "ATT_17",
+      "eigenvalue": 2.2889,
+      "variance_explained": 0.2177
+    }
+  ],
+  "varclus_representatives": [
+    "ATT_03",
+    "ATT_19",
+    "ATT_06",
+    "ATT_04",
+    "ATT_17"
+  ],
+  "selected_k": 6,
+  "silhouette_score": 0.1771,
+  "kmeans_clusters": [
+    {
+      "cluster_id": 1,
+      "label": "Segment 1",
+      "size": 34,
+      "size_pct": 17.0,
+      "centroid": {
+        "ATT_03": 3.912,
+        "ATT_19": 4.412,
+        "ATT_06": 3.176,
+        "ATT_04": 3.706,
+        "ATT_17": 1.529
+      }
+    },
+    {
+      "cluster_id": 2,
+      "label": "Segment 2",
+      "size": 28,
+      "size_pct": 14.0,
+      "centroid": {
+        "ATT_03": 1.643,
+        "ATT_19": 2.821,
+        "ATT_06": 2.321,
+        "ATT_04": 4.464,
+        "ATT_17": 3.536
+      }
+    },
+    {
+      "cluster_id": 3,
+      "label": "Segment 3",
+      "size": 28,
+      "size_pct": 14.0,
+      "centroid": {
+        "ATT_03": 2.714,
+        "ATT_19": 3.179,
+        "ATT_06": 1.571,
+        "ATT_04": 1.75,
+        "ATT_17": 1.714
+      }
+    },
+    {
+      "cluster_id": 4,
+      "label": "Segment 4",
+      "size": 41,
+      "size_pct": 20.5,
+      "centroid": {
+        "ATT_03": 4.634,
+        "ATT_19": 2.171,
+        "ATT_06": 2.585,
+        "ATT_04": 3.122,
+        "ATT_17": 4.22
+      }
+    },
+    {
+      "cluster_id": 5,
+      "label": "Segment 5",
+      "size": 30,
+      "size_pct": 15.0,
+      "centroid": {
+        "ATT_03": 3.4,
+        "ATT_19": 1.5,
+        "ATT_06": 4.267,
+        "ATT_04": 3.033,
+        "ATT_17": 1.933
+      }
+    },
+    {
+      "cluster_id": 6,
+      "label": "Segment 6",
+      "size": 39,
+      "size_pct": 19.5,
+      "centroid": {
+        "ATT_03": 2.051,
+        "ATT_19": 3.667,
+        "ATT_06": 3.385,
+        "ATT_04": 1.795,
+        "ATT_17": 4.333
+      }
+    }
+  ],
+  "profile_tables": []
+}

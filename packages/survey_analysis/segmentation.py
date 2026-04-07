@@ -304,8 +304,8 @@ register_composite_plugin(
     steps=[_step_varclus, _step_kmeans],
     version="1.0.0",
     description="VarClus variable clustering + KMeans respondent segmentation + profile tables",
-    required_kwargs=["df", "attitude_cols"],
-    optional_kwargs=["segment_col", "max_k", "min_k"],
+    required_kwargs=["df", "clustering_vars"],
+    optional_kwargs=["k_values", "profile_vars", "max_eigen"],
     result_schema=SegmentationResultSummary,
     tags=["segmentation", "clustering", "composite"],
 )

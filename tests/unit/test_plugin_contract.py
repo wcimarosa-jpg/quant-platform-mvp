@@ -301,6 +301,7 @@ class TestExistingMethodologies:
         assert meta is not None
         assert meta.is_composite is True
         assert "df" in meta.required_kwargs
+        assert "clustering_vars" in meta.required_kwargs
         assert meta.result_schema is not None
 
     def test_maxdiff_turf_has_plugin_metadata(self):

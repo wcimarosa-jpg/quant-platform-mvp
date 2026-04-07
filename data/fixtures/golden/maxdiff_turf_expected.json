@@ -1,0 +1,203 @@
+{
+  "analysis_type": "maxdiff_turf",
+  "total_respondents": 200,
+  "item_scores": [
+    {
+      "item": "MD_TASK_01",
+      "best_count": 57,
+      "worst_count": 50,
+      "best_worst_diff": 7,
+      "rescaled_score": 100.0
+    },
+    {
+      "item": "MD_TASK_10",
+      "best_count": 45,
+      "worst_count": 40,
+      "best_worst_diff": 5,
+      "rescaled_score": 91.7
+    },
+    {
+      "item": "MD_TASK_05",
+      "best_count": 46,
+      "worst_count": 43,
+      "best_worst_diff": 3,
+      "rescaled_score": 83.3
+    },
+    {
+      "item": "MD_TASK_12",
+      "best_count": 47,
+      "worst_count": 44,
+      "best_worst_diff": 3,
+      "rescaled_score": 83.3
+    },
+    {
+      "item": "MD_TASK_09",
+      "best_count": 46,
+      "worst_count": 45,
+      "best_worst_diff": 1,
+      "rescaled_score": 75.0
+    },
+    {
+      "item": "MD_TASK_07",
+      "best_count": 52,
+      "worst_count": 53,
+      "best_worst_diff": -1,
+      "rescaled_score": 66.7
+    },
+    {
+      "item": "MD_TASK_02",
+      "best_count": 41,
+      "worst_count": 44,
+      "best_worst_diff": -3,
+      "rescaled_score": 58.3
+    },
+    {
+      "item": "MD_TASK_11",
+      "best_count": 47,
+      "worst_count": 51,
+      "best_worst_diff": -4,
+      "rescaled_score": 54.2
+    },
+    {
+      "item": "MD_TASK_03",
+      "best_count": 45,
+      "worst_count": 50,
+      "best_worst_diff": -5,
+      "rescaled_score": 50.0
+    },
+    {
+      "item": "MD_TASK_04",
+      "best_count": 51,
+      "worst_count": 57,
+      "best_worst_diff": -6,
+      "rescaled_score": 45.8
+    },
+    {
+      "item": "MD_TASK_08",
+      "best_count": 42,
+      "worst_count": 55,
+      "best_worst_diff": -13,
+      "rescaled_score": 16.7
+    },
+    {
+      "item": "MD_TASK_06",
+      "best_count": 48,
+      "worst_count": 65,
+      "best_worst_diff": -17,
+      "rescaled_score": 0.0
+    }
+  ],
+  "item_ranking": [
+    "MD_TASK_01",
+    "MD_TASK_10",
+    "MD_TASK_05",
+    "MD_TASK_12",
+    "MD_TASK_09",
+    "MD_TASK_07",
+    "MD_TASK_02",
+    "MD_TASK_11",
+    "MD_TASK_03",
+    "MD_TASK_04",
+    "MD_TASK_08",
+    "MD_TASK_06"
+  ],
+  "turf_portfolios": [
+    {
+      "portfolio_size": 1,
+      "items": [
+        "ACCEPT_03"
+      ],
+      "reach_count": 132,
+      "reach_pct": 66.0,
+      "avg_frequency": 1.0
+    },
+    {
+      "portfolio_size": 2,
+      "items": [
+        "ACCEPT_03",
+        "ACCEPT_01"
+      ],
+      "reach_count": 176,
+      "reach_pct": 88.0,
+      "avg_frequency": 1.45
+    },
+    {
+      "portfolio_size": 3,
+      "items": [
+        "ACCEPT_03",
+        "ACCEPT_01",
+        "ACCEPT_05"
+      ],
+      "reach_count": 193,
+      "reach_pct": 96.5,
+      "avg_frequency": 1.96
+    },
+    {
+      "portfolio_size": 4,
+      "items": [
+        "ACCEPT_03",
+        "ACCEPT_01",
+        "ACCEPT_05",
+        "ACCEPT_04"
+      ],
+      "reach_count": 198,
+      "reach_pct": 99.0,
+      "avg_frequency": 2.56
+    },
+    {
+      "portfolio_size": 5,
+      "items": [
+        "ACCEPT_03",
+        "ACCEPT_01",
+        "ACCEPT_05",
+        "ACCEPT_04",
+        "ACCEPT_02"
+      ],
+      "reach_count": 200,
+      "reach_pct": 100.0,
+      "avg_frequency": 3.12
+    },
+    {
+      "portfolio_size": 6,
+      "items": [
+        "ACCEPT_03",
+        "ACCEPT_01",
+        "ACCEPT_05",
+        "ACCEPT_04",
+        "ACCEPT_02",
+        "ACCEPT_06"
+      ],
+      "reach_count": 200,
+      "reach_pct": 100.0,
+      "avg_frequency": 3.73
+    },
+    {
+      "portfolio_size": 7,
+      "items": [
+        "ACCEPT_03",
+        "ACCEPT_01",
+        "ACCEPT_05",
+        "ACCEPT_04",
+        "ACCEPT_02",
+        "ACCEPT_06",
+        "ACCEPT_07"
+      ],
+      "reach_count": 200,
+      "reach_pct": 100.0,
+      "avg_frequency": 4.32
+    }
+  ],
+  "optimal_portfolio": {
+    "portfolio_size": 5,
+    "items": [
+      "ACCEPT_03",
+      "ACCEPT_01",
+      "ACCEPT_05",
+      "ACCEPT_04",
+      "ACCEPT_02"
+    ],
+    "reach_count": 200,
+    "reach_pct": 100.0,
+    "avg_frequency": 3.12
+  }
+}

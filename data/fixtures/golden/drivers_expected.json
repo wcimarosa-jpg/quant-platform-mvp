@@ -1,0 +1,960 @@
+{
+  "analysis_type": "drivers",
+  "regressions": [
+    {
+      "dv_name": "SAT_01",
+      "segment": "Total",
+      "r_squared": 0.0494,
+      "adj_r_squared": -0.0568,
+      "n": 200,
+      "coefficients": [
+        {
+          "variable": "ATT_01",
+          "coefficient": -0.1002,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_02",
+          "coefficient": -0.0619,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_03",
+          "coefficient": 0.0022,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_04",
+          "coefficient": 0.0243,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_05",
+          "coefficient": -0.0287,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_06",
+          "coefficient": 0.0102,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_07",
+          "coefficient": 0.0813,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_08",
+          "coefficient": -0.0401,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_09",
+          "coefficient": 0.011,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_10",
+          "coefficient": 0.105,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_11",
+          "coefficient": 0.003,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_12",
+          "coefficient": 0.0262,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_13",
+          "coefficient": -0.118,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_14",
+          "coefficient": -0.051,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_15",
+          "coefficient": 0.0765,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_16",
+          "coefficient": 0.0185,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_17",
+          "coefficient": -0.0465,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_18",
+          "coefficient": 0.0562,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_19",
+          "coefficient": 0.0535,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_20",
+          "coefficient": 0.0055,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        }
+      ]
+    },
+    {
+      "dv_name": "SAT_02",
+      "segment": "Total",
+      "r_squared": 0.095,
+      "adj_r_squared": -0.0061,
+      "n": 200,
+      "coefficients": [
+        {
+          "variable": "ATT_01",
+          "coefficient": 0.0509,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_02",
+          "coefficient": 0.0194,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_03",
+          "coefficient": -0.006,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_04",
+          "coefficient": 0.054,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_05",
+          "coefficient": -0.1194,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_06",
+          "coefficient": 0.1029,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_07",
+          "coefficient": 0.0329,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_08",
+          "coefficient": -0.179,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_09",
+          "coefficient": 0.0348,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_10",
+          "coefficient": -0.0931,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_11",
+          "coefficient": -0.0396,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_12",
+          "coefficient": -0.0821,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_13",
+          "coefficient": -0.0068,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_14",
+          "coefficient": 0.1352,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_15",
+          "coefficient": -0.0289,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_16",
+          "coefficient": -0.0924,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_17",
+          "coefficient": 0.089,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_18",
+          "coefficient": 0.0075,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_19",
+          "coefficient": 0.1008,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_20",
+          "coefficient": -0.0083,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        }
+      ]
+    },
+    {
+      "dv_name": "NPS",
+      "segment": "Total",
+      "r_squared": 0.0919,
+      "adj_r_squared": -0.0095,
+      "n": 200,
+      "coefficients": [
+        {
+          "variable": "ATT_01",
+          "coefficient": 0.0589,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_02",
+          "coefficient": 0.2612,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_03",
+          "coefficient": 0.5573,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_04",
+          "coefficient": 0.2142,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_05",
+          "coefficient": -0.2639,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_06",
+          "coefficient": -0.2271,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_07",
+          "coefficient": -0.1709,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_08",
+          "coefficient": 0.1197,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_09",
+          "coefficient": -0.124,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_10",
+          "coefficient": -0.0966,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_11",
+          "coefficient": 0.2567,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_12",
+          "coefficient": 0.1418,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_13",
+          "coefficient": 0.1535,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_14",
+          "coefficient": 0.1666,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_15",
+          "coefficient": -0.355,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_16",
+          "coefficient": 0.0189,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_17",
+          "coefficient": 0.075,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_18",
+          "coefficient": -0.0048,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_19",
+          "coefficient": -0.2786,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        },
+        {
+          "variable": "ATT_20",
+          "coefficient": 0.1318,
+          "std_error": null,
+          "p_value": null,
+          "significant": null
+        }
+      ]
+    }
+  ],
+  "pearson_correlations": [
+    {
+      "iv": "ATT_01",
+      "dv": "SAT_01",
+      "r": -0.0826,
+      "p_value": 0.244889,
+      "n": 200
+    },
+    {
+      "iv": "ATT_01",
+      "dv": "SAT_02",
+      "r": 0.0599,
+      "p_value": 0.399346,
+      "n": 200
+    },
+    {
+      "iv": "ATT_01",
+      "dv": "NPS",
+      "r": 0.0212,
+      "p_value": 0.765213,
+      "n": 200
+    },
+    {
+      "iv": "ATT_02",
+      "dv": "SAT_01",
+      "r": -0.0694,
+      "p_value": 0.328769,
+      "n": 200
+    },
+    {
+      "iv": "ATT_02",
+      "dv": "SAT_02",
+      "r": 0.0462,
+      "p_value": 0.515889,
+      "n": 200
+    },
+    {
+      "iv": "ATT_02",
+      "dv": "NPS",
+      "r": 0.1043,
+      "p_value": 0.141455,
+      "n": 200
+    },
+    {
+      "iv": "ATT_03",
+      "dv": "SAT_01",
+      "r": -0.0234,
+      "p_value": 0.742348,
+      "n": 200
+    },
+    {
+      "iv": "ATT_03",
+      "dv": "SAT_02",
+      "r": -0.0023,
+      "p_value": 0.974406,
+      "n": 200
+    },
+    {
+      "iv": "ATT_03",
+      "dv": "NPS",
+      "r": 0.1749,
+      "p_value": 0.013261,
+      "n": 200
+    },
+    {
+      "iv": "ATT_04",
+      "dv": "SAT_01",
+      "r": 0.0204,
+      "p_value": 0.774655,
+      "n": 200
+    },
+    {
+      "iv": "ATT_04",
+      "dv": "SAT_02",
+      "r": 0.0423,
+      "p_value": 0.552183,
+      "n": 200
+    },
+    {
+      "iv": "ATT_04",
+      "dv": "NPS",
+      "r": 0.0776,
+      "p_value": 0.2749,
+      "n": 200
+    },
+    {
+      "iv": "ATT_05",
+      "dv": "SAT_01",
+      "r": -0.0366,
+      "p_value": 0.606895,
+      "n": 200
+    },
+    {
+      "iv": "ATT_05",
+      "dv": "SAT_02",
+      "r": -0.0914,
+      "p_value": 0.198227,
+      "n": 200
+    },
+    {
+      "iv": "ATT_05",
+      "dv": "NPS",
+      "r": -0.0584,
+      "p_value": 0.411173,
+      "n": 200
+    },
+    {
+      "iv": "ATT_06",
+      "dv": "SAT_01",
+      "r": -0.007,
+      "p_value": 0.921804,
+      "n": 200
+    },
+    {
+      "iv": "ATT_06",
+      "dv": "SAT_02",
+      "r": 0.0993,
+      "p_value": 0.161844,
+      "n": 200
+    },
+    {
+      "iv": "ATT_06",
+      "dv": "NPS",
+      "r": -0.0361,
+      "p_value": 0.611541,
+      "n": 200
+    },
+    {
+      "iv": "ATT_07",
+      "dv": "SAT_01",
+      "r": 0.0725,
+      "p_value": 0.307759,
+      "n": 200
+    },
+    {
+      "iv": "ATT_07",
+      "dv": "SAT_02",
+      "r": 0.0407,
+      "p_value": 0.566813,
+      "n": 200
+    },
+    {
+      "iv": "ATT_07",
+      "dv": "NPS",
+      "r": -0.0523,
+      "p_value": 0.462189,
+      "n": 200
+    },
+    {
+      "iv": "ATT_08",
+      "dv": "SAT_01",
+      "r": -0.0355,
+      "p_value": 0.618221,
+      "n": 200
+    },
+    {
+      "iv": "ATT_08",
+      "dv": "SAT_02",
+      "r": -0.1518,
+      "p_value": 0.031861,
+      "n": 200
+    },
+    {
+      "iv": "ATT_08",
+      "dv": "NPS",
+      "r": 0.025,
+      "p_value": 0.725507,
+      "n": 200
+    },
+    {
+      "iv": "ATT_09",
+      "dv": "SAT_01",
+      "r": -0.0205,
+      "p_value": 0.773178,
+      "n": 200
+    },
+    {
+      "iv": "ATT_09",
+      "dv": "SAT_02",
+      "r": 0.0285,
+      "p_value": 0.688325,
+      "n": 200
+    },
+    {
+      "iv": "ATT_09",
+      "dv": "NPS",
+      "r": -0.0678,
+      "p_value": 0.340116,
+      "n": 200
+    },
+    {
+      "iv": "ATT_10",
+      "dv": "SAT_01",
+      "r": 0.0678,
+      "p_value": 0.34,
+      "n": 200
+    },
+    {
+      "iv": "ATT_10",
+      "dv": "SAT_02",
+      "r": -0.0761,
+      "p_value": 0.284184,
+      "n": 200
+    },
+    {
+      "iv": "ATT_10",
+      "dv": "NPS",
+      "r": -0.0221,
+      "p_value": 0.755817,
+      "n": 200
+    },
+    {
+      "iv": "ATT_11",
+      "dv": "SAT_01",
+      "r": 0.0089,
+      "p_value": 0.900383,
+      "n": 200
+    },
+    {
+      "iv": "ATT_11",
+      "dv": "SAT_02",
+      "r": -0.0084,
+      "p_value": 0.906275,
+      "n": 200
+    },
+    {
+      "iv": "ATT_11",
+      "dv": "NPS",
+      "r": 0.0643,
+      "p_value": 0.365524,
+      "n": 200
+    },
+    {
+      "iv": "ATT_12",
+      "dv": "SAT_01",
+      "r": 0.022,
+      "p_value": 0.756794,
+      "n": 200
+    },
+    {
+      "iv": "ATT_12",
+      "dv": "SAT_02",
+      "r": -0.0876,
+      "p_value": 0.217145,
+      "n": 200
+    },
+    {
+      "iv": "ATT_12",
+      "dv": "NPS",
+      "r": 0.0529,
+      "p_value": 0.456963,
+      "n": 200
+    },
+    {
+      "iv": "ATT_13",
+      "dv": "SAT_01",
+      "r": -0.0891,
+      "p_value": 0.209625,
+      "n": 200
+    },
+    {
+      "iv": "ATT_13",
+      "dv": "SAT_02",
+      "r": -0.02,
+      "p_value": 0.778485,
+      "n": 200
+    },
+    {
+      "iv": "ATT_13",
+      "dv": "NPS",
+      "r": 0.031,
+      "p_value": 0.663165,
+      "n": 200
+    },
+    {
+      "iv": "ATT_14",
+      "dv": "SAT_01",
+      "r": -0.0473,
+      "p_value": 0.506149,
+      "n": 200
+    },
+    {
+      "iv": "ATT_14",
+      "dv": "SAT_02",
+      "r": 0.1223,
+      "p_value": 0.084444,
+      "n": 200
+    },
+    {
+      "iv": "ATT_14",
+      "dv": "NPS",
+      "r": 0.0422,
+      "p_value": 0.55294,
+      "n": 200
+    },
+    {
+      "iv": "ATT_15",
+      "dv": "SAT_01",
+      "r": 0.0387,
+      "p_value": 0.586028,
+      "n": 200
+    },
+    {
+      "iv": "ATT_15",
+      "dv": "SAT_02",
+      "r": -0.0202,
+      "p_value": 0.776883,
+      "n": 200
+    },
+    {
+      "iv": "ATT_15",
+      "dv": "NPS",
+      "r": -0.085,
+      "p_value": 0.231323,
+      "n": 200
+    },
+    {
+      "iv": "ATT_16",
+      "dv": "SAT_01",
+      "r": 0.0114,
+      "p_value": 0.872984,
+      "n": 200
+    },
+    {
+      "iv": "ATT_16",
+      "dv": "SAT_02",
+      "r": -0.0585,
+      "p_value": 0.410541,
+      "n": 200
+    },
+    {
+      "iv": "ATT_16",
+      "dv": "NPS",
+      "r": 0.021,
+      "p_value": 0.767788,
+      "n": 200
+    },
+    {
+      "iv": "ATT_17",
+      "dv": "SAT_01",
+      "r": -0.0485,
+      "p_value": 0.495006,
+      "n": 200
+    },
+    {
+      "iv": "ATT_17",
+      "dv": "SAT_02",
+      "r": 0.071,
+      "p_value": 0.318078,
+      "n": 200
+    },
+    {
+      "iv": "ATT_17",
+      "dv": "NPS",
+      "r": 0.0248,
+      "p_value": 0.727682,
+      "n": 200
+    },
+    {
+      "iv": "ATT_18",
+      "dv": "SAT_01",
+      "r": 0.0733,
+      "p_value": 0.302509,
+      "n": 200
+    },
+    {
+      "iv": "ATT_18",
+      "dv": "SAT_02",
+      "r": -0.0043,
+      "p_value": 0.951579,
+      "n": 200
+    },
+    {
+      "iv": "ATT_18",
+      "dv": "NPS",
+      "r": 0.0091,
+      "p_value": 0.898086,
+      "n": 200
+    },
+    {
+      "iv": "ATT_19",
+      "dv": "SAT_01",
+      "r": 0.0313,
+      "p_value": 0.66031,
+      "n": 200
+    },
+    {
+      "iv": "ATT_19",
+      "dv": "SAT_02",
+      "r": 0.1158,
+      "p_value": 0.102547,
+      "n": 200
+    },
+    {
+      "iv": "ATT_19",
+      "dv": "NPS",
+      "r": -0.0931,
+      "p_value": 0.189658,
+      "n": 200
+    },
+    {
+      "iv": "ATT_20",
+      "dv": "SAT_01",
+      "r": -0.0163,
+      "p_value": 0.818986,
+      "n": 200
+    },
+    {
+      "iv": "ATT_20",
+      "dv": "SAT_02",
+      "r": -0.0008,
+      "p_value": 0.990996,
+      "n": 200
+    },
+    {
+      "iv": "ATT_20",
+      "dv": "NPS",
+      "r": 0.0585,
+      "p_value": 0.410222,
+      "n": 200
+    }
+  ],
+  "weighted_effects": [
+    {
+      "variable": "ATT_15",
+      "top_n_count": 2,
+      "total_combos": 3,
+      "frequency_pct": 66.7
+    },
+    {
+      "variable": "ATT_05",
+      "top_n_count": 2,
+      "total_combos": 3,
+      "frequency_pct": 66.7
+    },
+    {
+      "variable": "ATT_19",
+      "top_n_count": 2,
+      "total_combos": 3,
+      "frequency_pct": 66.7
+    },
+    {
+      "variable": "ATT_13",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_10",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_01",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_07",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_08",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_14",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_06",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_03",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    },
+    {
+      "variable": "ATT_02",
+      "top_n_count": 1,
+      "total_combos": 3,
+      "frequency_pct": 33.3
+    }
+  ],
+  "top_drivers": [
+    "ATT_15",
+    "ATT_05",
+    "ATT_19",
+    "ATT_13",
+    "ATT_10",
+    "ATT_01",
+    "ATT_07",
+    "ATT_08",
+    "ATT_14",
+    "ATT_06"
+  ]
+}
