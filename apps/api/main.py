@@ -24,7 +24,7 @@ async def conflict_error_handler(request: Request, exc: ConflictError) -> JSONRe
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:8510"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
