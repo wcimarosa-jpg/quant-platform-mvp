@@ -191,7 +191,7 @@ class TestMetricsEndpoints:
         data = resp.json()
         assert "all_passing" in data
         assert "slos" in data
-        assert len(data["slos"]) == 4
+        assert len(data["slos"]) == 7
 
     def test_slos_have_required_fields(self, client):
         resp = client.get("/ops/slos").json()

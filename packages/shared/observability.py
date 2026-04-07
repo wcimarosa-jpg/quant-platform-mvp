@@ -243,6 +243,7 @@ class SLODefinition:
 
 # Default SLOs for the platform
 DEFAULT_SLOS: list[SLODefinition] = [
+    # API reliability
     SLODefinition(
         name="api_latency_p95",
         metric_name="http_request_duration_ms",
@@ -258,6 +259,14 @@ DEFAULT_SLOS: list[SLODefinition] = [
         description="Error rate <= 5%",
     ),
     SLODefinition(
+        name="api_availability",
+        metric_name="api_availability",
+        threshold=0.99,
+        comparison="gte",
+        description="API availability >= 99% (successful requests / total)",
+    ),
+    # Job health
+    SLODefinition(
         name="job_success_rate",
         metric_name="job_success_rate",
         threshold=0.95,
@@ -270,6 +279,21 @@ DEFAULT_SLOS: list[SLODefinition] = [
         threshold=100.0,
         comparison="lte",
         description="Queue depth <= 100 pending jobs",
+    ),
+    SLODefinition(
+        name="analysis_completion_time_p95",
+        metric_name="analysis_duration_ms",
+        threshold=30000.0,
+        comparison="lte",
+        description="95th percentile analysis run completion <= 30s",
+    ),
+    # Cost
+    SLODefinition(
+        name="cost_per_run_usd",
+        metric_name="cost_per_run_usd",
+        threshold=0.50,
+        comparison="lte",
+        description="Average cost per analysis run <= $0.50",
     ),
 ]
 
@@ -312,6 +336,10 @@ def check_all_slos(collector: MetricsCollector | None = None) -> list[dict[str, 
     error_rate = error_count / total_requests if total_requests > 0 else 0.0
     results.append(check_slo(slo_map["api_error_rate"], error_rate))
 
+    # API availability (successful / total)
+    availability = (total_requests - error_count) / total_requests if total_requests > 0 else 1.0
+    results.append(check_slo(slo_map["api_availability"], availability))
+
     # Job success rate
     jobs_completed = m.get_counter("jobs_completed")
     jobs_failed = m.get_counter("jobs_failed")
@@ -322,6 +350,16 @@ def check_all_slos(collector: MetricsCollector | None = None) -> list[dict[str, 
     # Queue depth
     queue_depth = m.get_gauge("job_queue_depth")
     results.append(check_slo(slo_map["job_queue_depth"], queue_depth))
+
+    # Analysis completion time p95
+    analysis_p95 = m.get_percentile("analysis_duration_ms", 95)
+    results.append(check_slo(slo_map["analysis_completion_time_p95"], analysis_p95))
+
+    # Cost per run
+    total_cost = m.get_gauge("llm_cost_total_usd")
+    total_runs = jobs_completed + jobs_failed
+    cost_per_run = total_cost / total_runs if total_runs > 0 else 0.0
+    results.append(check_slo(slo_map["cost_per_run_usd"], cost_per_run))
 
     return results
 

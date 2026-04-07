@@ -1783,6 +1783,54 @@
         ]
       }
     },
+    "/ops/alerts": {
+      "get": {
+        "description": "Current alert status: active alerts and recent history.",
+        "operationId": "get_alerts_ops_alerts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Alerts Ops Alerts Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Alerts",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
+    "/ops/alerts/evaluate": {
+      "post": {
+        "description": "Trigger an alert evaluation cycle. Returns new/changed alerts.",
+        "operationId": "evaluate_alerts_ops_alerts_evaluate_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Evaluate Alerts Ops Alerts Evaluate Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Evaluate Alerts",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
     "/ops/cost": {
       "get": {
         "description": "Cost tracking: token usage and estimated spend.",

@@ -285,7 +285,7 @@ class TestSLOChecks:
     def test_check_all_slos_defaults(self):
         """With no data, all SLOs should pass (zero values)."""
         results = check_all_slos()
-        assert len(results) == 4
+        assert len(results) == 7
         for r in results:
             assert r["passing"] is True
 

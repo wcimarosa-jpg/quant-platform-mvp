@@ -1,9 +1,11 @@
-"""Operations dashboard — metrics, SLOs, cost tracking.
+"""Operations dashboard — metrics, SLOs, cost tracking, alerting.
 
 Provides:
 - GET /ops/metrics      — raw metrics snapshot (JSON)
 - GET /ops/slos         — SLO status with pass/fail
 - GET /ops/cost         — cost tracking by stage/project
+- GET /ops/alerts       — active alerts and recent history
+- POST /ops/alerts/evaluate — trigger alert evaluation cycle
 - GET /ops/dashboard    — HTML dashboard page
 """
 
@@ -14,7 +16,11 @@ from typing import Any
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 
+from packages.shared.alerting import AlertEngine
 from packages.shared.observability import check_all_slos, metrics
+
+# Singleton alert engine for the app lifecycle
+_alert_engine = AlertEngine()
 
 router = APIRouter(prefix="/ops", tags=["operations"])
 
@@ -80,6 +86,34 @@ def record_llm_cost(
         metrics.increment_gauge("project_cost_usd", cost_usd, labels={"project": project_id})
     if run_id:
         metrics.increment_gauge("run_cost_usd", cost_usd, labels={"run": run_id})
+
+
+# ---------------------------------------------------------------------------
+# Alerting endpoints
+# ---------------------------------------------------------------------------
+
+
+@router.get("/alerts")
+def get_alerts() -> dict[str, Any]:
+    """Current alert status: active alerts and recent history."""
+    return _alert_engine.get_status()
+
+
+@router.post("/alerts/evaluate")
+def evaluate_alerts() -> dict[str, Any]:
+    """Trigger an alert evaluation cycle. Returns new/changed alerts."""
+    new_alerts = _alert_engine.evaluate()
+    return {
+        "evaluated": True,
+        "new_alerts": len(new_alerts),
+        "alerts": [a.to_dict() for a in new_alerts],
+        "active_count": len(_alert_engine.active_alerts),
+    }
+
+
+def get_alert_engine() -> AlertEngine:
+    """Access the singleton alert engine (for testing)."""
+    return _alert_engine
 
 
 # ---------------------------------------------------------------------------
