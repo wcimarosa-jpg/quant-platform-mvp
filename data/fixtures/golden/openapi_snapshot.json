@@ -1737,6 +1737,7 @@
     },
     "/health": {
       "get": {
+        "description": "Basic health check for load balancers and uptime monitors.\n\nKept lightweight \u2014 no SLO computation. Use /health/detailed for full status.",
         "operationId": "health_check_health_get",
         "responses": {
           "200": {
@@ -1755,6 +1756,124 @@
         "summary": "Health Check",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/health/detailed": {
+      "get": {
+        "description": "Detailed health with SLO status, job health, and dependency checks.",
+        "operationId": "health_detailed_health_detailed_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Health Detailed Health Detailed Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health Detailed",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/ops/cost": {
+      "get": {
+        "description": "Cost tracking: token usage and estimated spend.",
+        "operationId": "get_cost_ops_cost_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Cost Ops Cost Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Cost",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
+    "/ops/dashboard": {
+      "get": {
+        "description": "HTML operations dashboard with auto-refresh.",
+        "operationId": "dashboard_ops_dashboard_get",
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Dashboard",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
+    "/ops/metrics": {
+      "get": {
+        "description": "Full metrics snapshot: counters, gauges, histograms with percentiles.",
+        "operationId": "get_metrics_ops_metrics_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Metrics Ops Metrics Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Metrics",
+        "tags": [
+          "operations"
+        ]
+      }
+    },
+    "/ops/slos": {
+      "get": {
+        "description": "SLO status for all defined objectives.",
+        "operationId": "get_slos_ops_slos_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Slos Ops Slos Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Slos",
+        "tags": [
+          "operations"
         ]
       }
     }

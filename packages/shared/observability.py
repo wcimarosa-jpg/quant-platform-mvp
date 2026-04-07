@@ -142,6 +142,12 @@ class MetricsCollector:
         with self._lock:
             self._gauges[key] = value
 
+    def increment_gauge(self, name: str, delta: float, labels: dict[str, str] | None = None) -> None:
+        """Atomically increment a gauge by delta."""
+        key = self._key(name, labels)
+        with self._lock:
+            self._gauges[key] = self._gauges.get(key, 0.0) + delta
+
     def get_counter(self, name: str, labels: dict[str, str] | None = None) -> int:
         key = self._key(name, labels)
         with self._lock:
@@ -359,3 +365,13 @@ def record_job_result(job_type: str, success: bool) -> None:
     else:
         metrics.increment("jobs_failed")
         metrics.increment("jobs_failed", labels={"type": job_type})
+
+
+def record_stuck_jobs(stuck_count: int, oldest_age_seconds: float = 0.0) -> None:
+    """Update stuck-job gauges. Called periodically by the worker monitor.
+
+    stuck_count: number of jobs in RUNNING state beyond expected duration.
+    oldest_age_seconds: age of the oldest stuck job in seconds.
+    """
+    metrics.set_gauge("jobs_stuck", float(stuck_count))
+    metrics.set_gauge("oldest_running_job_age_s", oldest_age_seconds)

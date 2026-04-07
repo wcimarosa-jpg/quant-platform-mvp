@@ -6,7 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from apps.api.routes import assistant, brief_analysis, briefs, drafts, health, preflight, projects, tables
+from apps.api.routes import assistant, brief_analysis, briefs, dashboard, drafts, health, preflight, projects, tables
 from packages.shared.optimistic_lock import ConflictError
 
 app = FastAPI(
@@ -30,6 +30,7 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(dashboard.router)
 app.include_router(projects.router, prefix="/api/v1")
 app.include_router(assistant.router, prefix="/api/v1")
 app.include_router(briefs.router, prefix="/api/v1")

@@ -54,10 +54,12 @@ class TestVersioningPolicy:
         assert "ADR-006" in content
 
     def test_api_routes_use_v1_prefix(self):
-        """All non-health API routes are versioned under /api/v1."""
+        """All non-health/ops API routes are versioned under /api/v1."""
         schema = capture_openapi_schema(app)
+        # Health and ops endpoints are intentionally unversioned
+        unversioned_prefixes = ("/health", "/ops/")
         for path in schema.get("paths", {}):
-            if path == "/health":
+            if any(path.startswith(p) for p in unversioned_prefixes):
                 continue
             assert path.startswith("/api/v1"), f"Unversioned route: {path}"
 
