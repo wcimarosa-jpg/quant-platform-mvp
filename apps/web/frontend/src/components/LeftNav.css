@@ -1,0 +1,39 @@
+.left-nav {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.6px;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.left-nav a {
+  display: block;
+  text-decoration: none;
+  color: var(--ink);
+  padding: 9px 10px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.left-nav a.active,
+.left-nav a:hover {
+  background: #fff1ec;
+  color: #231f20;
+}

@@ -1,0 +1,97 @@
+:root {
+  --bg: #f6f6f4;
+  --panel: #ffffff;
+  --ink: #1a1a1a;
+  --muted: #5b5b5b;
+  --line: #dedede;
+  --brand: #111111;
+  --accent: #f85a2a;
+  --good: #208a4f;
+  --warn: #c33a1d;
+  --radius: 12px;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Aptos', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 340px;
+  min-height: 100vh;
+  gap: 14px;
+  padding: 14px;
+}
+
+.main {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+/* Topbar */
+.topbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+.topbar h1 { font-size: 20px; font-weight: 700; }
+.topbar p { color: var(--muted); font-size: 14px; margin-top: 2px; }
+
+/* Cards grid */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 16px; }
+
+/* Card */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.card h3 { font-size: 14px; color: var(--muted); font-weight: 500; margin-bottom: 6px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #e04e22; }
+.btn-secondary { background: var(--bg); color: var(--ink); border: 1px solid var(--line); }
+.btn-secondary:hover { background: #eee; }
+
+/* Status badges */
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-ok { background: #e6f4ec; color: var(--good); }
+.badge-warn { background: #fde8e4; color: var(--warn); }
+.badge-info { background: #e8f0fe; color: #1a56db; }
+.badge-running { background: #fff3e0; color: #e65100; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 14px; }
+th { color: var(--muted); font-weight: 500; }
+
+/* KPI Card */
+.kpi-value { font-size: 28px; font-weight: 700; }
+.kpi-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .layout { grid-template-columns: 1fr; }
+}

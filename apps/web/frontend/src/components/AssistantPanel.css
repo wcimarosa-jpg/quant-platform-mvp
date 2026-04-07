@@ -1,0 +1,56 @@
+.assistant {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.assistant h2 { font-size: 16px; font-weight: 700; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #f0f0ee;
+  border-radius: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chat-history {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 120px;
+}
+
+.chat-msg {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  max-width: 90%;
+}
+.chat-assistant { background: #f0f0ee; align-self: flex-start; }
+.chat-user { background: #fff1ec; align-self: flex-end; }
+
+.ai-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+.chat-input {
+  display: flex;
+  gap: 6px;
+}
+.chat-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fffdfa;
+}
