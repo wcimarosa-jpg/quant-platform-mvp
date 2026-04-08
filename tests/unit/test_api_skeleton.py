@@ -30,20 +30,13 @@ class TestAPIStub:
         assert body["service"] == "quant-platform-api"
         assert body["version"] == "0.1.0"
 
-    def test_list_projects_endpoint(self):
+    def test_list_projects_requires_auth(self):
         resp = client.get("/api/v1/projects/")
-        assert resp.status_code == 200
-        body = resp.json()
-        assert "projects" in body
-        assert body["total"] == 0
+        assert resp.status_code == 401
 
-    def test_create_project_endpoint(self):
-        resp = client.post("/api/v1/projects/?name=Test&methodology=segmentation")
-        assert resp.status_code == 200
-        body = resp.json()
-        assert body["name"] == "Test"
-        assert body["methodology"] == "segmentation"
-        assert body["status"] == "created"
+    def test_create_project_requires_auth(self):
+        resp = client.post("/api/v1/projects/", json={"name": "Test", "methodology": "segmentation"})
+        assert resp.status_code == 401
 
     def test_openapi_docs_available(self):
         resp = client.get("/docs")

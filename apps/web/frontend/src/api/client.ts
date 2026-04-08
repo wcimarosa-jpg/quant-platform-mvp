@@ -25,6 +25,13 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   const url = `${API_BASE}${path}`;
 
   const fetchHeaders: Record<string, string> = { ...headers };
+
+  // Attach auth token if available
+  const token = localStorage.getItem('quant_token');
+  if (token) {
+    fetchHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
   const fetchOptions: RequestInit = { method };
 
   if (body instanceof FormData) {

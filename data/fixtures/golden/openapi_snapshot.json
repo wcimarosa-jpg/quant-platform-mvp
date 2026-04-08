@@ -295,6 +295,24 @@
         "title": "CreateDraftRequest",
         "type": "object"
       },
+      "CreateProjectRequest": {
+        "properties": {
+          "methodology": {
+            "title": "Methodology",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "methodology"
+        ],
+        "title": "CreateProjectRequest",
+        "type": "object"
+      },
       "GenerateRequest": {
         "properties": {
           "config": {
@@ -364,6 +382,57 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "LoginResponse": {
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          },
+          "user_id": {
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "user_id",
+          "email",
+          "role",
+          "display_name"
+        ],
+        "title": "LoginResponse",
         "type": "object"
       },
       "MappingVersionRef": {
@@ -843,6 +912,48 @@
         "summary": "Panel State",
         "tags": [
           "assistant"
+        ]
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "description": "Authenticate with email + password, receive a JWT.",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Login",
+        "tags": [
+          "auth"
         ]
       }
     },
@@ -1529,6 +1640,7 @@
     },
     "/api/v1/projects/": {
       "get": {
+        "description": "List projects accessible to the authenticated user.",
         "operationId": "list_projects_api_v1_projects__get",
         "responses": {
           "200": {
@@ -1550,27 +1662,18 @@
         ]
       },
       "post": {
+        "description": "Create a new project owned by the authenticated user.",
         "operationId": "create_project_api_v1_projects__post",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "name",
-            "required": true,
-            "schema": {
-              "title": "Name",
-              "type": "string"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
             }
           },
-          {
-            "in": "query",
-            "name": "methodology",
-            "required": true,
-            "schema": {
-              "title": "Methodology",
-              "type": "string"
-            }
-          }
-        ],
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
