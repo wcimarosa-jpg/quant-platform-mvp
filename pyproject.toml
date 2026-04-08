@@ -26,6 +26,19 @@ dev = [
     "ruff>=0.4.0",
 ]
 
+# Explicit package list — too many top-level dirs for setuptools auto-discovery.
+# Only ship the runtime packages and the API entry point in the wheel.
+[tool.setuptools]
+packages = [
+    "apps",
+    "apps.api",
+    "apps.api.routes",
+    "packages",
+    "packages.shared",
+    "packages.shared.db",
+    "packages.survey_analysis",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]

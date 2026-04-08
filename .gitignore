@@ -17,6 +17,14 @@ env/
 projects/*/runs/
 data/fixtures/large/
 
+# Local SQLite databases (created by run_upgrade for smoke tests)
+*.db
+*.db-wal
+*.db-shm
+
+# Smoke test scratch files
+.smoke_*
+
 # IDE
 .vscode/
 .idea/

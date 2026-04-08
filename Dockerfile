@@ -20,7 +20,10 @@ FROM node:20-slim AS frontend-build
 
 WORKDIR /app/apps/web/frontend
 COPY apps/web/frontend/package*.json ./
-RUN npm ci
+# Use `npm install` rather than `npm ci` to tolerate cross-platform optional
+# dep drift (Windows hosts produce a lockfile missing Linux-specific optional
+# deps like @emnapi/core, which `npm ci` rejects).
+RUN npm install --no-audit --no-fund
 COPY apps/web/frontend/ ./
 RUN npm run build
 

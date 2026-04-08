@@ -1,0 +1,565 @@
+﻿ResponseId,Q1_brand_aware,Q2_satisfaction,Q3_nps,age,gender,segment,open_end
+R_0001,0,1,4,33,1,2,"She said ""amazing"" experience"
+R_0002,0,5,6,20,1,1,Need better pricing
+R_0003,0,5,9,19,1,4,Need better pricing
+R_0004,1,5,4,69,1,2,Customer service was top-notch
+R_0005,1,3,2,31,2,1,"She said ""amazing"" experience"
+R_0006,1,1,5,72,2,3,"Great service, would recommend!"
+R_0007,1,5,1,42,1,3,
+R_0008,0,1,0,60,1,3,"She said ""amazing"" experience"
+R_0009,0,1,6,35,2,3,"Multi-line
+response here"
+R_0010,1,3,3,60,2,1,"Multi-line
+response here"
+R_0011,0,2,7,42,2,2,
+R_0012,0,2,0,69,2,4,Love the new design
+R_0013,0,2,9,74,2,2,Confusing checkout flow
+R_0014,1,4,2,34,1,2,Love the new design
+R_0015,1,5,6,41,1,2,Confusing checkout flow
+R_0016,0,1,1,27,1,4,"She said ""amazing"" experience"
+R_0017,1,4,9,47,2,1,"She said ""amazing"" experience"
+R_0018,1,3,1,36,2,2,Confusing checkout flow
+R_0019,0,3,8,66,1,1,Love the new design
+R_0020,0,2,5,66,1,1,
+R_0021,1,1,1,41,2,2,"Great service, would recommend!"
+R_0022,0,5,1,23,2,1,"Multi-line
+response here"
+R_0023,0,4,8,28,2,4,Need better pricing
+R_0024,0,3,6,60,2,4,Confusing checkout flow
+R_0025,0,2,3,22,2,1,Need better pricing
+R_0026,0,1,1,63,1,2,"She said ""amazing"" experience"
+R_0027,0,3,1,50,1,3,Confusing checkout flow
+R_0028,0,5,2,64,2,2,Confusing checkout flow
+R_0029,1,2,1,24,2,3,Customer service was top-notch
+R_0030,1,4,0,61,1,1,Customer service was top-notch
+R_0031,1,1,3,30,1,4,"Multi-line
+response here"
+R_0032,1,2,4,47,1,1,Confusing checkout flow
+R_0033,0,1,10,52,1,1,Need better pricing
+R_0034,0,4,7,48,1,4,"Great service, would recommend!"
+R_0035,0,4,0,42,2,4,Love the new design
+R_0036,1,5,10,63,2,2,Need better pricing
+R_0037,1,2,0,55,1,3,"Great service, would recommend!"
+R_0038,0,5,7,50,1,1,"She said ""amazing"" experience"
+R_0039,0,1,9,22,1,4,"She said ""amazing"" experience"
+R_0040,0,5,9,20,1,4,
+R_0041,1,2,10,63,2,2,Love the new design
+R_0042,1,2,10,59,2,4,
+R_0043,0,1,7,57,1,1,Need better pricing
+R_0044,1,2,5,74,1,2,
+R_0045,1,2,7,71,2,1,Love the new design
+R_0046,0,2,4,25,1,2,Love the new design
+R_0047,1,5,3,63,2,2,Love the new design
+R_0048,1,3,0,23,2,3,"Great service, would recommend!"
+R_0049,0,3,2,58,2,2,Confusing checkout flow
+R_0050,1,5,0,25,1,2,"Great service, would recommend!"
+R_0051,1,5,8,27,2,2,"Great service, would recommend!"
+R_0052,1,3,0,75,2,2,Need better pricing
+R_0053,0,3,8,74,2,2,Need better pricing
+R_0054,0,2,6,19,1,3,Customer service was top-notch
+R_0055,0,3,2,68,1,4,"Great service, would recommend!"
+R_0056,1,2,3,70,2,3,Love the new design
+R_0057,0,2,0,60,1,4,
+R_0058,1,1,4,40,2,3,"Great service, would recommend!"
+R_0059,0,3,2,55,2,1,"She said ""amazing"" experience"
+R_0060,1,3,5,45,1,4,Need better pricing
+R_0061,1,1,6,18,1,3,Customer service was top-notch
+R_0062,0,3,9,38,1,3,Love the new design
+R_0063,1,3,6,62,2,2,Need better pricing
+R_0064,1,4,10,65,1,3,Customer service was top-notch
+R_0065,0,3,4,31,2,3,Confusing checkout flow
+R_0066,1,4,10,31,2,2,"She said ""amazing"" experience"
+R_0067,1,5,10,58,2,1,Need better pricing
+R_0068,1,2,3,27,1,1,Need better pricing
+R_0069,1,5,1,47,2,2,Customer service was top-notch
+R_0070,1,4,3,27,1,1,Customer service was top-notch
+R_0071,0,2,8,47,1,2,"She said ""amazing"" experience"
+R_0072,1,2,7,60,2,4,Customer service was top-notch
+R_0073,1,2,7,46,2,2,Love the new design
+R_0074,1,2,4,46,1,3,Need better pricing
+R_0075,1,3,5,75,1,2,"Multi-line
+response here"
+R_0076,0,4,2,63,1,1,Customer service was top-notch
+R_0077,1,3,8,47,2,1,Need better pricing
+R_0078,1,4,9,62,1,4,Confusing checkout flow
+R_0079,0,3,4,66,2,4,Need better pricing
+R_0080,1,2,4,45,2,1,Customer service was top-notch
+R_0081,1,4,2,71,2,2,"Great service, would recommend!"
+R_0082,1,5,9,60,1,1,Customer service was top-notch
+R_0083,0,4,2,21,2,4,
+R_0084,0,4,5,39,2,3,Customer service was top-notch
+R_0085,1,1,7,19,1,3,Need better pricing
+R_0086,0,1,0,33,1,1,"Multi-line
+response here"
+R_0087,0,2,7,60,1,2,Confusing checkout flow
+R_0088,1,3,2,56,1,2,Love the new design
+R_0089,0,5,0,37,2,4,Need better pricing
+R_0090,0,5,10,33,1,3,"She said ""amazing"" experience"
+R_0091,0,3,8,45,2,1,
+R_0092,0,4,7,24,2,3,Confusing checkout flow
+R_0093,0,4,2,64,2,4,Confusing checkout flow
+R_0094,1,5,4,38,1,1,Love the new design
+R_0095,1,2,7,54,2,3,"Great service, would recommend!"
+R_0096,1,3,2,49,1,3,Love the new design
+R_0097,1,3,9,62,2,1,Need better pricing
+R_0098,0,2,6,49,1,4,Confusing checkout flow
+R_0099,1,1,1,36,1,4,Need better pricing
+R_0100,1,5,5,48,2,4,
+R_0101,1,4,4,37,2,2,"She said ""amazing"" experience"
+R_0102,0,3,1,65,1,2,Need better pricing
+R_0103,1,3,9,66,2,1,Need better pricing
+R_0104,1,2,5,29,2,1,"Multi-line
+response here"
+R_0105,1,1,0,53,2,2,Confusing checkout flow
+R_0106,0,1,9,36,2,4,Confusing checkout flow
+R_0107,1,2,0,34,2,1,"She said ""amazing"" experience"
+R_0108,1,4,1,54,1,2,"Multi-line
+response here"
+R_0109,1,1,3,25,2,2,Customer service was top-notch
+R_0110,1,4,4,73,2,3,"Great service, would recommend!"
+R_0111,0,2,10,31,2,1,"Multi-line
+response here"
+R_0112,0,2,8,22,1,1,Customer service was top-notch
+R_0113,1,5,7,36,1,2,Love the new design
+R_0114,1,4,1,61,1,3,Need better pricing
+R_0115,1,1,8,32,1,3,"Multi-line
+response here"
+R_0116,0,1,2,68,2,3,Confusing checkout flow
+R_0117,0,4,4,62,2,3,Confusing checkout flow
+R_0118,1,1,9,20,2,3,Love the new design
+R_0119,0,1,3,61,1,3,"Great service, would recommend!"
+R_0120,0,4,8,59,2,3,"Multi-line
+response here"
+R_0121,1,4,1,48,2,4,
+R_0122,1,1,2,39,2,4,Love the new design
+R_0123,1,5,0,47,1,3,Love the new design
+R_0124,1,1,6,73,1,4,Customer service was top-notch
+R_0125,0,2,8,41,2,4,"Great service, would recommend!"
+R_0126,0,3,8,26,2,4,Confusing checkout flow
+R_0127,0,1,10,56,1,2,Love the new design
+R_0128,0,5,6,23,1,1,Confusing checkout flow
+R_0129,0,2,7,63,2,3,Customer service was top-notch
+R_0130,1,4,3,47,1,4,Need better pricing
+R_0131,0,1,4,67,2,3,Love the new design
+R_0132,0,3,4,71,2,2,Confusing checkout flow
+R_0133,1,3,5,53,2,4,
+R_0134,0,2,9,42,1,4,"Great service, would recommend!"
+R_0135,1,4,6,42,1,4,"Great service, would recommend!"
+R_0136,0,5,9,39,1,4,"She said ""amazing"" experience"
+R_0137,1,1,2,44,1,1,Confusing checkout flow
+R_0138,1,3,9,62,2,1,
+R_0139,1,3,10,63,2,1,"She said ""amazing"" experience"
+R_0140,0,3,3,65,1,4,"She said ""amazing"" experience"
+R_0141,0,4,2,62,2,1,"Great service, would recommend!"
+R_0142,1,1,4,40,2,4,"Multi-line
+response here"
+R_0143,0,5,6,54,1,2,"Multi-line
+response here"
+R_0144,0,5,6,57,1,4,"Multi-line
+response here"
+R_0145,0,4,10,34,2,3,"Great service, would recommend!"
+R_0146,1,3,10,52,1,1,Confusing checkout flow
+R_0147,1,5,4,58,2,3,Confusing checkout flow
+R_0148,1,2,6,72,2,1,Need better pricing
+R_0149,1,5,5,54,2,3,"Great service, would recommend!"
+R_0150,1,3,0,54,1,4,Love the new design
+R_0151,0,5,5,32,1,3,"Multi-line
+response here"
+R_0152,0,1,4,68,2,1,
+R_0153,0,1,4,38,2,2,Need better pricing
+R_0154,0,5,5,51,2,2,Love the new design
+R_0155,1,3,5,69,1,4,"She said ""amazing"" experience"
+R_0156,0,2,10,64,2,3,"She said ""amazing"" experience"
+R_0157,1,1,4,52,1,4,
+R_0158,1,5,6,70,2,1,Need better pricing
+R_0159,1,1,9,74,2,2,"She said ""amazing"" experience"
+R_0160,1,3,10,44,1,2,"Great service, would recommend!"
+R_0161,0,3,7,25,1,2,"Multi-line
+response here"
+R_0162,1,4,5,60,2,2,Customer service was top-notch
+R_0163,0,4,9,44,2,1,
+R_0164,0,4,7,33,2,1,
+R_0165,1,1,6,35,1,1,Confusing checkout flow
+R_0166,0,2,10,58,1,1,
+R_0167,0,2,9,31,1,2,Need better pricing
+R_0168,0,3,2,68,1,3,"Multi-line
+response here"
+R_0169,0,5,4,69,1,1,"Great service, would recommend!"
+R_0170,0,1,5,68,1,3,"Great service, would recommend!"
+R_0171,0,3,0,26,2,1,"She said ""amazing"" experience"
+R_0172,1,4,5,50,1,4,Need better pricing
+R_0173,0,5,4,47,1,1,Confusing checkout flow
+R_0174,1,4,10,24,2,4,"She said ""amazing"" experience"
+R_0175,0,3,9,27,1,2,Love the new design
+R_0176,1,4,9,51,2,4,Customer service was top-notch
+R_0177,0,1,10,59,1,4,Confusing checkout flow
+R_0178,0,4,5,70,2,4,Customer service was top-notch
+R_0179,0,3,6,38,2,3,"Multi-line
+response here"
+R_0180,1,1,1,71,1,1,Customer service was top-notch
+R_0181,0,3,2,53,1,3,"She said ""amazing"" experience"
+R_0182,1,3,10,66,2,1,Love the new design
+R_0183,1,3,1,54,1,2,Confusing checkout flow
+R_0184,0,1,5,72,2,1,Love the new design
+R_0185,0,4,8,67,1,3,"Great service, would recommend!"
+R_0186,0,3,4,39,2,1,"Multi-line
+response here"
+R_0187,0,5,10,43,1,2,"Great service, would recommend!"
+R_0188,0,5,3,42,2,4,
+R_0189,0,3,4,64,2,1,"Great service, would recommend!"
+R_0190,0,2,9,21,1,3,Confusing checkout flow
+R_0191,1,4,9,46,2,3,Need better pricing
+R_0192,0,3,6,25,2,4,Love the new design
+R_0193,0,2,6,56,1,1,Need better pricing
+R_0194,1,2,2,66,2,3,
+R_0195,0,1,7,65,2,2,"Multi-line
+response here"
+R_0196,1,5,3,50,2,1,Customer service was top-notch
+R_0197,0,4,0,47,1,3,Customer service was top-notch
+R_0198,1,4,4,25,2,1,
+R_0199,0,5,7,71,2,1,Customer service was top-notch
+R_0200,0,2,6,55,2,1,Customer service was top-notch
+R_0201,1,3,3,39,1,1,"She said ""amazing"" experience"
+R_0202,0,3,5,64,1,2,"She said ""amazing"" experience"
+R_0203,0,3,3,29,1,1,"Multi-line
+response here"
+R_0204,1,4,9,66,2,3,
+R_0205,0,4,1,48,2,3,Love the new design
+R_0206,0,3,8,22,2,4,Confusing checkout flow
+R_0207,0,1,5,71,2,1,"She said ""amazing"" experience"
+R_0208,1,4,9,53,1,4,Need better pricing
+R_0209,1,5,7,50,1,1,Confusing checkout flow
+R_0210,0,3,1,50,1,1,Need better pricing
+R_0211,1,4,8,51,1,3,
+R_0212,1,4,6,67,2,1,
+R_0213,0,3,1,53,2,3,Love the new design
+R_0214,0,3,1,55,1,3,Love the new design
+R_0215,1,2,9,63,1,3,Customer service was top-notch
+R_0216,1,2,10,62,1,4,
+R_0217,0,3,4,29,1,3,Confusing checkout flow
+R_0218,0,2,2,27,1,3,"She said ""amazing"" experience"
+R_0219,0,3,9,26,2,2,"Multi-line
+response here"
+R_0220,0,5,2,64,2,1,Customer service was top-notch
+R_0221,1,2,7,57,2,4,Need better pricing
+R_0222,0,3,7,75,1,3,Confusing checkout flow
+R_0223,1,3,6,50,2,2,Need better pricing
+R_0224,0,3,0,59,2,3,"She said ""amazing"" experience"
+R_0225,0,3,1,66,1,3,Confusing checkout flow
+R_0226,0,4,1,32,2,3,"Great service, would recommend!"
+R_0227,1,1,6,50,2,2,Customer service was top-notch
+R_0228,0,3,3,19,2,1,
+R_0229,0,2,0,36,2,2,Confusing checkout flow
+R_0230,1,5,0,75,1,1,Love the new design
+R_0231,0,2,8,64,2,1,Love the new design
+R_0232,0,3,1,21,1,4,Confusing checkout flow
+R_0233,0,1,7,56,1,2,"Multi-line
+response here"
+R_0234,1,4,0,57,2,2,Customer service was top-notch
+R_0235,0,1,8,41,1,1,Customer service was top-notch
+R_0236,1,1,10,42,2,3,"Great service, would recommend!"
+R_0237,1,1,5,33,1,3,"Multi-line
+response here"
+R_0238,0,3,8,39,1,4,Confusing checkout flow
+R_0239,0,2,1,63,2,1,Love the new design
+R_0240,0,1,3,74,1,3,Love the new design
+R_0241,1,5,7,34,1,2,Love the new design
+R_0242,1,1,10,39,2,1,
+R_0243,1,4,7,75,2,3,"Multi-line
+response here"
+R_0244,1,4,5,69,2,1,Customer service was top-notch
+R_0245,0,4,9,70,1,3,
+R_0246,0,1,5,60,2,3,Confusing checkout flow
+R_0247,1,2,7,40,2,1,
+R_0248,1,3,10,68,1,1,Customer service was top-notch
+R_0249,1,5,10,28,1,2,Confusing checkout flow
+R_0250,0,2,1,33,2,3,Customer service was top-notch
+R_0251,0,5,2,61,2,3,
+R_0252,1,1,9,26,2,4,
+R_0253,1,2,1,19,1,4,Customer service was top-notch
+R_0254,0,3,4,63,2,2,Love the new design
+R_0255,1,2,1,26,1,4,"Multi-line
+response here"
+R_0256,1,1,10,72,2,3,"She said ""amazing"" experience"
+R_0257,1,3,2,63,1,3,Need better pricing
+R_0258,0,2,2,33,2,1,
+R_0259,1,4,8,26,1,1,Love the new design
+R_0260,1,4,8,44,2,1,"Multi-line
+response here"
+R_0261,1,1,7,47,2,2,"Multi-line
+response here"
+R_0262,0,4,8,73,1,1,"Multi-line
+response here"
+R_0263,1,2,2,38,1,3,Love the new design
+R_0264,0,3,3,58,2,2,Love the new design
+R_0265,0,5,10,28,1,2,
+R_0266,0,1,1,20,2,2,Customer service was top-notch
+R_0267,0,4,10,52,2,3,Confusing checkout flow
+R_0268,0,4,4,47,1,1,"Multi-line
+response here"
+R_0269,1,4,7,47,1,3,"Multi-line
+response here"
+R_0270,1,3,5,43,1,3,"She said ""amazing"" experience"
+R_0271,1,2,7,25,2,4,Need better pricing
+R_0272,0,1,0,36,2,4,Need better pricing
+R_0273,0,3,9,64,2,2,"Multi-line
+response here"
+R_0274,1,5,7,49,2,4,"Great service, would recommend!"
+R_0275,0,4,8,47,1,2,
+R_0276,0,1,4,49,2,3,"Great service, would recommend!"
+R_0277,0,4,2,74,2,3,Customer service was top-notch
+R_0278,1,1,6,21,1,3,Love the new design
+R_0279,0,4,8,46,2,1,"Multi-line
+response here"
+R_0280,0,4,5,68,2,3,"Multi-line
+response here"
+R_0281,0,5,8,43,1,1,"Great service, would recommend!"
+R_0282,0,3,7,51,2,2,"Multi-line
+response here"
+R_0283,1,5,5,28,2,3,
+R_0284,1,5,4,48,1,3,
+R_0285,0,4,9,37,1,4,Love the new design
+R_0286,0,1,9,48,1,4,"Multi-line
+response here"
+R_0287,0,1,9,62,1,2,"Great service, would recommend!"
+R_0288,1,3,6,27,2,2,Customer service was top-notch
+R_0289,1,1,2,51,1,3,Confusing checkout flow
+R_0290,1,3,2,47,2,3,Love the new design
+R_0291,1,2,3,35,2,2,Love the new design
+R_0292,1,2,7,38,2,3,Love the new design
+R_0293,1,1,9,61,2,4,
+R_0294,0,3,0,36,1,3,Confusing checkout flow
+R_0295,1,4,3,30,2,3,"Multi-line
+response here"
+R_0296,0,5,9,33,1,1,Need better pricing
+R_0297,0,1,1,44,2,4,"She said ""amazing"" experience"
+R_0298,0,1,8,28,2,4,Confusing checkout flow
+R_0299,0,3,5,36,1,1,Need better pricing
+R_0300,0,2,6,74,1,1,Customer service was top-notch
+R_0301,1,2,4,74,1,1,Love the new design
+R_0302,0,3,4,47,2,2,Confusing checkout flow
+R_0303,1,2,1,39,1,4,Love the new design
+R_0304,0,1,5,68,2,2,"Multi-line
+response here"
+R_0305,1,4,8,38,1,4,"She said ""amazing"" experience"
+R_0306,0,2,7,38,1,1,Love the new design
+R_0307,1,2,7,66,2,3,Love the new design
+R_0308,0,3,10,41,1,1,"She said ""amazing"" experience"
+R_0309,1,3,2,43,2,1,Love the new design
+R_0310,1,5,3,32,1,4,"Multi-line
+response here"
+R_0311,1,5,5,44,2,2,Need better pricing
+R_0312,0,5,7,51,2,1,"She said ""amazing"" experience"
+R_0313,0,5,8,30,1,2,
+R_0314,1,1,10,31,2,1,Confusing checkout flow
+R_0315,0,4,2,50,2,4,"Great service, would recommend!"
+R_0316,1,3,0,43,2,1,Need better pricing
+R_0317,0,1,6,40,1,1,"She said ""amazing"" experience"
+R_0318,1,1,4,44,1,2,Customer service was top-notch
+R_0319,1,4,7,73,2,4,"She said ""amazing"" experience"
+R_0320,0,3,1,29,2,2,Need better pricing
+R_0321,0,1,4,47,2,4,Need better pricing
+R_0322,0,4,5,27,2,2,"She said ""amazing"" experience"
+R_0323,0,4,9,67,1,2,Need better pricing
+R_0324,0,1,9,20,2,1,Need better pricing
+R_0325,0,4,7,32,1,1,"Multi-line
+response here"
+R_0326,1,2,9,38,2,2,Love the new design
+R_0327,0,5,3,44,2,3,"Great service, would recommend!"
+R_0328,0,4,8,49,1,3,Customer service was top-notch
+R_0329,1,4,6,27,2,4,"Multi-line
+response here"
+R_0330,1,2,3,37,1,4,"Great service, would recommend!"
+R_0331,1,4,8,51,1,4,Need better pricing
+R_0332,1,2,5,59,1,4,
+R_0333,0,5,3,21,2,4,"Great service, would recommend!"
+R_0334,0,2,9,64,1,4,Need better pricing
+R_0335,1,3,0,31,1,1,Confusing checkout flow
+R_0336,0,5,3,43,1,3,Love the new design
+R_0337,1,4,8,59,2,3,Love the new design
+R_0338,1,5,7,47,1,4,
+R_0339,0,3,5,44,1,2,"Multi-line
+response here"
+R_0340,0,3,8,55,2,3,"Multi-line
+response here"
+R_0341,0,3,3,42,1,4,
+R_0342,1,4,10,65,2,4,"Multi-line
+response here"
+R_0343,1,2,2,64,2,2,"Great service, would recommend!"
+R_0344,0,1,10,21,1,4,"Multi-line
+response here"
+R_0345,0,1,2,18,1,4,
+R_0346,0,5,10,60,2,4,"Great service, would recommend!"
+R_0347,0,5,8,44,1,1,Love the new design
+R_0348,1,1,8,70,2,2,"She said ""amazing"" experience"
+R_0349,0,5,2,33,1,3,
+R_0350,1,4,1,41,2,4,Need better pricing
+R_0351,0,3,10,70,1,1,"She said ""amazing"" experience"
+R_0352,1,4,6,53,2,1,"Great service, would recommend!"
+R_0353,0,1,7,72,2,3,"She said ""amazing"" experience"
+R_0354,0,2,3,75,2,3,"Great service, would recommend!"
+R_0355,0,3,8,54,1,2,
+R_0356,0,2,9,27,2,1,Love the new design
+R_0357,0,5,3,54,2,3,Customer service was top-notch
+R_0358,0,1,8,65,2,1,"She said ""amazing"" experience"
+R_0359,1,2,1,39,2,3,"Great service, would recommend!"
+R_0360,1,4,7,32,2,4,Customer service was top-notch
+R_0361,0,5,10,42,1,3,Need better pricing
+R_0362,0,1,4,27,2,2,Customer service was top-notch
+R_0363,1,3,1,23,1,3,Confusing checkout flow
+R_0364,1,3,1,26,1,2,Customer service was top-notch
+R_0365,1,5,8,50,2,1,"Great service, would recommend!"
+R_0366,0,3,8,23,2,4,"Great service, would recommend!"
+R_0367,1,4,6,67,1,2,"Multi-line
+response here"
+R_0368,1,2,2,35,2,3,Confusing checkout flow
+R_0369,0,1,2,45,2,4,Love the new design
+R_0370,1,1,5,34,1,4,Need better pricing
+R_0371,1,1,2,37,1,4,
+R_0372,1,3,7,39,2,2,Love the new design
+R_0373,1,5,3,48,2,2,Customer service was top-notch
+R_0374,1,3,10,49,1,3,Customer service was top-notch
+R_0375,1,4,5,25,1,2,"Great service, would recommend!"
+R_0376,1,2,7,69,2,1,Customer service was top-notch
+R_0377,1,2,10,37,1,3,"Multi-line
+response here"
+R_0378,1,4,1,46,2,4,Customer service was top-notch
+R_0379,0,3,8,56,1,1,Need better pricing
+R_0380,1,2,10,57,1,4,
+R_0381,1,1,0,24,2,2,Need better pricing
+R_0382,1,3,6,47,1,3,"Great service, would recommend!"
+R_0383,1,1,4,44,1,1,"Multi-line
+response here"
+R_0384,1,3,5,47,1,4,
+R_0385,1,1,7,64,2,3,"She said ""amazing"" experience"
+R_0386,1,1,1,19,2,1,"Multi-line
+response here"
+R_0387,0,5,2,53,1,3,Customer service was top-notch
+R_0388,1,2,6,58,1,2,Customer service was top-notch
+R_0389,1,1,9,74,1,4,Customer service was top-notch
+R_0390,1,1,3,31,2,1,"She said ""amazing"" experience"
+R_0391,0,3,5,30,2,1,Love the new design
+R_0392,1,5,10,38,2,4,"She said ""amazing"" experience"
+R_0393,1,3,7,57,1,3,"She said ""amazing"" experience"
+R_0394,0,3,1,33,2,1,"Multi-line
+response here"
+R_0395,1,2,8,42,2,2,Customer service was top-notch
+R_0396,1,2,7,58,1,2,Confusing checkout flow
+R_0397,1,2,2,38,2,1,
+R_0398,0,4,2,30,2,4,Customer service was top-notch
+R_0399,1,4,7,49,1,1,"Great service, would recommend!"
+R_0400,0,3,0,35,1,3,"Multi-line
+response here"
+R_0401,1,5,7,53,1,1,Love the new design
+R_0402,1,5,0,66,2,2,Customer service was top-notch
+R_0403,0,2,4,73,1,4,Love the new design
+R_0404,1,1,7,73,1,2,Need better pricing
+R_0405,1,5,10,45,1,2,Need better pricing
+R_0406,0,1,9,40,2,2,
+R_0407,1,3,9,35,1,2,Customer service was top-notch
+R_0408,0,3,10,26,1,2,"Multi-line
+response here"
+R_0409,1,2,10,43,2,2,Love the new design
+R_0410,1,4,7,22,1,4,Love the new design
+R_0411,1,4,7,38,1,1,Confusing checkout flow
+R_0412,1,1,8,43,1,4,Need better pricing
+R_0413,1,3,5,71,2,3,"Multi-line
+response here"
+R_0414,1,3,10,66,1,1,"She said ""amazing"" experience"
+R_0415,1,1,1,72,1,4,Confusing checkout flow
+R_0416,0,4,3,62,1,3,"Multi-line
+response here"
+R_0417,1,1,10,41,2,1,
+R_0418,0,1,6,58,2,2,Customer service was top-notch
+R_0419,0,1,0,31,2,1,"Multi-line
+response here"
+R_0420,0,5,10,46,1,1,
+R_0421,0,4,2,48,1,2,Customer service was top-notch
+R_0422,0,1,1,38,2,3,"Multi-line
+response here"
+R_0423,1,2,10,61,1,1,"Great service, would recommend!"
+R_0424,0,4,5,64,1,2,Customer service was top-notch
+R_0425,1,2,1,75,1,2,"She said ""amazing"" experience"
+R_0426,1,3,6,38,1,2,Love the new design
+R_0427,0,2,8,56,2,1,Love the new design
+R_0428,0,5,9,50,1,4,Love the new design
+R_0429,0,2,7,42,1,2,Confusing checkout flow
+R_0430,0,5,0,41,2,2,Customer service was top-notch
+R_0431,1,3,8,61,1,4,"She said ""amazing"" experience"
+R_0432,0,5,1,18,2,2,"Great service, would recommend!"
+R_0433,0,4,8,36,2,4,Customer service was top-notch
+R_0434,0,5,8,57,1,3,"She said ""amazing"" experience"
+R_0435,1,1,8,31,1,3,Customer service was top-notch
+R_0436,0,3,6,64,1,1,Need better pricing
+R_0437,0,4,1,47,1,3,"Multi-line
+response here"
+R_0438,0,1,2,62,1,2,Confusing checkout flow
+R_0439,1,5,8,68,2,2,
+R_0440,0,3,1,67,1,3,Customer service was top-notch
+R_0441,1,5,1,34,1,4,Confusing checkout flow
+R_0442,1,1,7,72,1,3,"Multi-line
+response here"
+R_0443,1,1,9,61,1,2,"Great service, would recommend!"
+R_0444,0,1,3,20,2,3,Customer service was top-notch
+R_0445,0,2,0,53,2,2,
+R_0446,0,4,5,35,1,3,"She said ""amazing"" experience"
+R_0447,0,2,3,69,1,4,"She said ""amazing"" experience"
+R_0448,1,3,4,38,1,4,"Great service, would recommend!"
+R_0449,1,2,4,54,2,2,Confusing checkout flow
+R_0450,1,5,7,67,1,2,"Multi-line
+response here"
+R_0451,0,4,0,32,2,1,
+R_0452,0,4,4,24,1,2,Customer service was top-notch
+R_0453,1,1,2,63,2,1,"Great service, would recommend!"
+R_0454,0,5,6,62,2,4,"She said ""amazing"" experience"
+R_0455,0,5,2,58,2,1,"Great service, would recommend!"
+R_0456,1,2,3,36,2,3,Customer service was top-notch
+R_0457,1,3,7,35,1,1,Need better pricing
+R_0458,0,5,1,27,1,2,Confusing checkout flow
+R_0459,1,3,6,25,2,2,Confusing checkout flow
+R_0460,1,4,4,72,1,1,"Multi-line
+response here"
+R_0461,1,5,0,31,2,2,"She said ""amazing"" experience"
+R_0462,0,3,6,50,1,3,Love the new design
+R_0463,0,1,6,72,2,2,"She said ""amazing"" experience"
+R_0464,1,1,2,25,1,1,Need better pricing
+R_0465,0,2,6,41,1,3,"She said ""amazing"" experience"
+R_0466,0,1,3,75,2,2,"She said ""amazing"" experience"
+R_0467,1,1,0,47,1,2,Customer service was top-notch
+R_0468,1,4,0,42,2,2,
+R_0469,0,2,4,35,2,2,"Great service, would recommend!"
+R_0470,0,3,7,44,2,1,"She said ""amazing"" experience"
+R_0471,1,4,2,44,1,2,"Great service, would recommend!"
+R_0472,1,3,7,52,2,3,
+R_0473,1,3,2,19,2,2,"Great service, would recommend!"
+R_0474,1,1,7,51,2,2,"Multi-line
+response here"
+R_0475,0,2,10,33,2,1,Need better pricing
+R_0476,1,3,2,29,1,3,
+R_0477,0,3,9,54,1,2,Confusing checkout flow
+R_0478,1,2,7,20,1,1,Need better pricing
+R_0479,0,1,8,48,1,3,Need better pricing
+R_0480,0,3,2,69,2,1,"Great service, would recommend!"
+R_0481,0,5,2,67,1,3,"She said ""amazing"" experience"
+R_0482,1,4,9,24,2,3,
+R_0483,0,2,6,68,2,3,"Multi-line
+response here"
+R_0484,1,2,10,55,1,4,Love the new design
+R_0485,1,2,2,64,1,4,"Great service, would recommend!"
+R_0486,0,5,5,69,1,1,Confusing checkout flow
+R_0487,0,3,1,33,2,3,"Multi-line
+response here"
+R_0488,0,3,7,18,2,2,Need better pricing
+R_0489,0,3,4,68,1,1,"Great service, would recommend!"
+R_0490,1,4,6,28,2,4,Customer service was top-notch
+R_0491,1,5,6,24,2,2,"Multi-line
+response here"
+R_0492,1,1,0,36,1,3,Love the new design
+R_0493,0,1,5,28,2,2,"She said ""amazing"" experience"
+R_0494,0,3,9,57,2,1,Customer service was top-notch
+R_0495,0,5,6,28,1,1,
+R_0496,0,2,6,62,2,3,Love the new design
+R_0497,0,1,0,43,2,2,"Great service, would recommend!"
+R_0498,1,1,6,23,2,4,Need better pricing
+R_0499,0,1,3,28,2,1,Confusing checkout flow
+R_0500,0,3,6,48,2,3,"She said ""amazing"" experience"
