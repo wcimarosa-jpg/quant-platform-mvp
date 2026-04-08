@@ -35,11 +35,14 @@ def reset_resources():
     from apps.api.routes.briefs import _briefs
     from apps.api.routes.drafts import _store
     from apps.api.routes.tables import _runs, _qa_reports, _copilot_sessions
+    from apps.api.routes.brief_analysis import _analyses
     _briefs.clear()
-    _store._drafts.clear() if hasattr(_store, "_drafts") else None
+    if hasattr(_store, "_drafts"):
+        _store._drafts.clear()
     _runs.clear()
     _qa_reports.clear()
     _copilot_sessions.clear()
+    _analyses.clear()
     yield
     reset_all_ownership()
 
@@ -70,7 +73,7 @@ class TestBriefsAuthorization:
         # Bob tries to read it
         bob_client = client_as_user("bob")
         resp = bob_client.get(f"/api/v1/briefs/{brief_id}")
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_other_user_cannot_update_brief(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -80,7 +83,7 @@ class TestBriefsAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.patch(f"/api/v1/briefs/{brief_id}", json={"objectives": "hijacked"})
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_owner_can_read_own_brief(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -115,7 +118,7 @@ class TestDraftsAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.get(f"/api/v1/drafts/{draft_id}")
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_other_user_cannot_update_methodology(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -124,7 +127,7 @@ class TestDraftsAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.patch(f"/api/v1/drafts/{draft_id}/methodology", json={"methodology": "drivers"})
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_other_user_cannot_update_sections(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -133,7 +136,7 @@ class TestDraftsAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.patch(f"/api/v1/drafts/{draft_id}/sections", json={"selected_sections": []})
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_other_user_cannot_get_generation_config(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -142,7 +145,7 @@ class TestDraftsAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.get(f"/api/v1/drafts/{draft_id}/generation-config")
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_owner_can_read_own_draft(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -190,7 +193,7 @@ class TestTablesAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.post(f"/api/v1/tables/{run_id}/qa")
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_other_user_cannot_qa_copilot(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -200,7 +203,7 @@ class TestTablesAuthorization:
 
         bob_client = client_as_user("bob")
         resp = bob_client.post(f"/api/v1/tables/{run_id}/qa-copilot")
-        assert resp.status_code == 403
+        assert resp.status_code == 404
 
     def test_owner_can_qa_own_run(self, client_as_user):
         alice_client = client_as_user("alice")
@@ -221,6 +224,146 @@ class TestTablesAuthorization:
 
 
 # ---------------------------------------------------------------------------
+# Brief analysis cross-user access (Codex B2-followup)
+# ---------------------------------------------------------------------------
+
+class TestBriefAnalysisAuthorization:
+    def _upload_brief(self, client: TestClient, project_id: str = "proj-alice") -> str:
+        files = {"file": ("brief.md", io.BytesIO(b"# Brief\nObjectives: test"), "text/markdown")}
+        resp = client.post(f"/api/v1/briefs/upload?project_id={project_id}", files=files)
+        return resp.json()["brief_id"]
+
+    def test_other_user_cannot_analyze_brief(self, client_as_user):
+        alice_client = client_as_user("alice")
+        brief_id = self._upload_brief(alice_client)
+
+        bob_client = client_as_user("bob")
+        resp = bob_client.post(f"/api/v1/briefs/{brief_id}/analyze")
+        assert resp.status_code == 404  # 404 to avoid enumeration oracle
+
+    def test_owner_can_analyze_brief(self, client_as_user):
+        alice_client = client_as_user("alice")
+        brief_id = self._upload_brief(alice_client)
+        resp = alice_client.post(f"/api/v1/briefs/{brief_id}/analyze")
+        assert resp.status_code == 200
+
+    def test_other_user_cannot_resolve_assumption(self, client_as_user):
+        alice_client = client_as_user("alice")
+        brief_id = self._upload_brief(alice_client)
+        analyze_resp = alice_client.post(f"/api/v1/briefs/{brief_id}/analyze")
+        analysis_id = analyze_resp.json()["analysis_id"]
+        assumptions = analyze_resp.json()["assumptions"]
+        if not assumptions:
+            pytest.skip("No assumptions to test")
+        assumption_id = assumptions[0]["assumption_id"]
+
+        bob_client = client_as_user("bob")
+        resp = bob_client.patch(
+            f"/api/v1/briefs/analysis/{analysis_id}/assumptions/{assumption_id}",
+            json={"decision": "accepted"},
+        )
+        assert resp.status_code == 404
+
+    def test_other_user_cannot_apply_analysis(self, client_as_user):
+        alice_client = client_as_user("alice")
+        brief_id = self._upload_brief(alice_client)
+        analyze_resp = alice_client.post(f"/api/v1/briefs/{brief_id}/analyze")
+        analysis_id = analyze_resp.json()["analysis_id"]
+
+        bob_client = client_as_user("bob")
+        resp = bob_client.post(f"/api/v1/briefs/analysis/{analysis_id}/apply")
+        assert resp.status_code == 404
+
+
+# ---------------------------------------------------------------------------
+# Preflight cross-user access (Codex B2-followup)
+# ---------------------------------------------------------------------------
+
+class TestPreflightAuthorization:
+    def test_other_user_cannot_preflight(self, client_as_user):
+        alice_client = client_as_user("alice")
+        files = {"file": ("brief.md", io.BytesIO(b"# Brief\nObjectives: test"), "text/markdown")}
+        resp = alice_client.post("/api/v1/briefs/upload?project_id=proj-alice", files=files)
+        brief_id = resp.json()["brief_id"]
+
+        bob_client = client_as_user("bob")
+        resp = bob_client.get(f"/api/v1/preflight/{brief_id}")
+        assert resp.status_code == 404
+
+    def test_owner_can_preflight(self, client_as_user):
+        alice_client = client_as_user("alice")
+        files = {"file": ("brief.md", io.BytesIO(b"# Brief\nObjectives: test"), "text/markdown")}
+        resp = alice_client.post("/api/v1/briefs/upload?project_id=proj-alice", files=files)
+        brief_id = resp.json()["brief_id"]
+
+        resp = alice_client.get(f"/api/v1/preflight/{brief_id}")
+        assert resp.status_code == 200
+
+
+# ---------------------------------------------------------------------------
+# Owner happy paths (Codex MIN-4, MIN-5)
+# ---------------------------------------------------------------------------
+
+class TestOwnerHappyPaths:
+    def test_owner_can_patch_own_brief(self, client_as_user):
+        alice_client = client_as_user("alice")
+        files = {"file": ("brief.md", io.BytesIO(b"# Brief\nObjectives: test"), "text/markdown")}
+        resp = alice_client.post("/api/v1/briefs/upload?project_id=proj-alice", files=files)
+        brief_id = resp.json()["brief_id"]
+
+        resp = alice_client.patch(f"/api/v1/briefs/{brief_id}", json={"objectives": "updated"})
+        assert resp.status_code == 200
+        assert resp.json()["objectives"] == "updated"
+
+    def test_owner_can_qa_copilot_own_run(self, client_as_user):
+        alice_client = client_as_user("alice")
+        payload = {
+            "project_id": "proj-alice",
+            "mapping_id": "map-1",
+            "variables": [
+                {
+                    "var_name": "Q1",
+                    "var_label": "Question 1",
+                    "var_type": "single",
+                    "value_labels": {"1": "A", "2": "B"},
+                },
+            ],
+            "data_rows": [{"Q1": 1}, {"Q1": 2}, {"Q1": 1}, {"Q1": 2}],
+        }
+        gen_resp = alice_client.post("/api/v1/tables/generate", json=payload)
+        run_id = gen_resp.json()["run_id"]
+        alice_client.post(f"/api/v1/tables/{run_id}/qa")  # generate the QA report
+
+        resp = alice_client.post(f"/api/v1/tables/{run_id}/qa-copilot")
+        assert resp.status_code == 200
+
+
+# ---------------------------------------------------------------------------
+# 404 oracle prevention (Codex M1)
+# ---------------------------------------------------------------------------
+
+class Test404OraclePrevention:
+    def test_unknown_brief_returns_404_for_other_users(self, client_as_user):
+        """Non-existent brief and another user's brief should both return 404."""
+        bob_client = client_as_user("bob")
+        # Non-existent
+        resp1 = bob_client.get("/api/v1/briefs/fake-id-12345")
+        assert resp1.status_code == 404
+
+    def test_other_users_brief_returns_404_not_403(self, client_as_user):
+        """Cross-user access returns 404 to prevent ID enumeration."""
+        alice_client = client_as_user("alice")
+        files = {"file": ("brief.md", io.BytesIO(b"# Brief\nObjectives: test"), "text/markdown")}
+        resp = alice_client.post("/api/v1/briefs/upload?project_id=proj-alice", files=files)
+        brief_id = resp.json()["brief_id"]
+
+        bob_client = client_as_user("bob")
+        resp = bob_client.get(f"/api/v1/briefs/{brief_id}")
+        # Should be 404, not 403 — same as unknown brief, no enumeration leak
+        assert resp.status_code == 404
+
+
+# ---------------------------------------------------------------------------
 # resource_auth helper unit tests
 # ---------------------------------------------------------------------------
 
@@ -237,12 +380,13 @@ class TestResourceAuthHelpers:
         require_owner("test-2", _user("alice"))  # should not raise
 
     def test_require_owner_fails_for_other_user(self):
+        """Non-owner gets 404 (not 403) to prevent enumeration oracle."""
         from apps.api.resource_auth import record_ownership, require_owner
         from fastapi import HTTPException
         record_ownership("test-3", owner_id="alice", project_id="proj-1")
         with pytest.raises(HTTPException) as exc:
             require_owner("test-3", _user("bob"))
-        assert exc.value.status_code == 403
+        assert exc.value.status_code == 404
 
     def test_require_owner_admin_bypass(self):
         from apps.api.resource_auth import record_ownership, require_owner

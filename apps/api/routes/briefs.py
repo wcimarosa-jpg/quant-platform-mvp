@@ -70,10 +70,10 @@ async def upload_brief(project_id: str, file: UploadFile, user: CurrentUser) -> 
 @router.get("/{brief_id}")
 def get_brief(brief_id: str, user: CurrentUser) -> dict[str, Any]:
     """Get a brief's extracted fields."""
+    require_owner(brief_id, user)  # 404 if unknown OR not owner — avoids enumeration oracle
     fields = _briefs.get(brief_id)
     if not fields:
         raise HTTPException(status_code=404, detail="Brief not found.")
-    require_owner(brief_id, user)
 
     raw_text = fields.raw_text
     truncated = len(raw_text) > 500
@@ -104,10 +104,10 @@ class BriefUpdate(BaseModel):
 @router.patch("/{brief_id}")
 def update_brief(brief_id: str, updates: BriefUpdate, user: CurrentUser) -> dict[str, Any]:
     """Manually edit extracted brief fields before saving."""
+    require_owner(brief_id, user)
     fields = _briefs.get(brief_id)
     if not fields:
         raise HTTPException(status_code=404, detail="Brief not found.")
-    require_owner(brief_id, user)
 
     for key, value in updates.model_dump(exclude_unset=True).items():
         setattr(fields, key, value)

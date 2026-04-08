@@ -35,31 +35,28 @@ def record_ownership(resource_id: str, owner_id: str, project_id: str = "") -> N
 
 
 def get_ownership(resource_id: str) -> dict[str, str] | None:
-    """Return ownership metadata for a resource, or None if not tracked."""
+    """Return a copy of ownership metadata for a resource, or None if not tracked."""
     with _lock:
-        return _owners.get(resource_id)
+        meta = _owners.get(resource_id)
+        return dict(meta) if meta else None
 
 
 def require_owner(resource_id: str, user: TokenPayload) -> None:
-    """Raise 403 if the current user does not own the resource.
+    """Raise 404 if the current user does not own the resource.
 
-    Admins bypass ownership checks. If the resource has no recorded owner
-    (legacy data), it is treated as inaccessible to non-admins.
+    Admins bypass ownership checks. Both unknown resources and
+    non-owned resources return 404 (not 403) to prevent ID enumeration
+    attacks — a caller cannot distinguish between "resource does not
+    exist" and "resource exists but you don't own it".
     """
     if user.role == "admin":
         return
 
     meta = get_ownership(resource_id)
-    if not meta:
+    if not meta or meta["owner_id"] != user.sub:
         raise HTTPException(
             status_code=404,
-            detail=f"Resource {resource_id!r} not found or access denied.",
-        )
-
-    if meta["owner_id"] != user.sub:
-        raise HTTPException(
-            status_code=403,
-            detail="You do not have access to this resource.",
+            detail="Resource not found.",
         )
 
 

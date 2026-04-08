@@ -61,10 +61,10 @@ def create_draft(body: CreateDraftRequest, user: CurrentUser) -> dict[str, Any]:
 @router.get("/{draft_id}")
 def get_draft(draft_id: str, user: CurrentUser) -> dict[str, Any]:
     """Get a draft's current state."""
+    require_owner(draft_id, user)
     draft = _store.get(draft_id)
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found.")
-    require_owner(draft_id, user)
     return _draft_response(draft)
 
 
@@ -75,10 +75,10 @@ class UpdateMethodologyRequest(BaseModel):
 @router.patch("/{draft_id}/methodology")
 def update_methodology(draft_id: str, body: UpdateMethodologyRequest, user: CurrentUser) -> dict[str, Any]:
     """Change the methodology for a draft. Resets sections to defaults."""
+    require_owner(draft_id, user)
     draft = _store.get(draft_id)
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found.")
-    require_owner(draft_id, user)
     try:
         meth = Methodology(body.methodology)
     except ValueError:
@@ -95,10 +95,10 @@ class UpdateSectionsRequest(BaseModel):
 @router.patch("/{draft_id}/sections")
 def update_sections(draft_id: str, body: UpdateSectionsRequest, user: CurrentUser) -> dict[str, Any]:
     """Update selected sections for a draft."""
+    require_owner(draft_id, user)
     draft = _store.get(draft_id)
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found.")
-    require_owner(draft_id, user)
 
     errors = draft.update_sections(body.selected_sections)
     if errors:
@@ -110,10 +110,10 @@ def update_sections(draft_id: str, body: UpdateSectionsRequest, user: CurrentUse
 @router.get("/{draft_id}/generation-config")
 def get_generation_config(draft_id: str, user: CurrentUser) -> dict[str, Any]:
     """Get the finalized generation config for the engine."""
+    require_owner(draft_id, user)
     draft = _store.get(draft_id)
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found.")
-    require_owner(draft_id, user)
     return draft.for_generation()
 
 

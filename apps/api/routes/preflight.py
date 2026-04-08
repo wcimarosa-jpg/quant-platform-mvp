@@ -6,6 +6,8 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
+from apps.api.auth_deps import CurrentUser
+from apps.api.resource_auth import require_owner
 from packages.shared.assistant_context import Methodology
 from packages.shared.preflight import run_preflight
 
@@ -15,8 +17,9 @@ router = APIRouter(prefix="/preflight", tags=["preflight"])
 
 
 @router.get("/{brief_id}")
-def preflight_check(brief_id: str, methodology: str | None = None) -> dict[str, Any]:
+def preflight_check(brief_id: str, user: CurrentUser, methodology: str | None = None) -> dict[str, Any]:
     """Run preflight checks for a brief before generation."""
+    require_owner(brief_id, user)
     fields = _briefs.get(brief_id)
     if not fields:
         raise HTTPException(status_code=404, detail="Brief not found.")

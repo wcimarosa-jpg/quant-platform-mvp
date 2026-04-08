@@ -7,6 +7,8 @@ from typing import Any, Literal
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
+from apps.api.auth_deps import CurrentUser
+from apps.api.resource_auth import get_ownership, record_ownership, require_owner
 from packages.shared.brief_analyzer import (
     AssumptionStatus,
     BriefAnalysis,
@@ -26,14 +28,22 @@ _analyses: dict[str, BriefAnalysis] = {}
 
 
 @router.post("/{brief_id}/analyze")
-def analyze(brief_id: str) -> dict[str, Any]:
+def analyze(brief_id: str, user: CurrentUser) -> dict[str, Any]:
     """Run the brief analyzer and return summary, gaps, and assumptions."""
+    require_owner(brief_id, user)
     fields = _briefs.get(brief_id)
     if not fields:
         raise HTTPException(status_code=404, detail="Brief not found.")
 
     analysis = analyze_brief(brief_id, fields)
     _analyses[analysis.analysis_id] = analysis
+    # Inherit ownership from the parent brief
+    brief_meta = get_ownership(brief_id) or {}
+    record_ownership(
+        analysis.analysis_id,
+        owner_id=user.sub,
+        project_id=brief_meta.get("project_id", ""),
+    )
 
     return {
         "analysis_id": analysis.analysis_id,
@@ -60,8 +70,9 @@ class AssumptionDecision(BaseModel):
 
 
 @router.patch("/analysis/{analysis_id}/assumptions/{assumption_id}")
-def resolve(analysis_id: str, assumption_id: str, body: AssumptionDecision) -> dict[str, Any]:
+def resolve(analysis_id: str, assumption_id: str, body: AssumptionDecision, user: CurrentUser) -> dict[str, Any]:
     """Accept or reject a specific assumption."""
+    require_owner(analysis_id, user)
     analysis = _analyses.get(analysis_id)
     if not analysis:
         raise HTTPException(status_code=404, detail="Analysis not found.")
@@ -81,12 +92,15 @@ def resolve(analysis_id: str, assumption_id: str, body: AssumptionDecision) -> d
 
 
 @router.post("/analysis/{analysis_id}/apply")
-def apply_assumptions(analysis_id: str) -> dict[str, Any]:
+def apply_assumptions(analysis_id: str, user: CurrentUser) -> dict[str, Any]:
     """Apply all accepted assumptions to the brief fields."""
+    require_owner(analysis_id, user)
     analysis = _analyses.get(analysis_id)
     if not analysis:
         raise HTTPException(status_code=404, detail="Analysis not found.")
 
+    # Re-verify ownership of the underlying brief — apply mutates it
+    require_owner(analysis.brief_id, user)
     fields = _briefs.get(analysis.brief_id)
     if not fields:
         raise HTTPException(status_code=404, detail="Brief not found.")

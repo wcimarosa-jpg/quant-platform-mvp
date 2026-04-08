@@ -94,14 +94,14 @@ def generate(body: GenerateRequest, user: CurrentUser) -> dict[str, Any]:
 @router.post("/{run_id}/qa")
 def qa_check(run_id: str, user: CurrentUser) -> dict[str, Any]:
     """Run QA checks on a table generation run."""
+    require_owner(run_id, user)
     result = _runs.get(run_id)
     if not result:
         raise HTTPException(status_code=404, detail="Run not found.")
-    require_owner(run_id, user)
 
     report = run_table_qa(result)
     _qa_reports[report.report_id] = report
-    record_ownership(report.report_id, owner_id=user.sub)
+    record_ownership(report.report_id, owner_id=user.sub, project_id=result.project_id)
     return {
         "report_id": report.report_id,
         "run_id": run_id,
@@ -119,10 +119,13 @@ def qa_copilot(run_id: str, user: CurrentUser) -> dict[str, Any]:
     report = next((r for r in _qa_reports.values() if r.run_id == run_id), None)
     if not report:
         raise HTTPException(status_code=404, detail="QA report not found. Run /qa first.")
+    # Defense in depth: also verify ownership of the report itself
+    require_owner(report.report_id, user)
 
     session = analyze_qa_report(report)
     _copilot_sessions[session.session_id] = session
-    record_ownership(session.session_id, owner_id=user.sub)
+    project_id = (_runs.get(run_id).project_id if run_id in _runs else "")
+    record_ownership(session.session_id, owner_id=user.sub, project_id=project_id)
     return {
         "session_id": session.session_id,
         "report_id": report.report_id,
