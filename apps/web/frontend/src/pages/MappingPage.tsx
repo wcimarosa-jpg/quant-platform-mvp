@@ -1,51 +1,57 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
 import { PageHeader, FileDropzone, StatusBadge, CheckpointBlock } from '../components/shared';
 import api from '../api/client';
+import { parseCSV, type ParsedCSV } from '../lib/csv';
+import { profileColumn, pickTableTypes, type ColumnProfile, type ColumnKind } from '../lib/profile';
 
-interface ParsedData {
-  columns: string[];
-  rows: Record<string, unknown>[];
-  rowCount: number;
-}
+const MAX_ROWS = 50_000;
 
-function parseCSV(text: string): ParsedData {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) {
-    return { columns: [], rows: [], rowCount: 0 };
-  }
-  const columns = lines[0].split(',').map((c) => c.trim());
-  const rows = lines.slice(1).map((line) => {
-    const cells = line.split(',');
-    const row: Record<string, unknown> = {};
-    columns.forEach((col, i) => {
-      const cell = cells[i]?.trim() || '';
-      const num = Number(cell);
-      row[col] = isNaN(num) || cell === '' ? cell : num;
-    });
-    return row;
-  });
-  return { columns, rows, rowCount: rows.length };
+function badgeVariant(kind: ColumnKind): 'ok' | 'warn' | 'info' {
+  if (kind === 'categorical') return 'ok';
+  if (kind === 'continuous') return 'info';
+  return 'warn';
 }
 
 export function MappingPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const [parsed, setParsed] = useState<ParsedData | null>(null);
+  const [parsed, setParsed] = useState<ParsedCSV | null>(null);
   const [filename, setFilename] = useState('');
   const [generating, setGenerating] = useState(false);
   const [runId, setRunId] = useState<string | null>(null);
   const [error, setError] = useState('');
 
+  // Profile columns whenever parsed data changes
+  const profiles = useMemo<ColumnProfile[]>(() => {
+    if (!parsed) return [];
+    return parsed.columns.map((c) => profileColumn(c, parsed.rows));
+  }, [parsed]);
+
+  const tabulatable = useMemo(
+    () => profiles.filter((p) => p.kind === 'categorical' || p.kind === 'continuous'),
+    [profiles],
+  );
+  const skipped = useMemo(
+    () => profiles.filter((p) => p.kind === 'text' || p.kind === 'empty'),
+    [profiles],
+  );
+
   async function handleFile(file: File) {
     setFilename(file.name);
     setError('');
+    setRunId(null);
+    setParsed(null);
     try {
       const text = await file.text();
       const data = parseCSV(text);
       if (data.columns.length === 0) {
         setError('CSV file appears empty or malformed.');
+        return;
+      }
+      if (data.rowCount > MAX_ROWS) {
+        setError(`File has ${data.rowCount.toLocaleString()} rows. MVP limit is ${MAX_ROWS.toLocaleString()}.`);
         return;
       }
       setParsed(data);
@@ -56,16 +62,24 @@ export function MappingPage() {
 
   async function handleGenerate() {
     if (!parsed || !projectId) return;
+    if (tabulatable.length === 0) {
+      setError('No numeric columns found. Table generation requires numeric-coded data.');
+      return;
+    }
     setGenerating(true);
     setError('');
     try {
-      // Build a minimal variable spec from columns
-      const variables = parsed.columns.map((col) => ({
-        var_name: col,
-        var_label: col,
-        var_type: 'single',
-        value_labels: {},
+      // Build variable specs from profiled columns. var_name is required;
+      // value_labels is optional but populated for categorical columns.
+      const variables = tabulatable.map((p) => ({
+        var_name: p.name,
+        question_id: p.name,
+        question_text: p.name,
+        value_labels: p.valueLabels,
       }));
+
+      const tableTypes = pickTableTypes(tabulatable);
+
       const result = await api.generateTables({
         project_id: projectId,
         mapping_id: 'auto',
@@ -73,10 +87,17 @@ export function MappingPage() {
         questionnaire_version: 1,
         variables,
         data_rows: parsed.rows,
+        config: {
+          table_types: tableTypes,
+          banner_variables: [],
+          significance: { enabled: true, confidence_level: 0.95, method: 'chi_square' },
+          base_size_minimum: 30,
+        },
       });
       setRunId(result.run_id);
     } catch (err) {
-      setError('Table generation failed. Check that all columns have numeric values.');
+      const message = err instanceof Error ? err.message : 'Table generation failed.';
+      setError(`Table generation failed: ${message.slice(0, 200)}`);
     } finally {
       setGenerating(false);
     }
@@ -100,7 +121,11 @@ export function MappingPage() {
     >
       <PageHeader title="Data Mapping" subtitle="Step 4 of 6 — Upload data and generate tables" />
 
-      {error && <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid var(--warn)' }}><span style={{ color: 'var(--warn)' }}>{error}</span></div>}
+      {error && (
+        <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid var(--warn)' }}>
+          <span style={{ color: 'var(--warn)' }}>{error}</span>
+        </div>
+      )}
 
       <div className="card" style={{ marginBottom: 16 }}>
         <h3>Upload Data File</h3>
@@ -119,36 +144,52 @@ export function MappingPage() {
               <tr><td>Filename</td><td>{filename}</td></tr>
               <tr><td>Rows</td><td>{parsed.rowCount.toLocaleString()}</td></tr>
               <tr><td>Columns</td><td>{parsed.columns.length}</td></tr>
+              <tr><td>Tabulatable</td><td>{tabulatable.length}</td></tr>
+              <tr><td>Skipped</td><td>{skipped.length} (text or empty)</td></tr>
             </tbody>
           </table>
-          <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 8 }}>
-            Columns: {parsed.columns.slice(0, 8).join(', ')}{parsed.columns.length > 8 ? '…' : ''}
-          </p>
         </div>
       )}
 
       {parsed && !runId && (
         <div className="card" style={{ marginBottom: 16 }}>
-          <h3>Auto-Map Columns</h3>
+          <h3>Column Profile</h3>
           <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 12 }}>
-            All columns will be treated as single-select variables. Advanced mapping coming in P12-04.
+            {tabulatable.length} of {profiles.length} columns will be tabulated.
+            {skipped.length > 0 && ` ${skipped.length} text/empty columns skipped.`}
           </p>
           <table>
             <thead>
-              <tr><th>Column</th><th>Type</th><th>Confidence</th></tr>
+              <tr><th>Column</th><th>Kind</th><th>Unique Values</th><th>Status</th></tr>
             </thead>
             <tbody>
-              {parsed.columns.slice(0, 10).map((col) => (
-                <tr key={col}>
-                  <td>{col}</td>
-                  <td>single</td>
-                  <td><StatusBadge status="auto" variant="ok" /></td>
+              {profiles.slice(0, 30).map((p) => (
+                <tr key={p.name}>
+                  <td>{p.name}</td>
+                  <td>{p.kind}</td>
+                  <td>{p.uniqueCount}</td>
+                  <td>
+                    <StatusBadge
+                      status={p.kind === 'text' || p.kind === 'empty' ? 'skipped' : 'tabulatable'}
+                      variant={badgeVariant(p.kind)}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <button className="btn btn-primary" style={{ marginTop: 12 }} onClick={handleGenerate} disabled={generating}>
-            {generating ? 'Generating tables...' : 'Generate Tables'}
+          {profiles.length > 30 && (
+            <p style={{ fontSize: 12, color: 'var(--muted)', marginTop: 8 }}>
+              Showing first 30 of {profiles.length} columns.
+            </p>
+          )}
+          <button
+            className="btn btn-primary"
+            style={{ marginTop: 12 }}
+            onClick={handleGenerate}
+            disabled={generating || tabulatable.length === 0}
+          >
+            {generating ? 'Generating tables...' : `Generate Tables (${tabulatable.length} cols)`}
           </button>
         </div>
       )}
