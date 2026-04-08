@@ -9,6 +9,8 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
+from apps.api.auth_deps import CurrentUser
+from apps.api.resource_auth import record_ownership, require_owner
 from packages.survey_analysis.table_generator import (
     TableConfig,
     TableGenerationError,
@@ -61,7 +63,7 @@ class GenerateRequest(BaseModel):
 
 
 @router.post("/generate")
-def generate(body: GenerateRequest) -> dict[str, Any]:
+def generate(body: GenerateRequest, user: CurrentUser) -> dict[str, Any]:
     """Generate tables from inline data and variable mapping."""
     df = pd.DataFrame(body.data_rows)
     if df.empty:
@@ -81,6 +83,7 @@ def generate(body: GenerateRequest) -> dict[str, Any]:
         raise HTTPException(status_code=422, detail=str(exc))
 
     _runs[result.run_id] = result
+    record_ownership(result.run_id, owner_id=user.sub, project_id=body.project_id)
     return {
         "run_id": result.run_id,
         "total_tables": result.total_tables,
@@ -89,14 +92,16 @@ def generate(body: GenerateRequest) -> dict[str, Any]:
 
 
 @router.post("/{run_id}/qa")
-def qa_check(run_id: str) -> dict[str, Any]:
+def qa_check(run_id: str, user: CurrentUser) -> dict[str, Any]:
     """Run QA checks on a table generation run."""
     result = _runs.get(run_id)
     if not result:
         raise HTTPException(status_code=404, detail="Run not found.")
+    require_owner(run_id, user)
 
     report = run_table_qa(result)
     _qa_reports[report.report_id] = report
+    record_ownership(report.report_id, owner_id=user.sub)
     return {
         "report_id": report.report_id,
         "run_id": run_id,
@@ -108,14 +113,16 @@ def qa_check(run_id: str) -> dict[str, Any]:
 
 
 @router.post("/{run_id}/qa-copilot")
-def qa_copilot(run_id: str) -> dict[str, Any]:
+def qa_copilot(run_id: str, user: CurrentUser) -> dict[str, Any]:
     """Run QA copilot analysis on the latest QA report for a run."""
+    require_owner(run_id, user)
     report = next((r for r in _qa_reports.values() if r.run_id == run_id), None)
     if not report:
         raise HTTPException(status_code=404, detail="QA report not found. Run /qa first.")
 
     session = analyze_qa_report(report)
     _copilot_sessions[session.session_id] = session
+    record_ownership(session.session_id, owner_id=user.sub)
     return {
         "session_id": session.session_id,
         "report_id": report.report_id,
