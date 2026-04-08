@@ -12,6 +12,7 @@ import type {
   Methodology,
   Project,
   ProjectListResponse,
+  QACopilotSession,
   QAReport,
   TableRunResponse,
 } from './types';
@@ -30,6 +31,20 @@ class ApiError extends Error {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+  }
+}
+
+// Single-flight 401 redirect guard — multiple parallel requests on first
+// page load can each trigger a redirect, causing duplicate history entries.
+let _redirecting = false;
+
+function _handle401() {
+  if (_redirecting) return;
+  _redirecting = true;
+  localStorage.removeItem('quant_token');
+  localStorage.removeItem('quant_user');
+  if (window.location.pathname !== '/login') {
+    window.location.replace('/login');
   }
 }
 
@@ -58,19 +73,40 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   const response = await fetch(url, fetchOptions);
   if (response.status === 401) {
-    // Token expired or missing — clear auth and redirect to login
-    localStorage.removeItem('quant_token');
-    localStorage.removeItem('quant_user');
-    if (window.location.pathname !== '/login') {
-      window.location.href = '/login';
-    }
+    _handle401();
     throw new ApiError(401, 'Authentication required');
   }
   if (!response.ok) {
-    const text = await response.text().catch(() => 'Unknown error');
-    throw new ApiError(response.status, text);
+    let detail = 'Unknown error';
+    try {
+      const text = await response.text();
+      // Try to parse JSON {"detail": "..."} from FastAPI
+      try {
+        const parsed = JSON.parse(text);
+        detail = parsed.detail || text;
+      } catch {
+        detail = text;
+      }
+    } catch {
+      // ignore — use default
+    }
+    throw new ApiError(response.status, detail);
   }
-  return response.json();
+
+  // Handle empty bodies (204 No Content, or empty 200)
+  if (response.status === 204) {
+    return undefined as T;
+  }
+  const contentLength = response.headers.get('content-length');
+  if (contentLength === '0') {
+    return undefined as T;
+  }
+  // Parse JSON body, but tolerate empty body responses
+  const text = await response.text();
+  if (!text) {
+    return undefined as T;
+  }
+  return JSON.parse(text) as T;
 }
 
 // Re-export types for convenience
@@ -83,6 +119,7 @@ export type {
   Methodology,
   Project,
   ProjectListResponse,
+  QACopilotSession,
   QAReport,
   TableRunResponse,
 };
@@ -148,7 +185,7 @@ export const api = {
   runQA: (runId: string) =>
     request<QAReport>(`/api/v1/tables/${runId}/qa`, { method: 'POST' }),
   runQACopilot: (runId: string) =>
-    request<Record<string, unknown>>(`/api/v1/tables/${runId}/qa-copilot`, { method: 'POST' }),
+    request<QACopilotSession>(`/api/v1/tables/${runId}/qa-copilot`, { method: 'POST' }),
 
   // Ops
   getMetrics: () => request<Record<string, unknown>>('/ops/metrics'),

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
 import { PageHeader, FileDropzone, CheckpointBlock } from '../components/shared';
@@ -37,28 +37,49 @@ export function BriefReviewPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState('');
 
+  // Track the field that was active when the brief was last loaded so we
+  // don't accidentally overwrite editValue when activeField changes after
+  // an unrelated brief refresh.
+  const initialFieldRef = useRef<EditableField>('objectives');
+
   // Load brief if briefId is set
   useEffect(() => {
     if (!briefId) return;
     let cancelled = false;
+    initialFieldRef.current = activeField;
     api.getBrief(briefId)
       .then((b) => {
         if (cancelled) return;
         setBrief(b);
-        setEditValue(getBriefField(b, activeField));
+        setEditValue(getBriefField(b, initialFieldRef.current));
       })
       .catch(() => {
         if (!cancelled) setError('Failed to load brief.');
       });
     return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [briefId]);
 
-  // Sync edit value when field changes
+  // Sync edit value when field changes (only if no unsaved edits)
   useEffect(() => {
     if (brief) {
       setEditValue(getBriefField(brief, activeField));
     }
   }, [activeField, brief]);
+
+  function isDirty(): boolean {
+    if (!brief) return false;
+    return editValue !== getBriefField(brief, activeField);
+  }
+
+  function handleFieldSwitch(field: EditableField) {
+    if (field === activeField) return;
+    if (isDirty()) {
+      const ok = window.confirm('You have unsaved changes. Discard them?');
+      if (!ok) return;
+    }
+    setActiveField(field);
+  }
 
   async function handleUpload(file: File) {
     if (!projectId) return;
@@ -68,8 +89,9 @@ export function BriefReviewPage() {
       const result = await api.uploadBrief(projectId, file);
       setBriefId(result.brief_id);
       setSearchParams({ brief_id: result.brief_id });
-    } catch {
-      setError('Upload failed. Try a .docx, .pdf, or .md file under 10MB.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Upload failed.';
+      setError(`Upload failed: ${msg.slice(0, 200)}`);
     } finally {
       setUploading(false);
     }
@@ -78,9 +100,11 @@ export function BriefReviewPage() {
   async function handleSaveField() {
     if (!brief) return;
     setSaving(true);
+    setError('');
     try {
       const updated = await api.updateBrief(brief.brief_id, { [activeField]: editValue });
       setBrief(updated);
+      setEditValue(getBriefField(updated, activeField));
     } catch {
       setError('Failed to save changes.');
     } finally {
@@ -91,9 +115,14 @@ export function BriefReviewPage() {
   async function handleAnalyze() {
     if (!brief) return;
     setAnalyzing(true);
+    setError('');
     try {
       const result = await api.analyzeBrief(brief.brief_id);
       setAnalysis(result);
+      // Re-fetch the brief so the checkpoint reflects any updates
+      // (e.g., assumptions applied during analysis flow).
+      const refreshed = await api.getBrief(brief.brief_id);
+      setBrief(refreshed);
     } catch {
       setError('Failed to analyze brief.');
     } finally {
@@ -104,6 +133,19 @@ export function BriefReviewPage() {
   function handleApprove() {
     navigate(`/projects/${projectId}/survey`);
   }
+
+  // Determine if checkpoint is ready: brief is complete OR analyzer
+  // produced a result with all assumptions resolved.
+  const checkpointReady = brief
+    ? brief.is_complete || (analysis !== null && analysis.all_resolved)
+    : false;
+  const checkpointDescription = brief
+    ? brief.is_complete
+      ? 'All required fields complete.'
+      : analysis !== null && analysis.all_resolved
+        ? 'Analyzer resolved all assumptions. Ready to continue.'
+        : `Missing: ${brief.missing_fields.join(', ')}. Run analyzer to suggest fixes.`
+    : '';
 
   return (
     <AppShell
@@ -141,7 +183,8 @@ export function BriefReviewPage() {
                   <button
                     key={field}
                     className={`section-nav-item ${field === activeField ? 'active' : ''}`}
-                    onClick={() => setActiveField(field)}
+                    onClick={() => handleFieldSwitch(field)}
+                    disabled={saving}
                   >
                     {FIELD_LABELS[field]}
                     <span className={`badge badge-${isComplete ? 'ok' : 'warn'}`}>{isComplete ? '✓' : '!'}</span>
@@ -155,12 +198,14 @@ export function BriefReviewPage() {
                 value={editValue}
                 onChange={(e) => setEditValue(e.target.value)}
                 rows={8}
+                disabled={saving}
                 style={{ width: '100%', padding: 12, border: '1px solid var(--line)', borderRadius: 10, marginTop: 8, fontFamily: 'inherit', fontSize: 14, background: '#fffdfa' }}
               />
-              <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-                <button className="btn btn-primary btn-sm" onClick={handleSaveField} disabled={saving}>
+              <div style={{ display: 'flex', gap: 8, marginTop: 10, alignItems: 'center' }}>
+                <button className="btn btn-primary btn-sm" onClick={handleSaveField} disabled={saving || !isDirty()}>
                   {saving ? 'Saving...' : 'Save'}
                 </button>
+                {isDirty() && !saving && <span style={{ fontSize: 12, color: 'var(--muted)' }}>Unsaved changes</span>}
               </div>
             </div>
           </div>
@@ -195,6 +240,9 @@ export function BriefReviewPage() {
                     </ul>
                   </div>
                 )}
+                <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 8 }}>
+                  Status: {analysis.all_resolved ? 'All assumptions resolved' : 'Pending assumptions'}
+                </p>
               </div>
             )}
           </div>
@@ -202,8 +250,8 @@ export function BriefReviewPage() {
           <div style={{ marginTop: 16 }}>
             <CheckpointBlock
               title="Finalize Brief & Continue"
-              description={brief.is_complete ? 'All required fields complete.' : `Missing: ${brief.missing_fields.join(', ')}`}
-              status={brief.is_complete ? 'ready' : 'pending'}
+              description={checkpointDescription}
+              status={checkpointReady ? 'ready' : 'pending'}
               onApprove={handleApprove}
             />
           </div>

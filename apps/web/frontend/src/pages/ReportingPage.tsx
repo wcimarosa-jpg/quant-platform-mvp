@@ -58,7 +58,7 @@ export function ReportingPage() {
           value={loading ? '—' : cost.total_tokens.toLocaleString()}
         />
         <KPICard
-          label="Stages Tracked"
+          label="Cost Sources Tracked"
           value={loading ? '—' : Object.keys(cost.by_stage || {}).length}
         />
       </div>

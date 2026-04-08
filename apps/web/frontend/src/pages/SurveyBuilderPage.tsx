@@ -126,13 +126,16 @@ export function SurveyBuilderPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8, marginTop: 12 }}>
               {draft.section_options.map((s) => {
                 const isSelected = draft.selected_sections.includes(s.section_type);
+                // Disable all toggles during save to prevent out-of-order
+                // PATCH responses (last-resolve wins).
+                const disabled = s.required || saving;
                 return (
                   <button
                     key={s.section_type}
                     className={`section-nav-item ${isSelected ? 'active' : ''}`}
                     onClick={() => toggleSection(s.section_type)}
-                    disabled={s.required}
-                    style={{ opacity: s.required ? 0.7 : 1 }}
+                    disabled={disabled}
+                    style={{ opacity: disabled ? 0.7 : 1 }}
                   >
                     <span>{s.label}</span>
                     <span className={`badge badge-${isSelected ? 'ok' : 'info'}`}>

@@ -5,6 +5,10 @@ import { PageHeader, StatusBadge, CheckpointBlock } from '../components/shared';
 import api from '../api/client';
 import type { QAReport } from '../api/types';
 
+// Validate the shape of run_id from a query param. Backend uses
+// "tblrun-<8 hex chars>" but we accept any reasonable identifier here.
+const RUN_ID_PATTERN = /^[a-zA-Z0-9_-]{4,64}$/;
+
 export function AnalysisPage() {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -14,19 +18,28 @@ export function AnalysisPage() {
   const [qaReport, setQaReport] = useState<QAReport | null>(null);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
+
+  const isValidRunId = runId !== '' && RUN_ID_PATTERN.test(runId);
 
   async function handleRunQA() {
     if (!runId) {
       setError('No run_id provided. Generate tables first from the Mapping page.');
       return;
     }
+    if (!isValidRunId) {
+      setError(`Invalid run_id format: ${runId.slice(0, 80)}`);
+      return;
+    }
     setRunning(true);
     setError('');
+    setAttempt((a) => a + 1);
     try {
       const report = await api.runQA(runId);
       setQaReport(report);
-    } catch {
-      setError('QA run failed. Verify the run exists.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      setError(`QA run failed: ${msg.slice(0, 200)}`);
     } finally {
       setRunning(false);
     }
@@ -49,7 +62,18 @@ export function AnalysisPage() {
     >
       <PageHeader title="Analysis" subtitle="Step 5 of 6 — Run QA and review results" />
 
-      {error && <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid var(--warn)' }}><span style={{ color: 'var(--warn)' }}>{error}</span></div>}
+      {error && (
+        <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid var(--warn)' }}>
+          <span style={{ color: 'var(--warn)' }}>{error}</span>
+          {attempt > 0 && !running && (
+            <div style={{ marginTop: 8 }}>
+              <button className="btn btn-secondary btn-sm" onClick={handleRunQA}>
+                Retry
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {!runId && (
         <div className="card" style={{ marginBottom: 16 }}>
@@ -63,11 +87,24 @@ export function AnalysisPage() {
         </div>
       )}
 
-      {runId && (
+      {runId && !isValidRunId && (
+        <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid var(--warn)' }}>
+          <h3>Invalid run_id</h3>
+          <p style={{ fontSize: 14, color: 'var(--muted)' }}>
+            The run_id in the URL ({runId.slice(0, 80)}) does not match the expected format.
+            Generate a fresh run from the Mapping page.
+          </p>
+          <button className="btn btn-secondary" style={{ marginTop: 10 }} onClick={() => navigate(`/projects/${projectId}/mapping`)}>
+            ← Back to Mapping
+          </button>
+        </div>
+      )}
+
+      {isValidRunId && (
         <div className="card" style={{ marginBottom: 16 }}>
           <h3>Run {runId}</h3>
           <button className="btn btn-primary" onClick={handleRunQA} disabled={running}>
-            {running ? 'Running QA...' : 'Run QA Checks'}
+            {running ? 'Running QA...' : qaReport ? 'Re-run QA' : 'Run QA Checks'}
           </button>
         </div>
       )}

@@ -17,6 +17,12 @@ export interface ProjectListResponse {
 }
 
 // -- Briefs --
+//
+// Note: `Brief` (returned by GET /briefs/:id) intentionally has `project_id`
+// optional because the backend get_brief endpoint does not return it. The
+// upload response (BriefUploadResponse below) does include project_id since
+// the client just supplied it. This asymmetry is documented here so future
+// devs don't try to "fix" the optional flag by reading it from getBrief.
 export interface Brief {
   brief_id: string;
   project_id?: string;
@@ -111,6 +117,27 @@ export interface QAReport {
   error_count: number;
   warning_count: number;
   findings: QAFinding[];
+}
+
+export interface QACopilotExplanation {
+  finding_id: string;
+  explanation: string;
+}
+
+export interface QACopilotAction {
+  action_id: string;
+  finding_id: string;
+  action_type: string;
+  description: string;
+  status: string;
+}
+
+export interface QACopilotSession {
+  session_id: string;
+  report_id: string;
+  explanations: QACopilotExplanation[];
+  actions: QACopilotAction[];
+  all_resolved: boolean;
 }
 
 // -- Cost --

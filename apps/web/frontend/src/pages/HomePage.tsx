@@ -24,7 +24,8 @@ export function HomePage() {
         setCost(costResp);
       } catch (err) {
         if (cancelled) return;
-        setError('Failed to load projects. Check your connection.');
+        const msg = err instanceof Error ? err.message : 'Network error';
+        setError(`Failed to load projects: ${msg.slice(0, 200)}`);
       } finally {
         if (!cancelled) setLoading(false);
       }
