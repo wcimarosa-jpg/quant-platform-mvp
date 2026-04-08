@@ -18,10 +18,11 @@ export function HomePage() {
 
   useEffect(() => {
     Promise.all([
-      api.listProjects().catch(() => []),
+      api.listProjects().catch(() => ({ projects: [] })),
       api.getCost().catch(() => ({ total_cost_usd: 0, total_tokens: 0 })),
     ]).then(([p, c]) => {
-      setProjects(p as Project[]);
+      const proj = (p as { projects?: Project[] }).projects || [];
+      setProjects(proj);
       setCost(c as typeof cost);
       setLoading(false);
     });

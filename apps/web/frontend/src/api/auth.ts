@@ -52,8 +52,14 @@ export async function login(email: string, password: string): Promise<AuthUser> 
     body: JSON.stringify({ email, password }),
   });
   if (!resp.ok) {
-    const detail = await resp.text().catch(() => 'Login failed');
-    throw new Error(detail);
+    let message = 'Login failed';
+    try {
+      const data = await resp.json();
+      message = data.detail || message;
+    } catch {
+      // ignore — use default
+    }
+    throw new Error(message);
   }
   const data = await resp.json();
   const user: AuthUser = {

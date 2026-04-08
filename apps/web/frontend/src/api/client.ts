@@ -44,6 +44,15 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   fetchOptions.headers = fetchHeaders;
 
   const response = await fetch(url, fetchOptions);
+  if (response.status === 401) {
+    // Token expired or missing — clear auth and redirect to login
+    localStorage.removeItem('quant_token');
+    localStorage.removeItem('quant_user');
+    if (window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
+    throw new ApiError(401, 'Authentication required');
+  }
   if (!response.ok) {
     const text = await response.text().catch(() => 'Unknown error');
     throw new ApiError(response.status, text);
@@ -58,9 +67,9 @@ export const api = {
   healthDetailed: () => request<Record<string, unknown>>('/health/detailed'),
 
   // Projects
-  listProjects: () => request<Record<string, unknown>[]>('/api/v1/projects'),
+  listProjects: () => request<Record<string, unknown>>('/api/v1/projects/'),
   createProject: (data: Record<string, unknown>) =>
-    request<Record<string, unknown>>('/api/v1/projects', { method: 'POST', body: data }),
+    request<Record<string, unknown>>('/api/v1/projects/', { method: 'POST', body: data }),
 
   // Briefs
   getBrief: (id: string) => request<Record<string, unknown>>(`/api/v1/briefs/${id}`),
