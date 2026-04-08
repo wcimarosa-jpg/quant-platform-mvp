@@ -9,16 +9,17 @@ export function ProjectSetupPage() {
   const [name, setName] = useState('');
   const [methodology, setMethodology] = useState('segmentation');
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   async function handleCreate() {
     if (!name.trim()) return;
     setSaving(true);
+    setError('');
     try {
-      const result = await api.createProject({ name, methodology });
-      const projectId = (result as { id?: string }).id || 'new';
-      navigate(`/projects/${projectId}/brief`);
-    } catch {
-      alert('Failed to create project. Is the API server running?');
+      const project = await api.createProject({ name, methodology });
+      navigate(`/projects/${project.id}/brief`);
+    } catch (err) {
+      setError('Failed to create project. Check your connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -61,6 +62,7 @@ export function ProjectSetupPage() {
         <h3>SOW Upload (Optional)</h3>
         <FileDropzone accept=".docx,.pdf" label="Drop SOW file here (.docx or .pdf)" />
       </div>
+      {error && <div style={{ color: 'var(--warn)', marginBottom: 12, fontSize: 14 }}>{error}</div>}
       <button className="btn btn-primary" onClick={handleCreate} disabled={saving || !name.trim()}>
         {saving ? 'Creating...' : 'Create Project & Continue'}
       </button>

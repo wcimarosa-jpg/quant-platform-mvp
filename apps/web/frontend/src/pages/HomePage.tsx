@@ -3,29 +3,36 @@ import { Link } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
 import { KPICard, PageHeader, StatusBadge } from '../components/shared';
 import api from '../api/client';
-
-interface Project {
-  id: string;
-  name: string;
-  methodology: string;
-  status: string;
-}
+import type { Project, CostResponse } from '../api/types';
 
 export function HomePage() {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [cost, setCost] = useState<{ total_cost_usd: number; total_tokens: number }>({ total_cost_usd: 0, total_tokens: 0 });
+  const [cost, setCost] = useState<CostResponse>({ total_cost_usd: 0, total_tokens: 0 });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    Promise.all([
-      api.listProjects().catch(() => ({ projects: [] })),
-      api.getCost().catch(() => ({ total_cost_usd: 0, total_tokens: 0 })),
-    ]).then(([p, c]) => {
-      const proj = (p as { projects?: Project[] }).projects || [];
-      setProjects(proj);
-      setCost(c as typeof cost);
-      setLoading(false);
-    });
+    let cancelled = false;
+    async function load() {
+      try {
+        const [projResp, costResp] = await Promise.all([
+          api.listProjects(),
+          api.getCost().catch(() => ({ total_cost_usd: 0, total_tokens: 0 } as CostResponse)),
+        ]);
+        if (cancelled) return;
+        setProjects(projResp.projects || []);
+        setCost(costResp);
+      } catch (err) {
+        if (cancelled) return;
+        setError('Failed to load projects. Check your connection.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -40,9 +47,9 @@ export function HomePage() {
         <KPICard label="Total Tokens" value={cost.total_tokens.toLocaleString()} />
         <KPICard label="Total Cost" value={`$${cost.total_cost_usd.toFixed(2)}`} />
       </div>
-      {loading ? (
-        <p style={{ color: 'var(--muted)' }}>Loading projects...</p>
-      ) : (
+      {loading && <p style={{ color: 'var(--muted)' }}>Loading projects...</p>}
+      {error && <p style={{ color: 'var(--warn)' }}>{error}</p>}
+      {!loading && !error && (
         <table>
           <thead>
             <tr><th>Project</th><th>Methodology</th><th>Status</th><th></th></tr>

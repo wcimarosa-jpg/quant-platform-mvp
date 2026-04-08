@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getUser, logout } from '../api/auth';
 import './LeftNav.css';
 
 interface Stage {
@@ -13,6 +14,8 @@ interface LeftNavProps {
 }
 
 export function LeftNav({ stages, activeStage, projectId }: LeftNavProps) {
+  const user = getUser();
+
   function buildPath(stage: Stage, index: number): string {
     if (index === 0) return '/';
     if (index === 1) return '/projects/new';
@@ -48,6 +51,13 @@ export function LeftNav({ stages, activeStage, projectId }: LeftNavProps) {
           </Link>
         );
       })}
+      {user && (
+        <div className="user-info">
+          <div className="user-name">{user.display_name}</div>
+          <div className="user-role">{user.role}</div>
+          <button className="btn btn-secondary btn-sm" onClick={logout}>Logout</button>
+        </div>
+      )}
     </nav>
   );
 }

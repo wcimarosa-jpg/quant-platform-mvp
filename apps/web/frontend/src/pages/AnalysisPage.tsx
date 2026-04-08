@@ -1,77 +1,111 @@
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
-import { PageHeader, StatusBadge } from '../components/shared';
-
-const RUNS = [
-  { id: 'run-18', type: 'segmentation', status: 'completed' },
-  { id: 'run-19', type: 'drivers', status: 'queued' },
-  { id: 'run-20', type: 'segmentation', status: 'failed' },
-];
-
-const SEGMENTS = [
-  { name: 'Premium Explorers', size: '28%', topDriver: 'Innovation', purchaseIntent: '72%' },
-  { name: 'Value Seekers', size: '35%', topDriver: 'Price', purchaseIntent: '45%' },
-  { name: 'Loyalists', size: '22%', topDriver: 'Trust', purchaseIntent: '68%' },
-  { name: 'Newcomers', size: '15%', topDriver: 'Curiosity', purchaseIntent: '55%' },
-];
+import { PageHeader, StatusBadge, CheckpointBlock } from '../components/shared';
+import api from '../api/client';
+import type { QAReport } from '../api/types';
 
 export function AnalysisPage() {
   const { projectId } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const runId = searchParams.get('run_id') || '';
+
+  const [qaReport, setQaReport] = useState<QAReport | null>(null);
+  const [running, setRunning] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleRunQA() {
+    if (!runId) {
+      setError('No run_id provided. Generate tables first from the Mapping page.');
+      return;
+    }
+    setRunning(true);
+    setError('');
+    try {
+      const report = await api.runQA(runId);
+      setQaReport(report);
+    } catch {
+      setError('QA run failed. Verify the run exists.');
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  function handleApprove() {
+    navigate(`/projects/${projectId}/report?run_id=${runId}`);
+  }
 
   return (
-    <AppShell currentStage={5} projectId={projectId}>
-      <PageHeader title="Analysis" subtitle="Step 5 of 6 — Run analysis and review results" />
-      <div className="card" style={{ marginBottom: 16 }}>
-        <h3>Run Queue</h3>
-        <table>
-          <thead>
-            <tr><th>Run ID</th><th>Type</th><th>Status</th><th></th></tr>
-          </thead>
-          <tbody>
-            {RUNS.map((r) => (
-              <tr key={r.id}>
-                <td>{r.id}</td>
-                <td>{r.type}</td>
-                <td>
-                  <StatusBadge
-                    status={r.status}
-                    variant={r.status === 'completed' ? 'ok' : r.status === 'failed' ? 'warn' : 'running'}
-                  />
-                </td>
-                <td>
-                  {r.status === 'failed' && <button className="btn btn-secondary btn-sm">Re-run</button>}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="card" style={{ marginBottom: 16 }}>
-        <h3>KMeans Segment Snapshot</h3>
-        <table>
-          <thead>
-            <tr><th>Segment</th><th>Size</th><th>Top Driver</th><th>Purchase Intent</th></tr>
-          </thead>
-          <tbody>
-            {SEGMENTS.map((s) => (
-              <tr key={s.name}>
-                <td><strong>{s.name}</strong></td>
-                <td>{s.size}</td>
-                <td>{s.topDriver}</td>
-                <td>{s.purchaseIntent}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="card">
-        <h3>AI Insight</h3>
-        <p style={{ fontSize: 14 }}>
-          Premium Explorers over-index on innovation (+12pt vs. total sample).
-          This segment shows the highest purchase intent and responds strongly to
-          new product messaging.
-        </p>
-      </div>
+    <AppShell
+      currentStage={5}
+      projectId={projectId}
+      chips={[
+        { label: 'Stage', value: 'Analysis' },
+        { label: 'Project', value: projectId || '' },
+        { label: 'Run', value: runId || 'none' },
+      ]}
+      actions={['Create custom cut', 'Explain QA finding', 'Manual analysis']}
+    >
+      <PageHeader title="Analysis" subtitle="Step 5 of 6 — Run QA and review results" />
+
+      {error && <div className="card" style={{ marginBottom: 16, borderLeft: '4px solid var(--warn)' }}><span style={{ color: 'var(--warn)' }}>{error}</span></div>}
+
+      {!runId && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <h3>No analysis run available</h3>
+          <p style={{ fontSize: 14, color: 'var(--muted)' }}>
+            Generate tables from the Mapping page first. The mapping page will redirect here with a run_id once tables are generated.
+          </p>
+          <button className="btn btn-secondary" style={{ marginTop: 10 }} onClick={() => navigate(`/projects/${projectId}/mapping`)}>
+            ← Back to Mapping
+          </button>
+        </div>
+      )}
+
+      {runId && (
+        <div className="card" style={{ marginBottom: 16 }}>
+          <h3>Run {runId}</h3>
+          <button className="btn btn-primary" onClick={handleRunQA} disabled={running}>
+            {running ? 'Running QA...' : 'Run QA Checks'}
+          </button>
+        </div>
+      )}
+
+      {qaReport && (
+        <>
+          <div className="card" style={{ marginBottom: 16 }}>
+            <h3>QA Report</h3>
+            <div style={{ display: 'flex', gap: 12, marginTop: 10 }}>
+              <StatusBadge status={qaReport.passed ? 'PASSED' : 'ISSUES'} variant={qaReport.passed ? 'ok' : 'warn'} />
+              <span style={{ fontSize: 14 }}>
+                {qaReport.error_count} error(s), {qaReport.warning_count} warning(s)
+              </span>
+            </div>
+            {qaReport.findings.length > 0 && (
+              <table style={{ marginTop: 12 }}>
+                <thead><tr><th>Severity</th><th>Table</th><th>Finding</th></tr></thead>
+                <tbody>
+                  {qaReport.findings.slice(0, 10).map((f) => (
+                    <tr key={f.finding_id}>
+                      <td><StatusBadge status={f.severity} variant={f.severity === 'error' ? 'warn' : 'info'} /></td>
+                      <td>{f.table_id}</td>
+                      <td style={{ fontSize: 13 }}>{f.message}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <CheckpointBlock
+            title="Continue to Reporting"
+            description={qaReport.passed ? 'QA passed — ready to report.' : 'Review findings before continuing.'}
+            status="ready"
+            onApprove={handleApprove}
+          />
+        </>
+      )}
     </AppShell>
   );
 }
